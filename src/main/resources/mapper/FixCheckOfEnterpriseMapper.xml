@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.FixCheckOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.FixCheckOfEnterprise">
+        <id column="id" property="id" />
+        <result column="checkDate" property="checkDate" />
+        <result column="checkYear" property="checkYear" />
+        <result column="checkMonth" property="checkMonth" />
+        <result column="org" property="org" />
+        <result column="code" property="code" />
+        <result column="num" property="num" />
+        <result column="decideResult" property="decideResult" />
+        <result column="reason" property="reason" />
+        <result column="enterpriseId" property="enterpriseId" />
+        <result column="workplaceId" property="workplaceId" />
+        <result column="postId" property="postId" />
+        <result column="postDangerId" property="postDangerId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, checkDate, checkYear, checkMonth, org, code, num, decideResult, reason, enterpriseId, workplaceId, postId, postDangerId
+    </sql>
+
+</mapper>

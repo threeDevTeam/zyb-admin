@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.SuperviseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.Supervise">
+        <id column="id" property="id" />
+        <result column="year" property="year" />
+        <result column="provinceName" property="provinceName" />
+        <result column="provinceCode" property="provinceCode" />
+        <result column="cityName" property="cityName" />
+        <result column="cityCode" property="cityCode" />
+        <result column="districtName" property="districtName" />
+        <result column="districtCode" property="districtCode" />
+        <result column="registerAddress" property="registerAddress" />
+        <result column="name" property="name" />
+        <result column="isSet" property="isSet" />
+        <result column="markCount" property="markCount" />
+        <result column="manageCount" property="manageCount" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year, provinceName, provinceCode, cityName, cityCode, districtName, districtCode, registerAddress, name, isSet, markCount, manageCount
+    </sql>
+
+</mapper>

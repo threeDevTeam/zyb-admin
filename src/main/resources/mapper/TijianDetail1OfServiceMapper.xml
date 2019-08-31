@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.TijianDetail1OfServiceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.TijianDetail1OfService">
+        <id column="id" property="id" />
+        <result column="checkDate" property="checkDate" />
+        <result column="checkYear" property="checkYear" />
+        <result column="checkMonth" property="checkMonth" />
+        <result column="num" property="num" />
+        <result column="enterpriseName" property="enterpriseName" />
+        <result column="enterpriseCode" property="enterpriseCode" />
+        <result column="provinceName" property="provinceName" />
+        <result column="provinceCode" property="provinceCode" />
+        <result column="cityName" property="cityName" />
+        <result column="cityCode" property="cityCode" />
+        <result column="districtName" property="districtName" />
+        <result column="districtCode" property="districtCode" />
+        <result column="registerAddress" property="registerAddress" />
+        <result column="registerBigName" property="registerBigName" />
+        <result column="registerSmallName" property="registerSmallName" />
+        <result column="industryBigName" property="industryBigName" />
+        <result column="industrySmallName" property="industrySmallName" />
+        <result column="workAddress" property="workAddress" />
+        <result column="workplaceName" property="workplaceName" />
+        <result column="workplaceCode" property="workplaceCode" />
+        <result column="postBigName" property="postBigName" />
+        <result column="postSmallName" property="postSmallName" />
+        <result column="name" property="name" />
+        <result column="idNum" property="idNum" />
+        <result column="gender" property="gender" />
+        <result column="age" property="age" />
+        <result column="workYear" property="workYear" />
+        <result column="tijianType" property="tijianType" />
+        <result column="result" property="result" />
+        <result column="tijianBasicId" property="tijianBasicId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, checkDate, checkYear, checkMonth, num, enterpriseName, enterpriseCode, provinceName, provinceCode, cityName, cityCode, districtName, districtCode, registerAddress, registerBigName, registerSmallName, industryBigName, industrySmallName, workAddress, workplaceName, workplaceCode, postBigName, postSmallName, name, idNum, gender, age, workYear, tijianType, result, tijianBasicId
+    </sql>
+
+</mapper>

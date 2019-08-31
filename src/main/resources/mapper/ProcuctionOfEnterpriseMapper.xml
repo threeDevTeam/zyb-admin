@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.ProcuctionOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.ProcuctionOfEnterprise">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="status" property="status" />
+        <result column="yearNumber" property="yearNumber" />
+        <result column="productionType" property="productionType" />
+        <result column="middleName" property="middleName" />
+        <result column="middleStatus" property="middleStatus" />
+        <result column="middleYearNumber" property="middleYearNumber" />
+        <result column="materialName" property="materialName" />
+        <result column="materialStatus" property="materialStatus" />
+        <result column="materialYearNumber" property="materialYearNumber" />
+        <result column="materialType" property="materialType" />
+        <result column="describe" property="describe" />
+        <result column="isExist" property="isExist" />
+        <result column="isFisrt" property="isFisrt" />
+        <result column="isUse" property="isUse" />
+        <result column="isHave" property="isHave" />
+        <result column="enterpriseId" property="enterpriseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, status, yearNumber, productionType, middleName, middleStatus, middleYearNumber, materialName, materialStatus, materialYearNumber, materialType, describe, isExist, isFisrt, isUse, isHave, enterpriseId
+    </sql>
+
+</mapper>

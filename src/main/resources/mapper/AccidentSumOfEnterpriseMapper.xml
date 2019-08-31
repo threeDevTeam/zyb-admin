@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.AccidentSumOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.AccidentSumOfEnterprise">
+        <id column="id" property="id" />
+        <result column="accidentNum" property="accidentNum" />
+        <result column="startTime" property="startTime" />
+        <result column="place" property="place" />
+        <result column="dangerBigName" property="dangerBigName" />
+        <result column="dangerSmallName" property="dangerSmallName" />
+        <result column="sickCount" property="sickCount" />
+        <result column="treatCount" property="treatCount" />
+        <result column="dieCount" property="dieCount" />
+        <result column="directLose" property="directLose" />
+        <result column="indirectLose" property="indirectLose" />
+        <result column="reason" property="reason" />
+        <result column="process" property="process" />
+        <result column="isReport" property="isReport" />
+        <result column="enterpriseId" property="enterpriseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, accidentNum, startTime, place, dangerBigName, dangerSmallName, sickCount, treatCount, dieCount, directLose, indirectLose, reason, process, isReport, enterpriseId
+    </sql>
+
+</mapper>

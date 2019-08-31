@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.LawOfSuperviseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.LawOfSupervise">
+        <id column="id" property="id" />
+        <result column="year" property="year" />
+        <result column="ruleIncrease" property="ruleIncrease" />
+        <result column="ruleSum" property="ruleSum" />
+        <result column="fileIncrease" property="fileIncrease" />
+        <result column="fileSum" property="fileSum" />
+        <result column="startdardIncrease" property="startdardIncrease" />
+        <result column="startdardSum" property="startdardSum" />
+        <result column="superviseId" property="superviseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year, ruleIncrease, ruleSum, fileIncrease, fileSum, startdardIncrease, startdardSum, superviseId
+    </sql>
+
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.EducationOfSuperviseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.EducationOfSupervise">
+        <id column="id" property="id" />
+        <result column="year" property="year" />
+        <result column="markCount" property="markCount" />
+        <result column="personCount" property="personCount" />
+        <result column="mainCount" property="mainCount" />
+        <result column="manageCount" property="manageCount" />
+        <result column="workerCount" property="workerCount" />
+        <result column="superviseId" property="superviseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year, markCount, personCount, mainCount, manageCount, workerCount, superviseId
+    </sql>
+
+</mapper>

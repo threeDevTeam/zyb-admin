@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.PostOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.PostOfEnterprise">
+        <id column="id" property="id" />
+        <result column="postBigName" property="postBigName" />
+        <result column="postSmallName" property="postSmallName" />
+        <result column="enterpriseId" property="enterpriseId" />
+        <result column="workplaceId" property="workplaceId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, postBigName, postSmallName, enterpriseId, workplaceId
+    </sql>
+
+</mapper>

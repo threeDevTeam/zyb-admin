@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.DiseaseDangerSumOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.DiseaseDangerSumOfEnterprise">
+        <id column="id" property="id" />
+        <result column="total" property="total" />
+        <result column="dust" property="dust" />
+        <result column="chemistry" property="chemistry" />
+        <result column="physical" property="physical" />
+        <result column="radioactivity" property="radioactivity" />
+        <result column="biology" property="biology" />
+        <result column="year" property="year" />
+        <result column="month" property="month" />
+        <result column="enterpriseId" property="enterpriseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, total, dust, chemistry, physical, radioactivity, biology, year, month, enterpriseId
+    </sql>
+
+</mapper>

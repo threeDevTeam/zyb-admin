@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.ServiceSuperviseOfSuperviseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.ServiceSuperviseOfSupervise">
+        <id column="id" property="id" />
+        <result column="year" property="year" />
+        <result column="jianceCount" property="jianceCount" />
+        <result column="tijianianceount" property="tijianianceount" />
+        <result column="zhenduanCount" property="zhenduanCount" />
+        <result column="jiancePunishCount" property="jiancePunishCount" />
+        <result column="tijianPunishCount" property="tijianPunishCount" />
+        <result column="zhenduanPunishCount" property="zhenduanPunishCount" />
+        <result column="jianceMoney" property="jianceMoney" />
+        <result column="tijianMoney" property="tijianMoney" />
+        <result column="zhenduanMoney" property="zhenduanMoney" />
+        <result column="jianceCancelCount" property="jianceCancelCount" />
+        <result column="tijianianceancelCount" property="tijianianceancelCount" />
+        <result column="zhenduanCancelCount" property="zhenduanCancelCount" />
+        <result column="superviseId" property="superviseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year, jianceCount, tijianianceount, zhenduanCount, jiancePunishCount, tijianPunishCount, zhenduanPunishCount, jianceMoney, tijianMoney, zhenduanMoney, jianceCancelCount, tijianianceancelCount, zhenduanCancelCount, superviseId
+    </sql>
+
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.ExecuteLawOfSuperviseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.ExecuteLawOfSupervise">
+        <id column="id" property="id" />
+        <result column="year" property="year" />
+        <result column="personCount" property="personCount" />
+        <result column="paperCount" property="paperCount" />
+        <result column="questionCount" property="questionCount" />
+        <result column="changeCount" property="changeCount" />
+        <result column="fixCount" property="fixCount" />
+        <result column="punishCount" property="punishCount" />
+        <result column="punishMoney" property="punishMoney" />
+        <result column="stopCount" property="stopCount" />
+        <result column="closeCount" property="closeCount" />
+        <result column="superviseId" property="superviseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year, personCount, paperCount, questionCount, changeCount, fixCount, punishCount, punishMoney, stopCount, closeCount, superviseId
+    </sql>
+
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.PersonOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.PersonOfEnterprise">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="idNum" property="idNum" />
+        <result column="gender" property="gender" />
+        <result column="age" property="age" />
+        <result column="enterpriseId" property="enterpriseId" />
+        <result column="workplaceId" property="workplaceId" />
+        <result column="postId" property="postId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, idNum, gender, age, enterpriseId, workplaceId, postId
+    </sql>
+
+</mapper>

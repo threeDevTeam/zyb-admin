@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.PostDangerOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.PostDangerOfEnterprise">
+        <id column="id" property="id" />
+        <result column="upDate" property="upDate" />
+        <result column="upYear" property="upYear" />
+        <result column="upMonth" property="upMonth" />
+        <result column="dangerBigName" property="dangerBigName" />
+        <result column="dangerSmallName" property="dangerSmallName" />
+        <result column="sickBigName" property="sickBigName" />
+        <result column="sickSmallName" property="sickSmallName" />
+        <result column="hurt" property="hurt" />
+        <result column="touchNum" property="touchNum" />
+        <result column="workTime" property="workTime" />
+        <result column="touchTime" property="touchTime" />
+        <result column="touchFrequency" property="touchFrequency" />
+        <result column="touchMode" property="touchMode" />
+        <result column="enterpriseId" property="enterpriseId" />
+        <result column="workplaceId" property="workplaceId" />
+        <result column="postId" property="postId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, upDate, upYear, upMonth, dangerBigName, dangerSmallName, sickBigName, sickSmallName, hurt, touchNum, workTime, touchTime, touchFrequency, touchMode, enterpriseId, workplaceId, postId
+    </sql>
+
+</mapper>

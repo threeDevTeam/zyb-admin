@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.TijianTotalOfServiceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.TijianTotalOfService">
+        <id column="id" property="id" />
+        <result column="year" property="year" />
+        <result column="count1" property="count1" />
+        <result column="count2" property="count2" />
+        <result column="count3" property="count3" />
+        <result column="count4" property="count4" />
+        <result column="tijianBasicId" property="tijianBasicId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year, count1, count2, count3, count4, tijianBasicId
+    </sql>
+
+</mapper>

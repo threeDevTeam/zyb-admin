@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.AccidentOfSuperviseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.AccidentOfSupervise">
+        <id column="id" property="id" />
+        <result column="year" property="year" />
+        <result column="dustCount" property="dustCount" />
+        <result column="poisonCount" property="poisonCount" />
+        <result column="otherCount" property="otherCount" />
+        <result column="dustPersonCount" property="dustPersonCount" />
+        <result column="poisonPersonCount" property="poisonPersonCount" />
+        <result column="otherPersonCount" property="otherPersonCount" />
+        <result column="dustDieCount" property="dustDieCount" />
+        <result column="poisonDieCount" property="poisonDieCount" />
+        <result column="otherDieCount" property="otherDieCount" />
+        <result column="loseMoney" property="loseMoney" />
+        <result column="superviseId" property="superviseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year, dustCount, poisonCount, otherCount, dustPersonCount, poisonPersonCount, otherPersonCount, dustDieCount, poisonDieCount, otherDieCount, loseMoney, superviseId
+    </sql>
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.EnterpriseCheckSumOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.EnterpriseCheckSumOfEnterprise">
+        <id column="id" property="id" />
+        <result column="year" property="year" />
+        <result column="month" property="month" />
+        <result column="shouldNum" property="shouldNum" />
+        <result column="realNum" property="realNum" />
+        <result column="passNum" property="passNum" />
+        <result column="checkRate" property="checkRate" />
+        <result column="passRate" property="passRate" />
+        <result column="isInclude" property="isInclude" />
+        <result column="enterpriseId" property="enterpriseId" />
+        <result column="workplaceId" property="workplaceId" />
+        <result column="postId" property="postId" />
+        <result column="postDangerId" property="postDangerId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, year, month, shouldNum, realNum, passNum, checkRate, passRate, isInclude, enterpriseId, workplaceId, postId, postDangerId
+    </sql>
+
+</mapper>

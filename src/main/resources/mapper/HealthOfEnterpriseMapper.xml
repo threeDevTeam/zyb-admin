@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.HealthOfEnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.HealthOfEnterprise">
+        <id column="id" property="id" />
+        <result column="isA" property="isA" />
+        <result column="isB" property="isB" />
+        <result column="isC" property="isC" />
+        <result column="isD" property="isD" />
+        <result column="isE" property="isE" />
+        <result column="isF" property="isF" />
+        <result column="isG" property="isG" />
+        <result column="isH" property="isH" />
+        <result column="isI" property="isI" />
+        <result column="isJ" property="isJ" />
+        <result column="isK" property="isK" />
+        <result column="isL" property="isL" />
+        <result column="isM" property="isM" />
+        <result column="isN" property="isN" />
+        <result column="isO" property="isO" />
+        <result column="isP" property="isP" />
+        <result column="isQ" property="isQ" />
+        <result column="isR" property="isR" />
+        <result column="isS" property="isS" />
+        <result column="isT" property="isT" />
+        <result column="isU" property="isU" />
+        <result column="isV" property="isV" />
+        <result column="isW" property="isW" />
+        <result column="isX" property="isX" />
+        <result column="isY" property="isY" />
+        <result column="isZ" property="isZ" />
+        <result column="enterpriseId" property="enterpriseId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, isA, isB, isC, isD, isE, isF, isG, isH, isI, isJ, isK, isL, isM, isN, isO, isP, isQ, isR, isS, isT, isU, isV, isW, isX, isY, isZ, enterpriseId
+    </sql>
+
+</mapper>
