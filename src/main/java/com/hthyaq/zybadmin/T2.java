@@ -9,6 +9,6 @@ public class T2 {
         System.out.println("aa");
     }
     public void b(){
-        System.out.println("b");
+        System.out.println("bb");
     }
 }
