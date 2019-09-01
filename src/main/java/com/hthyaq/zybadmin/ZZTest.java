@@ -1,8 +1,10 @@
 package com.hthyaq.zybadmin;
 
+import java.io.IOException;
+
 public class ZZTest {
-    public static void main(String[] args) {
-        int num = (int)0.999999;
-        System.out.println("----=---===-");
+    public static void main(String[] args) throws IOException {
+        System.out.println("b\ta");
+
         }
     }
