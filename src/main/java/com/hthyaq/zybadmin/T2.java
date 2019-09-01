@@ -6,7 +6,7 @@ public class T2 {
         System.out.println("c");
     }
     public void a(){
-        System.out.println("a------");
+        System.out.println("aa");
     }
     public void b(){
         System.out.println("b");
