@@ -5,4 +5,7 @@ public class T2 {
     public void a(){
         System.out.println("a");
     }
+    public void b(){
+        System.out.println("b");
+    }
 }
