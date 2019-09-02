@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author zhangqiang
- * @since 2019-08-30
+ * @since 2019-09-02
  */
 @Service
 public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnterpriseMapper, FixCheckOfEnterprise> implements FixCheckOfEnterpriseService {

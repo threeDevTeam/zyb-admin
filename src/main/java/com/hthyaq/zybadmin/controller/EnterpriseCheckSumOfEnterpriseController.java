@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author zhangqiang
- * @since 2019-08-30
+ * @since 2019-09-02
  */
 @RestController
 @RequestMapping("/enterpriseCheckSumOfEnterprise")

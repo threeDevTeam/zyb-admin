@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author zhangqiang
- * @since 2019-08-30
+ * @since 2019-09-02
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -78,6 +78,12 @@ public class TouchPersonOfEnterprise implements Serializable {
      */
     @TableField("isSign")
     private String isSign;
+
+    /**
+     * 是否参加职业卫生培训 例如：是、否
+     */
+    @TableField("isPractice")
+    private String isPractice;
 
     /**
      * 外键

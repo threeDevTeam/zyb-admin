@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author zhangqiang
- * @since 2019-08-30
+ * @since 2019-09-02
  */
 public interface FixCheckOfEnterpriseService extends IService<FixCheckOfEnterprise> {
 

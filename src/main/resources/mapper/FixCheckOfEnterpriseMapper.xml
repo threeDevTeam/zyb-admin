@@ -13,6 +13,7 @@
         <result column="num" property="num" />
         <result column="decideResult" property="decideResult" />
         <result column="reason" property="reason" />
+        <result column="dangerLevel" property="dangerLevel" />
         <result column="enterpriseId" property="enterpriseId" />
         <result column="workplaceId" property="workplaceId" />
         <result column="postId" property="postId" />
@@ -21,7 +22,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, checkDate, checkYear, checkMonth, org, code, num, decideResult, reason, enterpriseId, workplaceId, postId, postDangerId
+        id, checkDate, checkYear, checkMonth, org, code, num, decideResult, reason, dangerLevel, enterpriseId, workplaceId, postId, postDangerId
     </sql>
 
 </mapper>

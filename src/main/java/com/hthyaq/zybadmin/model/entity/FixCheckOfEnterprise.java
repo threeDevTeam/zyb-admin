@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author zhangqiang
- * @since 2019-08-30
+ * @since 2019-09-02
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -71,6 +71,12 @@ public class FixCheckOfEnterprise implements Serializable {
      * 超标原因
      */
     private String reason;
+
+    /**
+     * 危害程度级别 例如：轻度、中度、高度和极度
+     */
+    @TableField("dangerLevel")
+    private String dangerLevel;
 
     /**
      * 外键

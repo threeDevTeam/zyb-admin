@@ -10,6 +10,7 @@
         <result column="type" property="type" />
         <result column="status" property="status" />
         <result column="isFix" property="isFix" />
+        <result column="protectEffect" property="protectEffect" />
         <result column="enterpriseId" property="enterpriseId" />
         <result column="workplaceId" property="workplaceId" />
         <result column="postId" property="postId" />
@@ -18,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, isSet, name, type, status, isFix, enterpriseId, workplaceId, postId, postDangerId
+        id, isSet, name, type, status, isFix, protectEffect, enterpriseId, workplaceId, postId, postDangerId
     </sql>
 
 </mapper>

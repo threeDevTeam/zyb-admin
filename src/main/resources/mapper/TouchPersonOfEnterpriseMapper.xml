@@ -14,6 +14,7 @@
         <result column="touchYear" property="touchYear" />
         <result column="isBuy" property="isBuy" />
         <result column="isSign" property="isSign" />
+        <result column="isPractice" property="isPractice" />
         <result column="enterpriseId" property="enterpriseId" />
         <result column="workplaceId" property="workplaceId" />
         <result column="postId" property="postId" />
@@ -22,7 +23,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, idNum, gender, birth, startDate, leaveDate, touchYear, isBuy, isSign, enterpriseId, workplaceId, postId, postDangerId
+        id, name, idNum, gender, birth, startDate, leaveDate, touchYear, isBuy, isSign, isPractice, enterpriseId, workplaceId, postId, postDangerId
     </sql>
 
 </mapper>

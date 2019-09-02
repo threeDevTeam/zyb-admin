@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author zhangqiang
- * @since 2019-08-30
+ * @since 2019-09-02
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -54,6 +54,12 @@ public class ProtectOfEnterprise implements Serializable {
      */
     @TableField("isFix")
     private String isFix;
+
+    /**
+     * 工程防护效果 例如：良好、一般、差
+     */
+    @TableField("protectEffect")
+    private String protectEffect;
 
     /**
      * 外键
