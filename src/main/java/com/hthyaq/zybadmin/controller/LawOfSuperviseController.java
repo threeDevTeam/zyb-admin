@@ -60,10 +60,10 @@ public class LawOfSuperviseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String username = jsonObject.getString("username");
+        String year = jsonObject.getString("year");
         QueryWrapper<LawOfSupervise> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(username)) {
-            queryWrapper.eq("username", username);
+        if (!Strings.isNullOrEmpty(year)) {
+            queryWrapper.eq("year", year);
         }
 
         IPage<LawOfSupervise> page = lawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

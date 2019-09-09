@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.model.bean.GlobalResult;
+import com.hthyaq.zybadmin.model.entity.AreaCopy;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
+import com.hthyaq.zybadmin.model.entity.TreeSelcetData;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.FileUtils;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -90,100 +93,54 @@ public class AreaOfDicController {
     //设置level、childNum、pid
     @GetMapping("/set")
     public boolean set() {
-        //4个直辖市
-        shi();
-        //省份、自治区
-        sheng();
-        return true;
+       return areaOfDicService.set();
     }
 
-    private void sheng() {
-        //1.list=取出所有省,select * from area where adcode like '%0000' and name not like '%市'
+
+
+    @GetMapping("/TreeSelcetData")
+    public List<TreeSelcetData> TreeSelcetData() {
+        List<TreeSelcetData> treeSelcetDatalist = new ArrayList();
+
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.likeLeft("adcode", "0000").notLike("name", "市");
+        queryWrapper.eq("pid", "-1");
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
-        //2.遍历list
-        for (AreaOfDic area : list) {
-            //设置level
-            area.setLevel("1");
+        for (AreaOfDic areaCopy : list) {
+            List<TreeSelcetData> chilren = Lists.newArrayList();
+            TreeSelcetData treeSelcetData = new TreeSelcetData();
+            treeSelcetData.setLabel(areaCopy.getName());
+            treeSelcetData.setValue(areaCopy.getName());
+            treeSelcetData.setChildren(chilren);
+            treeSelcetDatalist.add(treeSelcetData);
 
-            Integer id = area.getId();
-            int adcode = area.getCode();
-            //通过adcode，得到adcode2
-            String adcode1 = adcode + "";
-            adcode1 = adcode1.substring(0, 3) + "_00";
-            //取出安徽省的下级节点,list2=select * from area where adcode like '340_00' and adcode !=340000
-            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.likeLeft("adcode", adcode1).ne("adcode", adcode);
-            List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
-            //遍历list2
-            for (AreaOfDic area2 : list2) {
-                //设置pid、level
-                area2.setPid(id);
-                area2.setLevel("2");
+            QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("pid", areaCopy.getId());
+            List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
 
-                Integer id2 = area2.getId();
-                String adcode2 = area2.getCode() + "";
-                adcode2 = adcode2.substring(0, 4);
-                //根据adcode获取合肥市下的所有节点,list3=select * from area where adcode like '3401%' and adcode != 340100
-                QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
-                queryWrapper3.likeRight("adcode", adcode2).ne("adcode", area2.getCode());
-                List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
-                //遍历list3
-                for (AreaOfDic area3 : list3) {
-                    //设置pid、level
-                    area3.setPid(id2);
-                    area3.setLevel("3");
+            for (AreaOfDic areaCopy1 : list1) {
+                TreeSelcetData treeSelcetData1 = new TreeSelcetData();
+                treeSelcetData1.setLabel(areaCopy1.getName());
+                treeSelcetData1.setValue(areaCopy1.getName());
+                chilren.add(treeSelcetData1);
+                List<TreeSelcetData> chilren2= Lists.newArrayList();
+                QueryWrapper<AreaOfDic> queryWrapper2=new QueryWrapper<>();
+                queryWrapper2.eq("pid",areaCopy1.getId());
+                List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+
+                for (AreaOfDic areaCopy2 : list2) {
+                    TreeSelcetData treeSelcetData2=new TreeSelcetData();
+                    treeSelcetData2.setLabel(areaCopy2.getName());
+                    treeSelcetData2.setValue(areaCopy2.getName());
+                    chilren2.add(treeSelcetData2);
                 }
-                //更新list3
-                if (CollectionUtil.isNotEmpty(list3)) {
-                    areaOfDicService.updateBatchById(list3);
-                }
-                //设置area2的childNum
-                area2.setChildNum(list3.size());
-            }
-            if (CollectionUtil.isNotEmpty(list2)) {
-                //更新list2
-                areaOfDicService.updateBatchById(list2);
-            }
 
-            //设置area的childNum
-            area.setChildNum(list2.size());
+                treeSelcetData1.setChildren(chilren2);
+            }
         }
-        areaOfDicService.updateBatchById(list);
+        return treeSelcetDatalist;
     }
 
-    private void shi() {
-        //1.list=取出4个直辖市,select * from area where adcode like '%0000' and name like '%市'
-        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.likeLeft("adcode", "0000").likeLeft("name", "市");
-        List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
-        //2.遍历list
-        for (AreaOfDic area : list) {
-            //设置level
-            area.setLevel("1");
 
-            Integer id = area.getId();
-            Integer adcode = area.getCode();
-            String adcode2 = adcode + "";
-            adcode2 = adcode2.substring(0, 3);
-            //根据adcode获取北京市下的区, select * from area where adcode like '11%' and adcode!=110000
-            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.likeRight("adcode", adcode2).ne("adcode", adcode);
-            List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
-            for (AreaOfDic tmp : list2) {
-                //设置pid
-                tmp.setPid(id);
-                tmp.setLevel("2");
-            }
-            //批量更新
-            areaOfDicService.updateBatchById(list2);
 
-            //设置childNum
-            area.setChildNum(list2.size());
-        }
 
-        //3.批量更新
-        areaOfDicService.updateBatchById(list);
-    }
 }

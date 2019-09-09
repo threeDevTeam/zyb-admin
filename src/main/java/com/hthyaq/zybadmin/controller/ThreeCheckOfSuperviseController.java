@@ -59,11 +59,16 @@ public class ThreeCheckOfSuperviseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String username = jsonObject.getString("username");
+        String year = jsonObject.getString("year");
+        String pulishMoney = jsonObject.getString("pulishMoney");
         QueryWrapper<ThreeCheckOfSupervise> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(username)) {
-            queryWrapper.eq("username", username);
+        if (!Strings.isNullOrEmpty(year)) {
+            queryWrapper.eq("year", year);
         }
+        if (!Strings.isNullOrEmpty(pulishMoney)) {
+            queryWrapper.eq("pulishMoney", pulishMoney);
+        }
+
 
         IPage<ThreeCheckOfSupervise> page = threeCheckOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 

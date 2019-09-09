@@ -60,10 +60,14 @@ public class EquipmentOfSuperviseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String username = jsonObject.getString("username");
+        String name = jsonObject.getString("name");
+        String num = jsonObject.getString("num");
         QueryWrapper<EquipmentOfSupervise> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(username)) {
-            queryWrapper.eq("username", username);
+        if (!Strings.isNullOrEmpty(name)) {
+            queryWrapper.eq("name", name);
+        }
+        if (!Strings.isNullOrEmpty(num)) {
+            queryWrapper.eq("num", num);
         }
 
         IPage<EquipmentOfSupervise> page = equipmentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
