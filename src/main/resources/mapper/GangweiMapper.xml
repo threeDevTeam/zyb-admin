@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.GangweiMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.Gangwei">
+        <id column="Id" property="Id" />
+        <result column="Pid" property="Pid" />
+        <result column="industryName" property="industryName" />
+        <result column="postName" property="postName" />
+        <result column="topId" property="topId" />
+        <result column="leiid" property="leiid" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        Id, Pid, industryName, postName, topId, leiid
+    </sql>
+
+</mapper>
