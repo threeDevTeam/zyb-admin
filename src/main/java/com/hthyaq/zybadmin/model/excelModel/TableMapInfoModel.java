@@ -10,7 +10,6 @@ public class TableMapInfoModel extends BaseRowModel {
 
     @ExcelProperty(value = {"中文表名"},index=0)
     private String chineseTableName;
-
     @ExcelProperty(value = {"英文表名--传输"},index=1)
     private String englishTableName;
     @ExcelProperty(value = {"中文名称"},index=2)

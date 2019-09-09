@@ -18,7 +18,7 @@ import java.util.List;
  * 代码生成器
  */
 public class CodeGenerator {
-    private static String[] include = {"gangwei"};
+    private static String[] include = {"TableMapInfoJishu"};
 
     public static void main(String[] args) throws IOException {
         AutoGenerator mpg = new AutoGenerator();
