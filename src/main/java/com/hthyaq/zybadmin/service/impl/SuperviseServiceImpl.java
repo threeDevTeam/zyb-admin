@@ -30,4 +30,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class SuperviseServiceImpl extends ServiceImpl<SuperviseMapper, Supervise> implements SuperviseService {
 
+    @Override
+    public boolean editData(Supervise supervise) {
+        this.updateById(supervise);
+        return true;
+    }
+
+    @Override
+    public boolean saveData(Supervise supervise) {
+        this.save(supervise);
+        return true;
+    }
+
+    @Override
+    public boolean deleteData(String id) {
+        this.removeById(id);
+        return true;
+    }
 }

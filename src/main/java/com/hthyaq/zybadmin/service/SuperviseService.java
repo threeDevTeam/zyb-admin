@@ -26,4 +26,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SuperviseService extends IService<Supervise> {
 
+    boolean editData(Supervise supervise);
+
+    boolean saveData(Supervise supervise);
+
+    boolean deleteData(String id);
 }

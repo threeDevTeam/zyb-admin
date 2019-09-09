@@ -17,4 +17,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceOfSuperviseServiceImpl extends ServiceImpl<ServiceOfSuperviseMapper, ServiceOfSupervise> implements ServiceOfSuperviseService {
 
+    @Override
+    public boolean editData(ServiceOfSupervise serviceOfSupervise) {
+        this.updateById(serviceOfSupervise);
+        return true;
+    }
 }

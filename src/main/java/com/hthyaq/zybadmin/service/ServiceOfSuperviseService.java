@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ServiceOfSuperviseService extends IService<ServiceOfSupervise> {
 
+    boolean editData(ServiceOfSupervise serviceOfSupervise);
 }
