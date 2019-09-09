@@ -68,10 +68,14 @@ public class ServiceOfSuperviseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String username = jsonObject.getString("username");
+        String year = jsonObject.getString("year");
+        String jianceLevel = jsonObject.getString("jianceLevel");
         QueryWrapper<ServiceOfSupervise> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(username)) {
-            queryWrapper.eq("username", username);
+        if (!Strings.isNullOrEmpty(year)) {
+            queryWrapper.eq("year", year);
+        }
+        if (!Strings.isNullOrEmpty(jianceLevel)) {
+            queryWrapper.eq("jianceLevel", jianceLevel);
         }
 
         IPage<ServiceOfSupervise> page = serviceOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

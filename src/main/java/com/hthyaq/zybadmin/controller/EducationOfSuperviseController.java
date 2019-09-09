@@ -59,10 +59,14 @@ public class EducationOfSuperviseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String username = jsonObject.getString("username");
+        String year = jsonObject.getString("year");
+        String personCount = jsonObject.getString("personCount");
         QueryWrapper<EducationOfSupervise> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(username)) {
-            queryWrapper.eq("username", username);
+        if (!Strings.isNullOrEmpty(year)) {
+            queryWrapper.eq("year", year);
+        }
+        if (!Strings.isNullOrEmpty(personCount)) {
+            queryWrapper.eq("personCount", personCount);
         }
 
         IPage<EducationOfSupervise> page = educationOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
