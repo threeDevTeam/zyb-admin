@@ -66,6 +66,7 @@ public class JianceDetailOfServiceController {
         return jianceDetailOfServiceService.saveData(jianceDetailOfServiceView);
     }
 
+
     @GetMapping("/delete")
     public boolean delete(String id) {
         return jianceDetailOfServiceService.deleteData(id);
