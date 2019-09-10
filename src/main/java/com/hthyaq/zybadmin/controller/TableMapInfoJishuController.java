@@ -5,6 +5,7 @@ import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hthyaq.zybadmin.model.entity.Gangwei;
+import com.hthyaq.zybadmin.model.entity.TableMapInfo;
 import com.hthyaq.zybadmin.model.entity.TableMapInfoJishu;
 import com.hthyaq.zybadmin.model.entity.TablemapinfoCopy;
 import com.hthyaq.zybadmin.service.TableMapInfoJishuService;
@@ -87,5 +88,76 @@ public class TableMapInfoJishuController {
         String excelModelPath = System.getProperty("user.dir") + "/src/main/java/com/hthyaq/zybadmin/model/excelModel/";
         //生成excelModel的java文件
         IOUtils.writeLines(result, "\r\n", new FileOutputStream(excelModelPath + excelModelFileName + "Model.java"), "utf8");
+    }
+    @GetMapping("/generatejsModel")
+    public boolean generatejsModel() throws IOException {
+        QueryWrapper<TableMapInfoJishu> queryWrapper=new QueryWrapper<>();
+        queryWrapper.groupBy("englishTableName");
+        List<TableMapInfoJishu> list = tableMapInfoJishuService.list(queryWrapper);
+        for (TableMapInfoJishu tableMapInfoJishu : list) {
+            generatejsExcelModelByTableName(tableMapInfoJishu.getEnglishTableName());
+        }
+
+        return true;
+    }
+
+    private void generatejsExcelModelByTableName(String tableName) throws IOException {
+
+        String jsFileName = WordUtils.capitalize(tableName);
+
+        List<String> result = Lists.newArrayList();
+        result.add("import React, {PureComponent} from 'react'");
+        result.add("import Form, {FormItem, FormCore} from 'noform'");
+        result.add("import {Input,InputNumber} from 'nowrapper/lib/antd'");
+        result.add("const validate = {");
+        List<TableMapInfoJishu> list = tableMapInfoJishuService.list(new QueryWrapper<TableMapInfoJishu>().eq("englishTableName", tableName).notIn("chineseColumnName", "主键", "外键"));
+        for (int i = 0; i < list.size(); i++) {
+            TableMapInfoJishu tableMapInfoJishu = list.get(i);
+            String chineseColumnName = tableMapInfoJishu.getChineseColumnName();
+            String englishColumnName = tableMapInfoJishu.getEnglishColumnName();
+            String dataType = tableMapInfoJishu.getDataType();
+            if(dataType.equals("String")){
+                String annotationStr=englishColumnName+": {type: \"string\", required: true, message: '"+chineseColumnName+"不能为空'},";
+                result.add(annotationStr);
+            }else{
+                String annotationStr=englishColumnName+": {type: \"number\", required: true, message: '"+chineseColumnName+"不能为空'},";
+                result.add(annotationStr);
+            }
+        }
+        result.add("");
+        result.add("}");
+
+        result.add("class "+jsFileName+"DemoForm extends PureComponent {");
+        result.add(" state = {}");
+        result.add(" constructor(props) {");
+        result.add("  super(props);");
+        result.add("this.core = new FormCore({validateConfig: validate});");
+        result.add(" }");
+        result.add("componentWillMount() {");
+        result.add(" }");
+        result.add(" render() {");
+        result.add("  return (");
+        result.add(" <Form core={this.core} layout={{label: 4, control: 20}}>");
+        result.add(" <FormItem style={{display: 'none'}} name=\"id\"><Input/></FormItem>");
+        for (int i = 0; i < list.size(); i++) {
+            TableMapInfoJishu tableMapInfoJishu = list.get(i);
+            String chineseColumnName = tableMapInfoJishu.getChineseColumnName();
+            String englishColumnName = tableMapInfoJishu.getEnglishColumnName();
+            String dataType = tableMapInfoJishu.getDataType();
+            if(dataType.equals("String")) {
+                String Formdata = " <FormItem label=\"" + chineseColumnName + "\" name=\"" + englishColumnName + "\"><Input/></FormItem>";
+                result.add(Formdata);
+            }else{
+                String Formdata = " <FormItem label=\"" + chineseColumnName + "\" name=\"" + englishColumnName + "\"><InputNumber/></FormItem>";
+                result.add(Formdata);
+            }
+        }
+        result.add(" </Form>");
+        result.add(" )");
+        result.add(" }");
+        result.add(" }");
+        result.add("export default "+jsFileName+"DemoForm");
+        String jsModelPath = System.getProperty("user.dir") + "/src/main/java/com/hthyaq/zybadmin/model/js/";
+        IOUtils.writeLines(result, "\r\n", new FileOutputStream(jsModelPath + jsFileName + "DemoForm.js"), "utf8");
     }
 }
