@@ -2,6 +2,7 @@ package com.hthyaq.zybadmin.service;
 
 import com.hthyaq.zybadmin.model.entity.JianceDetailOfService;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
 
 /**
  * <p>
@@ -38,4 +39,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface JianceDetailOfServiceService extends IService<JianceDetailOfService> {
 
+    boolean saveData(JianceDetailOfServiceView jianceDetailOfServiceView);
+
+    boolean deleteData(String id);
+
+    boolean editData(JianceDetailOfServiceView jianceDetailOfServiceView);
 }
