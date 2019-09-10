@@ -89,5 +89,6 @@ public class TablemapinfoCopyController {
         //生成excelModel的java文件
         IOUtils.writeLines(result, "\r\n", new FileOutputStream(excelModelPath + excelModelFileName + "Model.java"), "utf8");
     }
+
 }
 
