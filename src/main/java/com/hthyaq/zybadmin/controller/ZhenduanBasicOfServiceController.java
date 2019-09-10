@@ -64,15 +64,13 @@ public class ZhenduanBasicOfServiceController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String code = jsonObject.getString("code");
-        String num = jsonObject.getString("num");
+        String name = jsonObject.getString("name");
+
         QueryWrapper<ZhenduanBasicOfService> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(code)) {
-            queryWrapper.eq("code", code);
+        if (!Strings.isNullOrEmpty(name)) {
+            queryWrapper.eq("name", name);
         }
-        if (!Strings.isNullOrEmpty(num)) {
-            queryWrapper.eq("num", num);
-        }
+
 
         IPage<ZhenduanBasicOfService> page = zhenduanBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
