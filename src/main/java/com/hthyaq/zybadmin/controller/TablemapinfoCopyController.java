@@ -42,7 +42,7 @@ public class TablemapinfoCopyController {
         ExcelReader reader = ExcelUtil.getReader("D:/政府监管.xlsx");
         List<TablemapinfoCopy> all = reader.readAll(TablemapinfoCopy.class);
         for (TablemapinfoCopy tablemapinfoCopy : all) {
-            tablemapinfoCopyService.save(tablemapinfoCopy);
+//            tablemapinfoCopyService.save(tablemapinfoCopy);
         }
     }
 
