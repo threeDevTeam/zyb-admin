@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hthyaq.zybadmin.mapper.SysUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.SysUser">
+        <id column="id" property="id" />
+        <result column="loginName" property="loginName" />
+        <result column="loginPassword" property="loginPassword" />
+        <result column="email" property="email" />
+        <result column="mobile" property="mobile" />
+        <result column="type" property="type" />
+        <result column="companyId" property="companyId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, loginName, loginPassword, email, mobile, type, companyId
+    </sql>
+
+</mapper>
