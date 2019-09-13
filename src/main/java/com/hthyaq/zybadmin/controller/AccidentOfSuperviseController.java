@@ -32,6 +32,7 @@ public class AccidentOfSuperviseController {
     AccidentOfSuperviseService accidentOfSuperviseService;
     @PostMapping("/add")
     public boolean add(@RequestBody AccidentOfSupervise accidentOfSupervise) {
+        System.out.println(accidentOfSupervise);
         return accidentOfSuperviseService.save(accidentOfSupervise);
     }
     @GetMapping("/delete")
