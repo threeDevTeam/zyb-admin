@@ -14,4 +14,12 @@ public class GlobalConstants {
     public static final String NEWLINE = System.getProperty("line.separator");
     //路径分隔符
     public static final String FILE_SEPARATOR = System.getProperty("file.separator");
+    //db的操作类型
+    public static final String DB_OPERATE_INSERT = "insert";
+    public static final String DB_OPERATE_UPDATE = "update";
+    public static final String DB_OPERATE_DELETE = "update";
+    //用户[注册/登录]的id、没有登录的提示信息
+    public static final String USER_ID = "userId";
+    public static final String USER_NO_LOGIN = "当前用户没有登录";
+
 }
