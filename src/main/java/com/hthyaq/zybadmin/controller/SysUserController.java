@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author zhangqiang
@@ -25,9 +27,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysUserController {
     @Autowired
     SysUserService sysUserService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody SysUser sysUser) {
-        System.out.println(sysUser);
+        sysUserService.save(sysUser);
         return true;
+    }
+
+    @PostMapping("/register")
+    public boolean register(@RequestBody SysUser sysUser) {
+        System.out.println(sysUser.getLoginName());
+        System.out.println(sysUser.getLoginPassword());
+        List<SysUser> list = sysUserService.list();
+        boolean flag = false;
+        for (SysUser user : list) {
+            if (sysUser.getLoginName().equals(user.getLoginName())
+                    && sysUser.getLoginPassword().equals(user.getLoginPassword())
+            ) {
+                flag=true;
+            }
+        }
+        return flag;
     }
 }
