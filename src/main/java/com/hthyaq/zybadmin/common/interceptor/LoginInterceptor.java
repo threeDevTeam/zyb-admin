@@ -11,8 +11,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         //获取session域中的user_id
-        String userId = (String) request.getSession().getAttribute(GlobalConstants.USER_ID);
-        if (Strings.isNullOrEmpty(userId)) {
+        String loginName = (String) request.getSession().getAttribute(GlobalConstants.LOGIN_NAME);
+        if (Strings.isNullOrEmpty(loginName)) {
             throw new RuntimeException(GlobalConstants.USER_NO_LOGIN);
         }
         return true;
