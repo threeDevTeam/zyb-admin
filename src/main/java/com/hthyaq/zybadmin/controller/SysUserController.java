@@ -36,8 +36,6 @@ public class SysUserController {
 
     @PostMapping("/register")
     public boolean register(@RequestBody SysUser sysUser) {
-        System.out.println(sysUser.getLoginName());
-        System.out.println(sysUser.getLoginPassword());
         List<SysUser> list = sysUserService.list();
         boolean flag = false;
         for (SysUser user : list) {
