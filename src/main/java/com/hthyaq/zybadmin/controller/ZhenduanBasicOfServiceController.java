@@ -7,13 +7,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
-import com.hthyaq.zybadmin.model.entity.ZhenduanBasicOfService;
-import com.hthyaq.zybadmin.model.entity.ZhenduanDetailOfService;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
+import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.ZhenduanBasicOfServiceService;
 import com.hthyaq.zybadmin.service.ZhenduanDetailOfServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -29,10 +32,28 @@ import java.util.List;
 public class ZhenduanBasicOfServiceController {
     @Autowired
     ZhenduanBasicOfServiceService zhenduanBasicOfServiceService;
-
+    @Autowired
+    ServiceOfRegisterService serviceOfRegisterService;
     @PostMapping("/add")
-    public boolean add(@RequestBody ZhenduanBasicOfService zhenduanBasicOfService) {
-        return zhenduanBasicOfServiceService.save(zhenduanBasicOfService);
+    public boolean add(@RequestBody ZhenduanBasicOfService zhenduanBasicOfService ,HttpSession httpSession) {
+        boolean flag = false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<ServiceOfRegister> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("id",sysUser.getCompanyId());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            zhenduanBasicOfService.setName(serviceOfRegister.getName());
+            zhenduanBasicOfService.setCode(serviceOfRegister.getCode());
+            zhenduanBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
+            zhenduanBasicOfService.setProvinceCode(serviceOfRegister.getProvinceCode());
+            zhenduanBasicOfService.setCityName(serviceOfRegister.getCityName());
+            zhenduanBasicOfService.setCityCode(serviceOfRegister.getCityCode());
+            zhenduanBasicOfService.setDistrictName(serviceOfRegister.getDistrictName());
+            zhenduanBasicOfService.setDistrictCode(serviceOfRegister.getDistrictCode());
+            zhenduanBasicOfService.setRegisterAddress(serviceOfRegister.getRegisterAddress());
+            flag=zhenduanBasicOfServiceService.save(zhenduanBasicOfService);
+        }
+        return flag;
     }
 
     @GetMapping("/delete")

@@ -39,7 +39,6 @@ public class PostOfEnterprise implements Serializable {
      */
     @TableField("postSmallName")
     private String postSmallName;
-
     /**
      * 外键，例如关联-企业
      */

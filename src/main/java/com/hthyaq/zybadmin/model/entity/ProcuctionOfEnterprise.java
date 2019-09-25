@@ -95,7 +95,7 @@ public class ProcuctionOfEnterprise implements Serializable {
     /**
      * 主要生产工艺描述
      */
-    private String describe;
+    private String describee;
 
     /**
      * 是否存在职业病危害工艺岗位,例如是、否

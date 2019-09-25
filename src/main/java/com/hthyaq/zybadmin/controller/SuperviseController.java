@@ -7,27 +7,22 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.entity.Supervise;
+import com.hthyaq.zybadmin.model.entity.SuperviseOfRegister;
+import com.hthyaq.zybadmin.model.entity.SysUser;
 import com.hthyaq.zybadmin.model.vo.DemoView;
+import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
  * <p>
  * 监管部门信息
-
-
-
-
-
-
-
-
-
-
 
 
  前端控制器
@@ -42,9 +37,27 @@ import java.util.List;
 public class SuperviseController {
     @Autowired
     SuperviseService superviseService;
+    @Autowired
+    SuperviseOfRegisterService superviseOfRegisterService;
     @PostMapping("/add")
-    public boolean add(@RequestBody Supervise supervise) {
-        return superviseService.saveData(supervise);
+    public boolean add(@RequestBody Supervise supervise, HttpSession httpSession) {
+        boolean flag=false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SuperviseOfRegister> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("id",sysUser.getCompanyId());
+        List<SuperviseOfRegister> list = superviseOfRegisterService.list(queryWrapper);
+        for (SuperviseOfRegister superviseOfRegister : list) {
+            supervise.setProvinceName(superviseOfRegister.getProvinceName());
+            supervise.setProvinceCode(superviseOfRegister.getProvinceCode());
+            supervise.setCityName(superviseOfRegister.getCityName());
+            supervise.setCityCode(superviseOfRegister.getCityCode());
+            supervise.setDistrictName(superviseOfRegister.getDistrictName());
+            supervise.setDistrictCode(superviseOfRegister.getDistrictCode());
+            supervise.setRegisterAddress(superviseOfRegister.getRegisterAddress());
+            supervise.setName(superviseOfRegister.getName());
+            flag=superviseService.saveData(supervise);
+        }
+        return flag;
     }
     @GetMapping("/delete")
     public boolean delete(String id) {

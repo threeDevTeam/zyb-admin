@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.entity.ServiceOfRegister;
 import com.hthyaq.zybadmin.model.entity.SuperviseOfRegister;
 import com.hthyaq.zybadmin.model.entity.SysUser;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -33,13 +36,6 @@ public class SuperviseOfRegisterController {
     @PostMapping("/add")
     public boolean add(@RequestBody SuperviseOfUserView superviseOfUserView) {
         System.out.println(superviseOfUserView);
-        SysUser sysUser=new SysUser();
-        sysUser.setLoginName(superviseOfUserView.getLoginName());
-        sysUser.setLoginPassword(superviseOfUserView.getLoginPassword());
-        sysUser.setEmail(superviseOfUserView.getEmail());
-        sysUser.setMobile(superviseOfUserView.getMobile());
-        sysUser.setType(superviseOfUserView.getType());
-        sysUserService.save(sysUser);
         SuperviseOfRegister superviseOfRegister=new SuperviseOfRegister();
         superviseOfRegister.setProvinceName(superviseOfUserView.getProvinceName());
         superviseOfRegister.setProvinceCode(superviseOfUserView.getProvinceCode());
@@ -52,6 +48,14 @@ public class SuperviseOfRegisterController {
         superviseOfRegister.setEmail(superviseOfUserView.getEmail());
         superviseOfRegister.setMobile(superviseOfUserView.getMobile());
         superviseOfRegisterService.save(superviseOfRegister);
+        SysUser sysUser=new SysUser();
+        sysUser.setLoginName(superviseOfUserView.getLoginName());
+        sysUser.setLoginPassword(superviseOfUserView.getLoginPassword());
+        sysUser.setEmail(superviseOfUserView.getEmail());
+        sysUser.setMobile(superviseOfUserView.getMobile());
+        sysUser.setType(superviseOfUserView.getType());
+        sysUser.setCompanyId(superviseOfRegister.getId());
+        sysUserService.save(sysUser);
         return true;
     }
 }

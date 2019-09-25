@@ -7,12 +7,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.entity.EducationOfSupervise;
 import com.hthyaq.zybadmin.model.entity.Supervise;
+import com.hthyaq.zybadmin.model.entity.SuperviseOfRegister;
+import com.hthyaq.zybadmin.model.entity.SysUser;
 import com.hthyaq.zybadmin.service.EducationOfSuperviseService;
+import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
+import com.hthyaq.zybadmin.service.SuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -27,10 +33,28 @@ import java.util.List;
 @RequestMapping("/educationOfSupervise")
 public class EducationOfSuperviseController {
     @Autowired
+    SuperviseOfRegisterService superviseOfRegisterService;
+    @Autowired
+    SuperviseService superviseService;
+    @Autowired
     EducationOfSuperviseService educationOfSuperviseService;
     @PostMapping("/add")
-    public boolean add(@RequestBody EducationOfSupervise educationOfSupervise) {
-        return educationOfSuperviseService.save(educationOfSupervise);
+    public boolean add(@RequestBody EducationOfSupervise educationOfSupervise, HttpSession httpSession) {
+        boolean flag = false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SuperviseOfRegister> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", sysUser.getCompanyId());
+        List<SuperviseOfRegister> list = superviseOfRegisterService.list(queryWrapper);
+        for (SuperviseOfRegister superviseOfRegister : list) {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", superviseOfRegister.getName());
+            List<Supervise> list1 = superviseService.list(queryWrapper1);
+            for (Supervise supervise : list1) {
+                educationOfSupervise.setSuperviseId(supervise.getId());
+                flag = educationOfSuperviseService.save(educationOfSupervise);
+            }
+        }
+        return flag;
     }
     @GetMapping("/delete")
     public boolean delete(String id) {

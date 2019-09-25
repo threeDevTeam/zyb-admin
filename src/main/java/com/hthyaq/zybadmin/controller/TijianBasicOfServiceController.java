@@ -7,13 +7,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
-import com.hthyaq.zybadmin.model.entity.JianceTotalOfService;
-import com.hthyaq.zybadmin.model.entity.TijianBasicOfService;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.service.JianceTotalOfServiceService;
+import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
 import com.hthyaq.zybadmin.service.TijianBasicOfServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -29,9 +31,28 @@ import java.util.List;
 public class TijianBasicOfServiceController {
     @Autowired
     TijianBasicOfServiceService tijianBasicOfServiceService;
+    @Autowired
+    ServiceOfRegisterService serviceOfRegisterService;
     @PostMapping("/add")
-    public boolean add(@RequestBody TijianBasicOfService tijianBasicOfService) {
-        return tijianBasicOfServiceService.save(tijianBasicOfService);
+    public boolean add(@RequestBody TijianBasicOfService tijianBasicOfService, HttpSession httpSession) {
+        boolean flag=false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<ServiceOfRegister> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("id",sysUser.getCompanyId());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            tijianBasicOfService.setName(serviceOfRegister.getName());
+            tijianBasicOfService.setCode(serviceOfRegister.getCode());
+            tijianBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
+            tijianBasicOfService.setProvinceCode(serviceOfRegister.getProvinceCode());
+            tijianBasicOfService.setCityName(serviceOfRegister.getCityName());
+            tijianBasicOfService.setCityCode(serviceOfRegister.getCityCode());
+            tijianBasicOfService.setDistrictName(serviceOfRegister.getDistrictName());
+            tijianBasicOfService.setDistrictCode(serviceOfRegister.getDistrictCode());
+            tijianBasicOfService.setRegisterAddress(serviceOfRegister.getRegisterAddress());
+       flag=tijianBasicOfServiceService.save(tijianBasicOfService);
+        }
+        return flag;
     }
     @GetMapping("/delete")
     public boolean delete(String id) {

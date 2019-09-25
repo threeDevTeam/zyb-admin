@@ -31,8 +31,8 @@ public class PostDangerOfEnterprise implements Serializable {
     /**
      * 申报时间，例如20190101
      */
-    @TableField("upDate")
-    private Integer upDate;
+    @TableField("upDatee")
+    private Integer upDatee;
 
     /**
      * 申报年份，例如2019

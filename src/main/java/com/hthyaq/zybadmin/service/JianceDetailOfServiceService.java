@@ -4,6 +4,8 @@ import com.hthyaq.zybadmin.model.entity.JianceDetailOfService;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * <p>
  * 检测机构的具体报告
@@ -39,7 +41,7 @@ import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
  */
 public interface JianceDetailOfServiceService extends IService<JianceDetailOfService> {
 
-    boolean saveData(JianceDetailOfServiceView jianceDetailOfServiceView);
+    boolean saveData(JianceDetailOfServiceView jianceDetailOfServiceView, HttpSession httpSession);
 
     boolean deleteData(String id);
 

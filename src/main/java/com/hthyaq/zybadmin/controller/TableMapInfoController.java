@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import cn.hutool.system.UserInfo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
@@ -8,9 +9,12 @@ import com.hthyaq.zybadmin.model.entity.TableMapInfo;
 import com.hthyaq.zybadmin.model.excelModel.IndustryOfDicModel;
 import com.hthyaq.zybadmin.model.excelModel.TableMapInfoModel;
 import com.hthyaq.zybadmin.service.TableMapInfoService;
+import org.apache.catalina.UserDatabase;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -191,5 +195,39 @@ public class TableMapInfoController {
         result.add("export default "+jsFileName+"DemoForm");
         String jsModelPath = System.getProperty("user.dir") + "/src/main/java/com/hthyaq/zybadmin/model/js/";
         IOUtils.writeLines(result, "\r\n", new FileOutputStream(jsModelPath + jsFileName + "DemoForm.js"), "utf8");
+    }
+
+
+
+    @PostMapping("/exportExcel")
+    public boolean ExportExcel (HttpServletResponse response) throws IOException  {
+        String fileName = "总数据.xlsx";
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ";filename*=utf-8''" + URLEncoder.encode(fileName, "UTF-8"));
+        response.flushBuffer();
+        List <TableMapInfo> tableMapInfo =tableMapInfoService.list();
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet();
+        int rowNum = 0;
+        String[] headers = {"id", "chineseTableName", "englishTableName", "chineseColumnName", "englishColumnName","dataType"};
+        HSSFRow row = sheet.createRow(rowNum);
+        for (int i = 0; i < headers.length; i++) {
+            HSSFCell cell = row.createCell(i);
+            HSSFRichTextString text = new HSSFRichTextString(headers[i]);
+            cell.setCellValue(text);
+        }
+        for (TableMapInfo mapInfo : tableMapInfo) {
+            rowNum++;
+            HSSFRow row1 = sheet.createRow(rowNum);
+            row1.createCell(0).setCellValue(mapInfo.getId());
+            row1.createCell(1).setCellValue(mapInfo.getChineseTableName());
+            row1.createCell(2).setCellValue(mapInfo.getEnglishTableName());
+            row1.createCell(3).setCellValue(mapInfo.getChineseColumnName());
+            row1.createCell(4).setCellValue(mapInfo.getEnglishColumnName());
+            row1.createCell(5).setCellValue(mapInfo.getDataType());
+        }
+        OutputStream os=new BufferedOutputStream(response.getOutputStream());
+        workbook.write(os);
+        os.flush();
+        return true;
     }
 }

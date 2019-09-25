@@ -3,6 +3,24 @@ server:
   servlet:
     context-path: /zybadmin
 spring:
+  #邮箱配置
+  mail:
+    host: smtp.163.com
+    username: 18256542305@163.com
+    password: ssq1998
+    default-encoding: UTF-8
+    properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
+              required: true
+
+
+        lance:
+          mail:
+            sender: 18256542305@163.com
   #  profiles:
   #    active: dev
   jackson:
@@ -81,5 +99,6 @@ mybatis-plus:
   global-config:
     banner: false
   mapper-locations: classpath:mapper/*.xml
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

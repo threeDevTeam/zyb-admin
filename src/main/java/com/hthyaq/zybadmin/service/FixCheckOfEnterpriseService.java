@@ -2,6 +2,7 @@ package com.hthyaq.zybadmin.service;
 
 import com.hthyaq.zybadmin.model.entity.FixCheckOfEnterprise;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hthyaq.zybadmin.model.vo.FixCheckOfView;
 
 /**
  * <p>
@@ -13,4 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface FixCheckOfEnterpriseService extends IService<FixCheckOfEnterprise> {
 
+    boolean editData(FixCheckOfView fixCheckOfView);
+
+    boolean deleteData(String id);
+
+    boolean saveData(FixCheckOfView fixCheckOfView);
 }

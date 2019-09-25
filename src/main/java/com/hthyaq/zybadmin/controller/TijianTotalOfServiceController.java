@@ -7,13 +7,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.model.entity.ServiceOfRegister;
+import com.hthyaq.zybadmin.model.entity.SysUser;
 import com.hthyaq.zybadmin.model.entity.TijianBasicOfService;
 import com.hthyaq.zybadmin.model.entity.TijianTotalOfService;
+import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
 import com.hthyaq.zybadmin.service.TijianBasicOfServiceService;
 import com.hthyaq.zybadmin.service.TijianTotalOfServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -29,9 +34,27 @@ import java.util.List;
 public class TijianTotalOfServiceController {
     @Autowired
     TijianTotalOfServiceService tijianTotalOfServiceService;
+    @Autowired
+    TijianBasicOfServiceService tijianBasicOfServiceService;
+    @Autowired
+    ServiceOfRegisterService serviceOfRegisterService;
     @PostMapping("/add")
-    public boolean add(@RequestBody TijianTotalOfService tijianTotalOfService) {
-        return tijianTotalOfServiceService.save(tijianTotalOfService);
+    public boolean add(@RequestBody TijianTotalOfService tijianTotalOfService, HttpSession httpSession) {
+        boolean flag = false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<ServiceOfRegister> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", sysUser.getCompanyId());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            QueryWrapper<TijianBasicOfService> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", serviceOfRegister.getName());
+            List<TijianBasicOfService> list1 = tijianBasicOfServiceService.list(queryWrapper1);
+            for (TijianBasicOfService tijianBasicOfService : list1) {
+                tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
+                flag=tijianTotalOfServiceService.save(tijianTotalOfService);
+            }
+        }
+        return flag;
     }
     @GetMapping("/delete")
     public boolean delete(String id) {

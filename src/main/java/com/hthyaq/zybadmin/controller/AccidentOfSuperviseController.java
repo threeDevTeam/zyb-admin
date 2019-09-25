@@ -2,19 +2,23 @@ package com.hthyaq.zybadmin.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
-import com.hthyaq.zybadmin.model.entity.AccidentOfSupervise;
-import com.hthyaq.zybadmin.model.entity.ServiceSuperviseOfSupervise;
-import com.hthyaq.zybadmin.model.entity.Supervise;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.service.AccidentOfSuperviseService;
 import com.hthyaq.zybadmin.service.ServiceSuperviseOfSuperviseService;
+import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
+import com.hthyaq.zybadmin.service.SuperviseService;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -29,11 +33,28 @@ import java.util.List;
 @RequestMapping("/accidentOfSupervise")
 public class AccidentOfSuperviseController {
     @Autowired
+    SuperviseOfRegisterService superviseOfRegisterService;
+    @Autowired
+    SuperviseService superviseService;
+    @Autowired
     AccidentOfSuperviseService accidentOfSuperviseService;
     @PostMapping("/add")
-    public boolean add(@RequestBody AccidentOfSupervise accidentOfSupervise) {
-        System.out.println(accidentOfSupervise);
-        return accidentOfSuperviseService.save(accidentOfSupervise);
+    public boolean add(@RequestBody AccidentOfSupervise accidentOfSupervise, HttpSession httpSession) {
+        boolean flag = false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SuperviseOfRegister> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", sysUser.getCompanyId());
+        List<SuperviseOfRegister> list = superviseOfRegisterService.list(queryWrapper);
+        for (SuperviseOfRegister superviseOfRegister : list) {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", superviseOfRegister.getName());
+            List<Supervise> list1 = superviseService.list(queryWrapper1);
+            for (Supervise supervise : list1) {
+                accidentOfSupervise.setSuperviseId(supervise.getId());
+                flag = accidentOfSuperviseService.save(accidentOfSupervise);
+            }
+        }
+        return flag;
     }
     @GetMapping("/delete")
     public boolean delete(String id) {

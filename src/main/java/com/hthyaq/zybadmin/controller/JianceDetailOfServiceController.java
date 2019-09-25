@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.bean.Child;
 import com.hthyaq.zybadmin.model.bean.Child2;
 import com.hthyaq.zybadmin.model.entity.*;
@@ -15,40 +16,42 @@ import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
 import com.hthyaq.zybadmin.service.JianceBasicOfServiceService;
 import com.hthyaq.zybadmin.service.JianceDetailOfServiceService;
 import com.hthyaq.zybadmin.service.JianceDetailResultOfServiceService;
+import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
  * <p>
  * 检测机构的具体报告
-
-检测机构的具体报告
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 前端控制器
+ * <p>
+ * 检测机构的具体报告
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * <p>
+ * 前端控制器
  * </p>
  *
  * @author zhangqiang
@@ -61,9 +64,14 @@ public class JianceDetailOfServiceController {
     JianceDetailOfServiceService jianceDetailOfServiceService;
     @Autowired
     JianceDetailResultOfServiceService jianceDetailResultOfServiceService;
+    @Autowired
+    ServiceOfRegisterService serviceOfRegisterService;
+    @Autowired
+    JianceBasicOfServiceService jianceBasicOfServiceService;
+
     @PostMapping("/add")
-    public boolean add(@RequestBody JianceDetailOfServiceView jianceDetailOfServiceView) {
-        return jianceDetailOfServiceService.saveData(jianceDetailOfServiceView);
+    public boolean add(@RequestBody JianceDetailOfServiceView jianceDetailOfServiceView, HttpSession httpSession) {
+        return jianceDetailOfServiceService.saveData(jianceDetailOfServiceView,httpSession);
     }
 
 

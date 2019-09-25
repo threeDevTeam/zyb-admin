@@ -31,13 +31,6 @@ public class EnterpriseOfRegisterController {
     @PostMapping("/add")
     public boolean add(@RequestBody EnterpriseUserView enterpriseUserView) {
         System.out.println(enterpriseUserView);
-        SysUser sysUser=new SysUser();
-        sysUser.setLoginName(enterpriseUserView.getLoginName());
-        sysUser.setLoginPassword(enterpriseUserView.getLoginPassword());
-        sysUser.setEmail(enterpriseUserView.getEmail());
-        sysUser.setMobile(enterpriseUserView.getMobile());
-        sysUser.setType(enterpriseUserView.getType());
-        sysUserService.save(sysUser);
         EnterpriseOfRegister enterpriseOfRegister=new EnterpriseOfRegister();
         enterpriseOfRegister.setName(enterpriseUserView.getName());
         enterpriseOfRegister.setCode(enterpriseUserView.getCode());
@@ -57,6 +50,14 @@ public class EnterpriseOfRegisterController {
         enterpriseOfRegister.setEmail(enterpriseUserView.getEmail());
         enterpriseOfRegister.setMobile(enterpriseUserView.getMobile());
         enterpriseOfRegisterService.save(enterpriseOfRegister);
+        SysUser sysUser=new SysUser();
+        sysUser.setLoginName(enterpriseUserView.getLoginName());
+        sysUser.setLoginPassword(enterpriseUserView.getLoginPassword());
+        sysUser.setEmail(enterpriseUserView.getEmail());
+        sysUser.setMobile(enterpriseUserView.getMobile());
+        sysUser.setType(enterpriseUserView.getType());
+        sysUser.setCompanyId(enterpriseOfRegister.getId());
+        sysUserService.save(sysUser);
         return true;
     }
 }

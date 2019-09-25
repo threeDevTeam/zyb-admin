@@ -7,13 +7,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
-import com.hthyaq.zybadmin.model.entity.ExecuteLawOfSupervise;
-import com.hthyaq.zybadmin.model.entity.ZhenduanTotalOfService;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.service.ExecuteLawOfSuperviseService;
+import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
+import com.hthyaq.zybadmin.service.ZhenduanBasicOfServiceService;
 import com.hthyaq.zybadmin.service.ZhenduanTotalOfServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -29,9 +32,27 @@ import java.util.List;
 public class ZhenduanTotalOfServiceController {
     @Autowired
     ZhenduanTotalOfServiceService zhenduanTotalOfServiceService;
+    @Autowired
+    ServiceOfRegisterService serviceOfRegisterService;
+    @Autowired
+    ZhenduanBasicOfServiceService zhenduanBasicOfServiceService;
     @PostMapping("/add")
-    public boolean add(@RequestBody ZhenduanTotalOfService zhenduanTotalOfService) {
-        return zhenduanTotalOfServiceService.save(zhenduanTotalOfService);
+    public boolean add(@RequestBody ZhenduanTotalOfService zhenduanTotalOfService, HttpSession httpSession) {
+        boolean flag = false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<ServiceOfRegister> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("id",sysUser.getCompanyId());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            QueryWrapper<ZhenduanBasicOfService> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", serviceOfRegister.getName());
+            List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(queryWrapper1);
+            for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
+                zhenduanTotalOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
+                flag=zhenduanTotalOfServiceService.save(zhenduanTotalOfService);
+            }
+        }
+        return  flag;
     }
     @GetMapping("/delete")
     public boolean delete(String id) {

@@ -7,16 +7,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
-import com.hthyaq.zybadmin.model.entity.EducationOfSupervise;
-import com.hthyaq.zybadmin.model.entity.ExecuteLawOfSupervise;
-import com.hthyaq.zybadmin.model.entity.ServiceSuperviseOfSupervise;
-import com.hthyaq.zybadmin.model.entity.Supervise;
-import com.hthyaq.zybadmin.service.EducationOfSuperviseService;
-import com.hthyaq.zybadmin.service.ExecuteLawOfSuperviseService;
-import com.hthyaq.zybadmin.service.ServiceSuperviseOfSuperviseService;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -31,15 +28,37 @@ import java.util.List;
 @RequestMapping("/executeLawOfSupervise")
 public class ExecuteLawOfSuperviseController {
     @Autowired
+    SuperviseOfRegisterService superviseOfRegisterService;
+    @Autowired
+    SuperviseService superviseService;
+
+    @Autowired
     ExecuteLawOfSuperviseService ExecuteLawOfSuperviseService;
+
     @PostMapping("/add")
-    public boolean add(@RequestBody ExecuteLawOfSupervise executeLawOfSupervise) {
-        return ExecuteLawOfSuperviseService.save(executeLawOfSupervise);
+    public boolean add(@RequestBody ExecuteLawOfSupervise executeLawOfSupervise, HttpSession httpSession) {
+        boolean flag = false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SuperviseOfRegister> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", sysUser.getCompanyId());
+        List<SuperviseOfRegister> list = superviseOfRegisterService.list(queryWrapper);
+        for (SuperviseOfRegister superviseOfRegister : list) {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", superviseOfRegister.getName());
+            List<Supervise> list1 = superviseService.list(queryWrapper1);
+            for (Supervise supervise : list1) {
+                executeLawOfSupervise.setSuperviseId(supervise.getId());
+                flag = ExecuteLawOfSuperviseService.save(executeLawOfSupervise);
+            }
+        }
+        return flag;
     }
+
     @GetMapping("/delete")
     public boolean delete(String id) {
         return ExecuteLawOfSuperviseService.removeById(id);
     }
+
     @GetMapping("/getById")
     public ExecuteLawOfSupervise getById(Integer id) {
 
@@ -51,6 +70,7 @@ public class ExecuteLawOfSuperviseController {
         //将demoCourse的数据设置到demoData
         return executeLawOfSupervise;
     }
+
     @PostMapping("/edit")
     public boolean edit(@RequestBody ExecuteLawOfSupervise executeLawOfSupervise) {
         return ExecuteLawOfSuperviseService.updateById(executeLawOfSupervise);

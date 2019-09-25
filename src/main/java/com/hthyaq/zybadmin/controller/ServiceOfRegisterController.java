@@ -33,13 +33,7 @@ public class ServiceOfRegisterController {
     @PostMapping("/add")
     public boolean add(@RequestBody ServiceOfUserView serviceOfUserView) {
         System.out.println(serviceOfUserView);
-        SysUser sysUser=new SysUser();
-        sysUser.setLoginName(serviceOfUserView.getLoginName());
-        sysUser.setLoginPassword(serviceOfUserView.getLoginPassword());
-        sysUser.setEmail(serviceOfUserView.getEmail());
-        sysUser.setMobile(serviceOfUserView.getMobile());
-        sysUser.setType(serviceOfUserView.getType());
-        sysUserService.save(sysUser);
+
         ServiceOfRegister serviceOfRegister=new ServiceOfRegister();
         serviceOfRegister.setName(serviceOfUserView.getName());
         serviceOfRegister.setCode(serviceOfUserView.getCode());
@@ -54,6 +48,14 @@ public class ServiceOfRegisterController {
         serviceOfRegister.setEmail(serviceOfUserView.getEmail());
         serviceOfRegister.setMobile(serviceOfUserView.getMobile());
         serviceOfRegisterService.save(serviceOfRegister);
+        SysUser sysUser=new SysUser();
+        sysUser.setLoginName(serviceOfUserView.getLoginName());
+        sysUser.setLoginPassword(serviceOfUserView.getLoginPassword());
+        sysUser.setEmail(serviceOfUserView.getEmail());
+        sysUser.setMobile(serviceOfUserView.getMobile());
+        sysUser.setType(serviceOfUserView.getType()+"-"+serviceOfUserView.getType2());
+        sysUser.setCompanyId(serviceOfRegister.getId());
+        sysUserService.save(sysUser);
         return true;
     }
 }

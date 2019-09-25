@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.hthyaq.zybadmin.model.entity.PostDangerOfEnterprise">
         <id column="id" property="id" />
-        <result column="upDate" property="upDate" />
+        <result column="upDatee" property="upDatee" />
         <result column="upYear" property="upYear" />
         <result column="upMonth" property="upMonth" />
         <result column="dangerBigName" property="dangerBigName" />
@@ -25,7 +25,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, upDate, upYear, upMonth, dangerBigName, dangerSmallName, sickBigName, sickSmallName, hurt, touchNum, workTime, touchTime, touchFrequency, touchMode, enterpriseId, workplaceId, postId
+        id, upDatee, upYear, upMonth, dangerBigName, dangerSmallName, sickBigName, sickSmallName, hurt, touchNum, workTime, touchTime, touchFrequency, touchMode, enterpriseId, workplaceId, postId
     </sql>
 
 </mapper>
