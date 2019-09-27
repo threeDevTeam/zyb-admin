@@ -2,19 +2,19 @@ package com.hthyaq.zybadmin.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.hthyaq.zybadmin.model.entity.Demo;
-import com.hthyaq.zybadmin.model.entity.DemoCourse;
-import com.hthyaq.zybadmin.model.entity.FixCheckOfEnterprise;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.mapper.FixCheckOfEnterpriseMapper;
-import com.hthyaq.zybadmin.model.entity.FixCheckResultOfEnterprise;
 import com.hthyaq.zybadmin.model.vo.FixCheckOfView;
 import com.hthyaq.zybadmin.service.FixCheckOfEnterpriseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hthyaq.zybadmin.service.FixCheckResultOfEnterpriseService;
+import com.hthyaq.zybadmin.service.PostDangerOfEnterpriseService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -29,13 +29,24 @@ import java.util.List;
 public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnterpriseMapper, FixCheckOfEnterprise> implements FixCheckOfEnterpriseService {
     @Autowired
     FixCheckResultOfEnterpriseService fixCheckResultOfEnterpriseService;
+    @Autowired
+    PostDangerOfEnterpriseService postDangerOfEnterpriseService;
     @Override
-    public boolean editData(FixCheckOfView fixCheckOfView) {
+    public boolean saveData(FixCheckOfView fixCheckOfView, HttpSession httpSession) {
         boolean flag1, flag2 = true;
 
         FixCheckOfEnterprise fixCheckOfEnterprise=new FixCheckOfEnterprise();
 
         BeanUtils.copyProperties(fixCheckOfView, fixCheckOfEnterprise);
+        //enterpriseId
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        fixCheckOfEnterprise.setEnterpriseId(sysUser.getCompanyId());
+        //postDangerId
+        fixCheckOfEnterprise.setPostDangerId(Long.parseLong(fixCheckOfView.getTreeSelect()));
+
+        PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(fixCheckOfView.getTreeSelect());
+        fixCheckOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+        fixCheckOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
         flag1 = this.save(fixCheckOfEnterprise);
 
@@ -43,8 +54,13 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
 
         if (ObjectUtil.length(dataSource) > 0) {
             //设置demoCourse的demo_id
-            long demoId = fixCheckOfEnterprise.getId();
-            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(demoId));
+            long fixCheckId = fixCheckOfEnterprise.getId();
+
+            dataSource.forEach(demoCourse -> demoCourse.setEnterpriseId(sysUser.getCompanyId()));
+            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(fixCheckId));
+            dataSource.forEach(demoCourse -> demoCourse.setPostId(postDangerOfEnterprise.getPostId()));
+            dataSource.forEach(demoCourse -> demoCourse.setPostDangerId(Long.parseLong(fixCheckOfView.getTreeSelect())));
+            dataSource.forEach(demoCourse -> demoCourse.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId()));
             //保存
             flag2 = fixCheckResultOfEnterpriseService.saveBatch(dataSource);
         }
@@ -68,7 +84,7 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
     }
 
     @Override
-    public boolean saveData(FixCheckOfView fixCheckOfView) {
+    public boolean editData(FixCheckOfView fixCheckOfView) {
         boolean flag1, flag2 = true;
 
         //demo
@@ -84,7 +100,16 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
         List<FixCheckResultOfEnterprise> dataSource = fixCheckOfView.getCourse().getDataSource();
         if (ObjectUtil.length(dataSource) > 0) {
             //设置demoCourse的demo_id
-            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(fixCheckOfEnterprise.getId()));
+            long enterpriseId = fixCheckOfEnterprise.getId();
+            long fixCheckId = fixCheckOfEnterprise.getId();
+            long postDangerId = fixCheckOfEnterprise.getId();
+            long postId = fixCheckOfEnterprise.getId();
+            long workplaceId = fixCheckOfEnterprise.getId();
+            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(enterpriseId));
+            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(fixCheckId));
+            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(postDangerId));
+            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(postId));
+            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(workplaceId));
             //保存
             flag2 = fixCheckResultOfEnterpriseService.saveBatch(dataSource);
         }

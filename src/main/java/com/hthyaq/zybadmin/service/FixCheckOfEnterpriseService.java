@@ -4,6 +4,8 @@ import com.hthyaq.zybadmin.model.entity.FixCheckOfEnterprise;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hthyaq.zybadmin.model.vo.FixCheckOfView;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * <p>
  * 定期检测信息 服务类
@@ -18,5 +20,5 @@ public interface FixCheckOfEnterpriseService extends IService<FixCheckOfEnterpri
 
     boolean deleteData(String id);
 
-    boolean saveData(FixCheckOfView fixCheckOfView);
+    boolean saveData(FixCheckOfView fixCheckOfView, HttpSession httpSession);
 }

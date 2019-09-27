@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+
 @Data
 @Accessors(chain = true)
 public class ServiceOfUserView {
@@ -51,41 +53,8 @@ public class ServiceOfUserView {
      */
     private String code;
 
-    /**
-     * 省的名称
-     */
-    @TableField("provinceName")
-    private String provinceName;
-
-    /**
-     * 省的代码
-     */
-    @TableField("provinceCode")
-    private String provinceCode;
-
-    /**
-     * 市的名称
-     */
-    @TableField("cityName")
-    private String cityName;
-
-    /**
-     * 市的代码
-     */
-    @TableField("cityCode")
-    private String cityCode;
-
-    /**
-     * 区的名称
-     */
-    @TableField("districtName")
-    private String districtName;
-
-    /**
-     * 区的代码
-     */
-    @TableField("districtCode")
-    private String districtCode;
+    @TableField("Cascader")
+    private ArrayList cascader;
 
     /**
      * 注册地址
