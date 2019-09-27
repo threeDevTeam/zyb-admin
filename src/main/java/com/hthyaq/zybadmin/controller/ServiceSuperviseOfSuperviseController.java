@@ -74,8 +74,9 @@ public class ServiceSuperviseOfSuperviseController {
         return serviceSuperviseOfSuperviseService.updateById(serviceSuperviseOfSupervise);
     }
     @GetMapping("/list")
-    public IPage<ServiceSuperviseOfSupervise> list(String json) {
-        //字符串解析成java对象
+    public IPage<ServiceSuperviseOfSupervise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
@@ -83,6 +84,7 @@ public class ServiceSuperviseOfSuperviseController {
         String year = jsonObject.getString("year");
         String jianceMoney = jsonObject.getString("jianceMoney");
         QueryWrapper<ServiceSuperviseOfSupervise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("superviseId",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }

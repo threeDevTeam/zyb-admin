@@ -74,8 +74,9 @@ public class PropagateOfSuperviseController {
         return propagateOfSuperviseService.updateById(propagateOfSupervise);
     }
     @GetMapping("/list")
-    public IPage<PropagateOfSupervise> list(String json) {
-        //字符串解析成java对象
+    public IPage<PropagateOfSupervise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
@@ -83,6 +84,7 @@ public class PropagateOfSuperviseController {
         String year = jsonObject.getString("year");
         String acceptCount = jsonObject.getString("acceptCount");
         QueryWrapper<PropagateOfSupervise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("superviseId",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }

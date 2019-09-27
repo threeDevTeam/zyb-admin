@@ -8,16 +8,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
-import com.hthyaq.zybadmin.model.entity.Supervise;
-import com.hthyaq.zybadmin.model.entity.SuperviseOfRegister;
-import com.hthyaq.zybadmin.model.entity.SysUser;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.DemoView;
+import com.hthyaq.zybadmin.model.vo.SuperviseView;
+import com.hthyaq.zybadmin.service.AreaOfDicService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +40,8 @@ import java.util.List;
 public class SuperviseController {
     @Autowired
     SuperviseService superviseService;
+    @Autowired
+    AreaOfDicService areaOfDicService;
     @Autowired
     SuperviseOfRegisterService superviseOfRegisterService;
     @PostMapping("/add")
@@ -65,32 +70,34 @@ public class SuperviseController {
     }
     @GetMapping("/getById")
     public Supervise getById(Integer id) {
-
+        List list=new ArrayList();
+        SuperviseView superviseView=new SuperviseView();
         Supervise supervise = superviseService.getById(id);
-        //demoCourse
-        QueryWrapper<Supervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", id);
-        List<Supervise> demoCourseList = superviseService.list(queryWrapper);
-        return supervise;
+        BeanUtils.copyProperties(supervise, superviseView);
+        String provinceName = supervise.getProvinceName();
+        String cityName = supervise.getCityName();
+        String districtName = supervise.getDistrictName();
+        list.add(provinceName);
+        if(cityName.equals(districtName)){
+            list.add(cityName);
+        }else {
+            list.add(cityName);
+            list.add(districtName);
+        }
+
+
+        superviseView.setCascader(list);
+        return superviseView;
     }
     @PostMapping("/edit")
     public boolean edit(@RequestBody Supervise supervise) {
         return superviseService.editData(supervise);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     @GetMapping("/list")
-    public IPage<Supervise> list(String json) {
+    public IPage<Supervise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -99,6 +106,7 @@ public class SuperviseController {
         String year = jsonObject.getString("year");
         String name = jsonObject.getString("name");
         QueryWrapper<Supervise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }
@@ -109,5 +117,46 @@ public class SuperviseController {
         IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;
+    }
+    @GetMapping("/TreeSelcetData")
+    public List<TreeSelcetData> TreeSelcetData() {
+        List<TreeSelcetData> treeSelcetDatalist = new ArrayList();
+
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("pid", "-1");
+        List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaCopy : list) {
+            List<TreeSelcetData> chilren = Lists.newArrayList();
+            TreeSelcetData treeSelcetData = new TreeSelcetData();
+            treeSelcetData.setLabel(areaCopy.getName());
+            treeSelcetData.setValue(areaCopy.getName());
+            treeSelcetData.setChildren(chilren);
+            treeSelcetDatalist.add(treeSelcetData);
+
+            QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("pid", areaCopy.getId());
+            List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
+
+            for (AreaOfDic areaCopy1 : list1) {
+                TreeSelcetData treeSelcetData1 = new TreeSelcetData();
+                treeSelcetData1.setLabel(areaCopy1.getName());
+                treeSelcetData1.setValue(areaCopy1.getName());
+                chilren.add(treeSelcetData1);
+                List<TreeSelcetData> chilren2= Lists.newArrayList();
+                QueryWrapper<AreaOfDic> queryWrapper2=new QueryWrapper<>();
+                queryWrapper2.eq("pid",areaCopy1.getId());
+                List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+
+                for (AreaOfDic areaCopy2 : list2) {
+                    TreeSelcetData treeSelcetData2=new TreeSelcetData();
+                    treeSelcetData2.setLabel(areaCopy2.getName());
+                    treeSelcetData2.setValue(areaCopy2.getName());
+                    chilren2.add(treeSelcetData2);
+                }
+
+                treeSelcetData1.setChildren(chilren2);
+            }
+        }
+        return treeSelcetDatalist;
     }
 }

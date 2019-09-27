@@ -77,14 +77,16 @@ public class ExecuteLawOfSuperviseController {
     }
 
     @GetMapping("/list")
-    public IPage<ExecuteLawOfSupervise> list(String json) {
-        //字符串解析成java对象
+    public IPage<ExecuteLawOfSupervise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
         QueryWrapper<ExecuteLawOfSupervise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("superviseId",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }

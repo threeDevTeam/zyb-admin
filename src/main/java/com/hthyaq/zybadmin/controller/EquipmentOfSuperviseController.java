@@ -74,7 +74,9 @@ public class EquipmentOfSuperviseController {
     }
 
     @GetMapping("/list")
-    public IPage<EquipmentOfSupervise> list(String json) {
+    public IPage<EquipmentOfSupervise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -83,7 +85,9 @@ public class EquipmentOfSuperviseController {
         String name = jsonObject.getString("name");
         String num = jsonObject.getString("num");
         QueryWrapper<EquipmentOfSupervise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("superviseId",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(name)) {
+
             queryWrapper.eq("name", name);
         }
         if (!Strings.isNullOrEmpty(num)) {

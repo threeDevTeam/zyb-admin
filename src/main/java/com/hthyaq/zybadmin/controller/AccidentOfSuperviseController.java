@@ -77,7 +77,9 @@ public class AccidentOfSuperviseController {
     }
 
     @GetMapping("/list")
-    public IPage<AccidentOfSupervise> list(String json) {
+    public IPage<AccidentOfSupervise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -86,6 +88,7 @@ public class AccidentOfSuperviseController {
         String year = jsonObject.getString("year");
         String loseMoney = jsonObject.getString("loseMoney");
         QueryWrapper<AccidentOfSupervise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("superviseId",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }

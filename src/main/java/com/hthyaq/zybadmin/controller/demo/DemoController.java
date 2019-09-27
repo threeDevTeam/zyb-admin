@@ -48,8 +48,9 @@ public class DemoController {
 
     @GetMapping("/test")
     public GlobalResult test(){
-        ResponseEntity<String> response = restTemplate.getForEntity("https://www.cnblogs.com/harrychinese/p/springboot_resttemplate.html", String.class);
-        return GlobalResult.success("msg",response.getBody());
+//        ResponseEntity<String> response = restTemplate.getForEntity("https://www.cnblogs.com/harrychinese/p/springboot_resttemplate.html", String.class);
+        System.out.println("bb");
+        return GlobalResult.success("msg","abcde");
     }
 
     @PostMapping("/add")

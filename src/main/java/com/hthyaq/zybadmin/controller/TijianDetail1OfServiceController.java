@@ -44,7 +44,6 @@ public class TijianDetail1OfServiceController {
         queryWrapper.eq("id", sysUser.getCompanyId());
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
         for (ServiceOfRegister serviceOfRegister : list) {
-            tijianDetail1OfService.setEnterpriseName(serviceOfRegister.getName());
             tijianDetail1OfService.setEnterpriseCode(serviceOfRegister.getCode());
             tijianDetail1OfService.setProvinceName(serviceOfRegister.getProvinceName());
             tijianDetail1OfService.setProvinceCode(serviceOfRegister.getProvinceCode());
