@@ -42,45 +42,45 @@ public class EnterpriseOfRegisterController {
     public boolean add(@RequestBody EnterpriseUserView enterpriseUserView) {
         System.out.println(enterpriseUserView);
         EnterpriseOfRegister enterpriseOfRegister = new EnterpriseOfRegister();
-        enterpriseOfRegister.setProvinceName((String) enterpriseUserView.getCascader().get(0));
 
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", (String) enterpriseUserView.getCascader().get(0));
+        queryWrapper.eq("id",enterpriseUserView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
         for (AreaOfDic areaOfDic : list) {
+            enterpriseOfRegister.setProvinceName(String.valueOf(areaOfDic.getName()));
             enterpriseOfRegister.setProvinceCode(String.valueOf(areaOfDic.getCode()));
         }
 
-        enterpriseOfRegister.setCityName((String) enterpriseUserView.getCascader().get(1));
-
         QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", (String) enterpriseUserView.getCascader().get(1));
+        queryWrapper1.eq("id", enterpriseUserView.getCascader().get(1));
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
         for (AreaOfDic areaOfDic : list1) {
+            enterpriseOfRegister.setCityName(String.valueOf(areaOfDic.getName()));
             enterpriseOfRegister.setCityCode(String.valueOf(areaOfDic.getCode()));
         }
 
         if (enterpriseUserView.getCascader().size() !=3) {
-            enterpriseOfRegister.setDistrictName((String) enterpriseUserView.getCascader().get(1));
-            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
-            queryWrapper3.eq("name", (String) enterpriseUserView.getCascader().get(1));
+           QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+            queryWrapper3.eq("id", enterpriseUserView.getCascader().get(1));
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
+                enterpriseOfRegister.setDistrictName(String.valueOf(areaOfDic.getName()));
                 enterpriseOfRegister.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         } else {
             enterpriseOfRegister.setDistrictName((String) enterpriseUserView.getCascader().get(2));
             QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("name", (String) enterpriseUserView.getCascader().get(2));
+            queryWrapper2.eq("id", (String) enterpriseUserView.getCascader().get(2));
             List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
             for (AreaOfDic areaOfDic : list2) {
+                enterpriseOfRegister.setProvinceName(String.valueOf(areaOfDic.getName()));
                 enterpriseOfRegister.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
 
 
         System.out.println(enterpriseOfRegister);
-        enterpriseOfRegister.setName(enterpriseUserView.getName());
+        enterpriseOfRegister.setName(enterpriseUserView.getCompanyName());
         enterpriseOfRegister.setCode(enterpriseUserView.getCode());
         enterpriseOfRegister.setProductionCapacity(enterpriseUserView.getProductionCapacity());
         enterpriseOfRegister.setUnitType(enterpriseUserView.getUnitType());
@@ -114,6 +114,7 @@ public class EnterpriseOfRegisterController {
         sysUser.setMobile(enterpriseUserView.getMobile());
         sysUser.setType(enterpriseUserView.getType());
         sysUser.setCompanyId(enterpriseOfRegister.getId());
+        sysUser.setCompanyName(enterpriseUserView.getCompanyName());
         sysUserService.save(sysUser);
         return true;
     }

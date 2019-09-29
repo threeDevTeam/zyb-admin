@@ -52,11 +52,10 @@ public class EnterpriseUserView {
     @TableField("companyId")
     private Long companyId;
 
-
     /**
      * 企业名称
      */
-    private String name;
+    private String companyName;
 
     /**
      * 统一社会信用代码

@@ -7,6 +7,10 @@ import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
+import com.hthyaq.zybadmin.common.utils.treeSelect.TreeSelectUtil;
+import com.hthyaq.zybadmin.common.utils.treeSelect.TreeSelectView;
 import com.hthyaq.zybadmin.model.bean.GlobalResult;
 import com.hthyaq.zybadmin.model.entity.AreaCopy;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
@@ -93,13 +97,12 @@ public class AreaOfDicController {
     //设置level、childNum、pid
     @GetMapping("/set")
     public boolean set() {
-       return areaOfDicService.set();
+        return areaOfDicService.set();
     }
 
 
-
-    @GetMapping("/TreeSelcetData")
-    public List<TreeSelcetData> TreeSelcetData() {
+    @GetMapping("/TreeSelcetData2")
+    public List<TreeSelcetData> TreeSelcetData2() {
         List<TreeSelcetData> treeSelcetDatalist = new ArrayList();
 
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
@@ -122,13 +125,13 @@ public class AreaOfDicController {
                 treeSelcetData1.setLabel(areaCopy1.getName());
                 treeSelcetData1.setValue(areaCopy1.getName());
                 chilren.add(treeSelcetData1);
-                List<TreeSelcetData> chilren2= Lists.newArrayList();
-                QueryWrapper<AreaOfDic> queryWrapper2=new QueryWrapper<>();
-                queryWrapper2.eq("pid",areaCopy1.getId());
+                List<TreeSelcetData> chilren2 = Lists.newArrayList();
+                QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+                queryWrapper2.eq("pid", areaCopy1.getId());
                 List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
 
                 for (AreaOfDic areaCopy2 : list2) {
-                    TreeSelcetData treeSelcetData2=new TreeSelcetData();
+                    TreeSelcetData treeSelcetData2 = new TreeSelcetData();
                     treeSelcetData2.setLabel(areaCopy2.getName());
                     treeSelcetData2.setValue(areaCopy2.getName());
                     chilren2.add(treeSelcetData2);
@@ -140,7 +143,12 @@ public class AreaOfDicController {
         return treeSelcetDatalist;
     }
 
+    @GetMapping("/cascadeData")
+    public List<CascadeView> cascadeData() {
+        List<AreaOfDic> list = areaOfDicService.list();
+        return CascadeUtil.get(list);
 
+    }
 
 
 }

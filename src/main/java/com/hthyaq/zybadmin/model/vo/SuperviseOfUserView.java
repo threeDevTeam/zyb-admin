@@ -46,6 +46,10 @@ public class SuperviseOfUserView {
      */
     @TableField("companyId")
     private Long companyId;
+    /**
+     * 单位名称
+     */
+    private String companyName;
 
 //    @TableField("provinceName")
 ////    private String provinceName;
@@ -88,9 +92,5 @@ public class SuperviseOfUserView {
     @TableField("registerAddress")
     private String registerAddress;
 
-    /**
-     * 单位名称
-     */
-    private String name;
 
 }

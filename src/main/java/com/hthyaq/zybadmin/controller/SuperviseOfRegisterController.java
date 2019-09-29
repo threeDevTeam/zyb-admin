@@ -49,38 +49,36 @@ public class SuperviseOfRegisterController {
         System.out.println(superviseOfUserView);
         SuperviseOfRegister superviseOfRegister=new SuperviseOfRegister();
 
-        superviseOfRegister.setProvinceName((String) superviseOfUserView.getCascader().get(0));
-
-        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", (String) superviseOfUserView.getCascader().get(0));
+     QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",superviseOfUserView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
         for (AreaOfDic areaOfDic : list) {
+            superviseOfRegister.setProvinceName(String.valueOf(areaOfDic.getName()));
             superviseOfRegister.setProvinceCode(String.valueOf(areaOfDic.getCode()));
         }
-
-        superviseOfRegister.setCityName((String) superviseOfUserView.getCascader().get(1));
-
         QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", (String) superviseOfUserView.getCascader().get(1));
+        queryWrapper1.eq("id", superviseOfUserView.getCascader().get(1));
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
         for (AreaOfDic areaOfDic : list1) {
+            superviseOfRegister.setCityName(String.valueOf(areaOfDic.getName()));
+
             superviseOfRegister.setCityCode(String.valueOf(areaOfDic.getCode()));
         }
 
         if (superviseOfUserView.getCascader().size() !=3) {
-            superviseOfRegister.setDistrictName((String) superviseOfUserView.getCascader().get(1));
-            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
-            queryWrapper3.eq("name", (String) superviseOfUserView.getCascader().get(1));
+          QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+            queryWrapper3.eq("id", superviseOfUserView.getCascader().get(1));
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
+                superviseOfRegister.setDistrictName(String.valueOf(areaOfDic.getName()));
                 superviseOfRegister.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         } else {
-            superviseOfRegister.setDistrictName((String) superviseOfUserView.getCascader().get(2));
-            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("name", (String) superviseOfUserView.getCascader().get(2));
+           QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("id", superviseOfUserView.getCascader().get(2));
             List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
             for (AreaOfDic areaOfDic : list2) {
+                superviseOfRegister.setDistrictName(String.valueOf(areaOfDic.getName()));
                 superviseOfRegister.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
@@ -88,10 +86,10 @@ public class SuperviseOfRegisterController {
 
 
         superviseOfRegister.setRegisterAddress(superviseOfUserView.getRegisterAddress());
-        superviseOfRegister.setName(superviseOfUserView.getName());
+        superviseOfRegister.setName(superviseOfUserView.getCompanyName());
         superviseOfRegister.setEmail(superviseOfUserView.getEmail());
         superviseOfRegister.setMobile(superviseOfUserView.getMobile());
-        superviseOfRegisterService.save(superviseOfRegister);
+        //superviseOfRegisterService.save(superviseOfRegister);
         SysUser sysUser=new SysUser();
         sysUser.setLoginName(superviseOfUserView.getLoginName());
         sysUser.setLoginPassword(superviseOfUserView.getLoginPassword());
@@ -112,7 +110,8 @@ public class SuperviseOfRegisterController {
         sysUser.setMobile(superviseOfUserView.getMobile());
         sysUser.setType(superviseOfUserView.getType());
         sysUser.setCompanyId(superviseOfRegister.getId());
-        sysUserService.save(sysUser);
+        sysUser.setCompanyName(superviseOfUserView.getCompanyName());
+        //sysUserService.save(sysUser);
         return true;
     }
 }

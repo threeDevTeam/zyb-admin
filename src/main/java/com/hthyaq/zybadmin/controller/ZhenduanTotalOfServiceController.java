@@ -75,7 +75,9 @@ public class ZhenduanTotalOfServiceController {
     }
 
     @GetMapping("/list")
-    public IPage<ZhenduanTotalOfService> list(String json) {
+    public IPage<ZhenduanTotalOfService> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -83,6 +85,7 @@ public class ZhenduanTotalOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
         QueryWrapper<ZhenduanTotalOfService> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }

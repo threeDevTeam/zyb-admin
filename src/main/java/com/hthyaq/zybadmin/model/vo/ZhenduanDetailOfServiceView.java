@@ -1,6 +1,6 @@
 package com.hthyaq.zybadmin.model.vo;
 
-import com.hthyaq.zybadmin.model.entity.Supervise;
+import com.hthyaq.zybadmin.model.entity.ZhenduanDetailOfService;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -9,6 +9,6 @@ import java.util.List;
 
 @Data
 @Accessors(chain = true)
-public class SuperviseView extends Supervise {
+public class ZhenduanDetailOfServiceView extends ZhenduanDetailOfService {
     private ArrayList cascader;
 }

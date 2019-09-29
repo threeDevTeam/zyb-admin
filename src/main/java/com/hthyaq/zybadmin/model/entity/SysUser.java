@@ -60,6 +60,6 @@ public class SysUser implements Serializable {
      */
     @TableField("companyId")
     private Long companyId;
-
-
+    @TableField("companyName")
+    private String companyName;
 }

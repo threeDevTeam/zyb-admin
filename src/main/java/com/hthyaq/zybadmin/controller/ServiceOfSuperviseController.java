@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,15 +84,23 @@ public class ServiceOfSuperviseController {
     @GetMapping("/list")
     public IPage<ServiceOfSupervise> list(String json, HttpSession httpSession) {
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-
+        List list1 = new ArrayList();
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
         String jianceLevel = jsonObject.getString("jianceLevel");
+        QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("name", sysUser.getCompanyName());
+        List<Supervise> list = superviseService.list(queryWrapper1);
+        for (Supervise supervise : list) {
+            list1.clear();
+            Long id = supervise.getId();
+            list1.add(id);
+        }
         QueryWrapper<ServiceOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superviseId",sysUser.getCompanyId());
+        queryWrapper.eq("superviseId",list1.get(0));
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }

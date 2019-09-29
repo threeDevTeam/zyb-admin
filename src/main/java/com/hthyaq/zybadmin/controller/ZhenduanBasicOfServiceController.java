@@ -8,15 +8,20 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
-import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
-import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
-import com.hthyaq.zybadmin.service.ZhenduanBasicOfServiceService;
-import com.hthyaq.zybadmin.service.ZhenduanDetailOfServiceService;
+import com.hthyaq.zybadmin.model.vo.TijianDetail1OfServiceView;
+import com.hthyaq.zybadmin.model.vo.TijianDetail2OfServiceView;
+import com.hthyaq.zybadmin.model.vo.ZhenduanBasicOfServiceView;
+import com.hthyaq.zybadmin.service.*;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +39,8 @@ public class ZhenduanBasicOfServiceController {
     ZhenduanBasicOfServiceService zhenduanBasicOfServiceService;
     @Autowired
     ServiceOfRegisterService serviceOfRegisterService;
+    @Autowired
+    AreaOfDicService areaOfDicService;
     @PostMapping("/add")
     public boolean add(@RequestBody ZhenduanBasicOfService zhenduanBasicOfService ,HttpSession httpSession) {
         boolean flag = false;
@@ -42,6 +49,7 @@ public class ZhenduanBasicOfServiceController {
         queryWrapper.eq("id",sysUser.getCompanyId());
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
         for (ServiceOfRegister serviceOfRegister : list) {
+
             zhenduanBasicOfService.setName(serviceOfRegister.getName());
             zhenduanBasicOfService.setCode(serviceOfRegister.getCode());
             zhenduanBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
@@ -64,22 +72,77 @@ public class ZhenduanBasicOfServiceController {
     @GetMapping("/getById")
     public ZhenduanBasicOfService getById(Integer id) {
 
+        List list=new ArrayList();
+        ZhenduanBasicOfServiceView zhenduanBasicOfServiceView=new ZhenduanBasicOfServiceView();
         ZhenduanBasicOfService zhenduanBasicOfService = zhenduanBasicOfServiceService.getById(id);
-        //demoCourse
-        QueryWrapper<ZhenduanBasicOfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", id);
-        List<ZhenduanBasicOfService> demoCourseList = zhenduanBasicOfServiceService.list(queryWrapper);
-        //将demoCourse的数据设置到demoData
-        return zhenduanBasicOfService;
+        BeanUtils.copyProperties(zhenduanBasicOfService, zhenduanBasicOfServiceView);
+        String provinceName = zhenduanBasicOfService.getProvinceName();
+        String cityName = zhenduanBasicOfService.getCityName();
+        String districtName = zhenduanBasicOfService.getDistrictName();
+        list.add(provinceName);
+        if(cityName.equals(districtName)){
+            list.add(cityName);
+        }else {
+            list.add(cityName);
+            list.add(districtName);
+        }
+
+        zhenduanBasicOfServiceView.setCascader((ArrayList) list);
+        return zhenduanBasicOfServiceView;
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody ZhenduanBasicOfService zhenduanBasicOfService) {
+    public boolean edit(@RequestBody ZhenduanBasicOfServiceView zhenduanBasicOfServiceView) {
+
+
+        ZhenduanBasicOfService zhenduanBasicOfService=new ZhenduanBasicOfService();
+
+        BeanUtils.copyProperties(zhenduanBasicOfServiceView, zhenduanBasicOfService);
+
+        zhenduanBasicOfService.setProvinceName((String) zhenduanBasicOfServiceView.getCascader().get(0));
+
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", (String) zhenduanBasicOfServiceView.getCascader().get(0));
+        List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list) {
+            zhenduanBasicOfService.setProvinceCode(String.valueOf(areaOfDic.getCode()));
+        }
+
+        zhenduanBasicOfService.setCityName((String) zhenduanBasicOfServiceView.getCascader().get(1));
+
+        QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("name", (String) zhenduanBasicOfServiceView.getCascader().get(1));
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
+        for (AreaOfDic areaOfDic : list1) {
+            zhenduanBasicOfService.setCityCode(String.valueOf(areaOfDic.getCode()));
+        }
+
+        if (zhenduanBasicOfServiceView.getCascader().size() !=3) {
+            zhenduanBasicOfService.setDistrictName((String) zhenduanBasicOfServiceView.getCascader().get(1));
+            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+            queryWrapper3.eq("name", (String) zhenduanBasicOfServiceView.getCascader().get(1));
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                zhenduanBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+            }
+        } else {
+            zhenduanBasicOfService.setDistrictName((String) zhenduanBasicOfServiceView.getCascader().get(2));
+            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("name", (String) zhenduanBasicOfServiceView.getCascader().get(2));
+            List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+            for (AreaOfDic areaOfDic : list2) {
+                zhenduanBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+            }
+        }
+
+
         return zhenduanBasicOfServiceService.updateById(zhenduanBasicOfService);
     }
 
     @GetMapping("/list")
-    public IPage<ZhenduanBasicOfService> list(String json) {
+    public IPage<ZhenduanBasicOfService> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -88,6 +151,7 @@ public class ZhenduanBasicOfServiceController {
         String name = jsonObject.getString("name");
 
         QueryWrapper<ZhenduanBasicOfService> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(name)) {
             queryWrapper.eq("name", name);
         }
@@ -97,5 +161,6 @@ public class ZhenduanBasicOfServiceController {
 
         return page;
     }
+
 }
 

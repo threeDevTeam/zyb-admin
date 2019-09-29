@@ -77,7 +77,9 @@ public class TijianTotalOfServiceController {
     }
 
     @GetMapping("/list")
-    public IPage<TijianTotalOfService> list(String json) {
+    public IPage<TijianTotalOfService> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -85,6 +87,7 @@ public class TijianTotalOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
         QueryWrapper<TijianTotalOfService> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }

@@ -32,7 +32,7 @@ public class TreeSelectUtil {
             Integer id = (Integer) ReflectUtil.getFieldValue(item, tmp[0]);
             Integer pid = (Integer) ReflectUtil.getFieldValue(item, tmp[1]);
             String name = (String) ReflectUtil.getFieldValue(item, tmp[2]);
-            if (pid == 0) {
+            if (pid.equals(-1)) {
                 rootList.add(new TreeSelectDto(id, pid, name));
             } else {
                 childList.add(new TreeSelectDto(id, pid, name));

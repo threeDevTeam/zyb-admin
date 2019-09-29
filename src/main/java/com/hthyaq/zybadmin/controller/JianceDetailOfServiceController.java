@@ -8,20 +8,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
-import com.hthyaq.zybadmin.model.bean.Child;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.bean.Child2;
 import com.hthyaq.zybadmin.model.entity.*;
-import com.hthyaq.zybadmin.model.vo.DemoView;
 import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
-import com.hthyaq.zybadmin.service.JianceBasicOfServiceService;
-import com.hthyaq.zybadmin.service.JianceDetailOfServiceService;
-import com.hthyaq.zybadmin.service.JianceDetailResultOfServiceService;
-import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
+import com.hthyaq.zybadmin.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,6 +66,8 @@ public class JianceDetailOfServiceController {
     ServiceOfRegisterService serviceOfRegisterService;
     @Autowired
     JianceBasicOfServiceService jianceBasicOfServiceService;
+    @Autowired
+    AreaOfDicService areaOfDicService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody JianceDetailOfServiceView jianceDetailOfServiceView, HttpSession httpSession) {
@@ -83,12 +83,23 @@ public class JianceDetailOfServiceController {
     @GetMapping("/getById")
     public JianceDetailOfServiceView getById(Integer id) {
         JianceDetailOfServiceView jianceDetailOfServiceView = new JianceDetailOfServiceView();
-
+        List list=new ArrayList();
         //demo
         JianceDetailOfService jianceDetailOfService = jianceDetailOfServiceService.getById(id);
         //将demo的数据设置到demoData
         BeanUtils.copyProperties(jianceDetailOfService, jianceDetailOfServiceView);
+        String provinceName = jianceDetailOfService.getProvinceName();
+        String cityName = jianceDetailOfService.getCityName();
+        String districtName = jianceDetailOfService.getDistrictName();
+        list.add(provinceName);
+        if(cityName.equals(districtName)){
+            list.add(cityName);
+        }else {
+            list.add(cityName);
+            list.add(districtName);
+        }
 
+        jianceDetailOfServiceView.setCascader((ArrayList) list);
         //demoCourse
         QueryWrapper<JianceDetailResultOfService> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("jianceDetailId", id);
@@ -106,7 +117,9 @@ public class JianceDetailOfServiceController {
 
 
     @GetMapping("/list")
-    public IPage<JianceDetailOfService> list(String json) {
+    public IPage<JianceDetailOfService> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -115,6 +128,7 @@ public class JianceDetailOfServiceController {
         String enterpriseName = jsonObject.getString("enterpriseName");
         String decideResult = jsonObject.getString("decideResult");
         QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",sysUser.getCompanyId());
         if (!Strings.isNullOrEmpty(enterpriseName)) {
             queryWrapper.eq("enterpriseName", enterpriseName);
         }
@@ -126,5 +140,6 @@ public class JianceDetailOfServiceController {
 
         return page;
     }
+
 }
 

@@ -8,13 +8,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
-import com.hthyaq.zybadmin.model.vo.DemoView;
 import com.hthyaq.zybadmin.model.vo.SuperviseView;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
-import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +26,9 @@ import java.util.List;
 /**
  * <p>
  * 监管部门信息
-
-
- 前端控制器
+ * <p>
+ * <p>
+ * 前端控制器
  * </p>
  *
  * @author zhangqiang
@@ -44,12 +44,13 @@ public class SuperviseController {
     AreaOfDicService areaOfDicService;
     @Autowired
     SuperviseOfRegisterService superviseOfRegisterService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody Supervise supervise, HttpSession httpSession) {
-        boolean flag=false;
+        boolean flag = false;
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-        QueryWrapper<SuperviseOfRegister> queryWrapper=new QueryWrapper();
-        queryWrapper.eq("id",sysUser.getCompanyId());
+        QueryWrapper<SuperviseOfRegister> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", sysUser.getCompanyId());
         List<SuperviseOfRegister> list = superviseOfRegisterService.list(queryWrapper);
         for (SuperviseOfRegister superviseOfRegister : list) {
             supervise.setProvinceName(superviseOfRegister.getProvinceName());
@@ -60,37 +61,94 @@ public class SuperviseController {
             supervise.setDistrictCode(superviseOfRegister.getDistrictCode());
             supervise.setRegisterAddress(superviseOfRegister.getRegisterAddress());
             supervise.setName(superviseOfRegister.getName());
-            flag=superviseService.saveData(supervise);
+            flag = superviseService.saveData(supervise);
         }
         return flag;
     }
+
     @GetMapping("/delete")
     public boolean delete(String id) {
         return superviseService.deleteData(id);
     }
+
     @GetMapping("/getById")
     public Supervise getById(Integer id) {
-        List list=new ArrayList();
-        SuperviseView superviseView=new SuperviseView();
+        List list = new ArrayList();
+        SuperviseView superviseView = new SuperviseView();
         Supervise supervise = superviseService.getById(id);
         BeanUtils.copyProperties(supervise, superviseView);
-        String provinceName = supervise.getProvinceName();
-        String cityName = supervise.getCityName();
-        String districtName = supervise.getDistrictName();
-        list.add(provinceName);
-        if(cityName.equals(districtName)){
-            list.add(cityName);
-        }else {
-            list.add(cityName);
-            list.add(districtName);
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("code", supervise.getProvinceCode());
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list1) {
+            list.add(areaOfDic.getId());
+        }
+        QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("code",supervise.getCityCode());
+        List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+        for (AreaOfDic areaOfDic : list2) {
+            list.add(areaOfDic.getId());
         }
 
 
-        superviseView.setCascader(list);
+        if (supervise.getCityName().equals(supervise.getDistrictName())) {
+            for (AreaOfDic areaOfDic : list2) {
+                list.add(areaOfDic.getId());
+            }
+        } else {
+            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
+            queryWrapper3.eq("code",supervise.getDistrictCode());
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                list.add(areaOfDic.getId());
+            }
+        }
+
+
+        superviseView.setCascader((ArrayList) list);
         return superviseView;
     }
+
     @PostMapping("/edit")
-    public boolean edit(@RequestBody Supervise supervise) {
+    public boolean edit(@RequestBody SuperviseView superviseView) {
+        Supervise supervise = new Supervise();
+
+        BeanUtils.copyProperties(superviseView, supervise);
+
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",superviseView.getCascader().get(0));
+        List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list) {
+            supervise.setProvinceName(String.valueOf(areaOfDic.getName()));
+            supervise.setProvinceCode(String.valueOf(areaOfDic.getCode()));
+        }
+        QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("id", superviseView.getCascader().get(1));
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
+        for (AreaOfDic areaOfDic : list1) {
+            supervise.setCityName(String.valueOf(areaOfDic.getName()));
+
+            supervise.setCityCode(String.valueOf(areaOfDic.getCode()));
+        }
+
+        if (superviseView.getCascader().size() !=3) {
+            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+            queryWrapper3.eq("id", superviseView.getCascader().get(1));
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                supervise.setDistrictName(String.valueOf(areaOfDic.getName()));
+                supervise.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+            }
+        } else {
+            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("id", superviseView.getCascader().get(2));
+            List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+            for (AreaOfDic areaOfDic : list2) {
+                supervise.setDistrictName(String.valueOf(areaOfDic.getName()));
+                supervise.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+            }
+        }
+
         return superviseService.editData(supervise);
     }
 
@@ -106,7 +164,7 @@ public class SuperviseController {
         String year = jsonObject.getString("year");
         String name = jsonObject.getString("name");
         QueryWrapper<Supervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",sysUser.getCompanyId());
+        queryWrapper.eq("name", sysUser.getCompanyName());
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }
@@ -118,45 +176,5 @@ public class SuperviseController {
 
         return page;
     }
-    @GetMapping("/TreeSelcetData")
-    public List<TreeSelcetData> TreeSelcetData() {
-        List<TreeSelcetData> treeSelcetDatalist = new ArrayList();
 
-        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("pid", "-1");
-        List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
-        for (AreaOfDic areaCopy : list) {
-            List<TreeSelcetData> chilren = Lists.newArrayList();
-            TreeSelcetData treeSelcetData = new TreeSelcetData();
-            treeSelcetData.setLabel(areaCopy.getName());
-            treeSelcetData.setValue(areaCopy.getName());
-            treeSelcetData.setChildren(chilren);
-            treeSelcetDatalist.add(treeSelcetData);
-
-            QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
-            queryWrapper1.eq("pid", areaCopy.getId());
-            List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
-
-            for (AreaOfDic areaCopy1 : list1) {
-                TreeSelcetData treeSelcetData1 = new TreeSelcetData();
-                treeSelcetData1.setLabel(areaCopy1.getName());
-                treeSelcetData1.setValue(areaCopy1.getName());
-                chilren.add(treeSelcetData1);
-                List<TreeSelcetData> chilren2= Lists.newArrayList();
-                QueryWrapper<AreaOfDic> queryWrapper2=new QueryWrapper<>();
-                queryWrapper2.eq("pid",areaCopy1.getId());
-                List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
-
-                for (AreaOfDic areaCopy2 : list2) {
-                    TreeSelcetData treeSelcetData2=new TreeSelcetData();
-                    treeSelcetData2.setLabel(areaCopy2.getName());
-                    treeSelcetData2.setValue(areaCopy2.getName());
-                    chilren2.add(treeSelcetData2);
-                }
-
-                treeSelcetData1.setChildren(chilren2);
-            }
-        }
-        return treeSelcetDatalist;
-    }
 }

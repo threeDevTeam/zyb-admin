@@ -56,35 +56,52 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
     ServiceOfRegisterService serviceOfRegisterService;
     @Autowired
     JianceBasicOfServiceService jianceBasicOfServiceService;
+    @Autowired
+    AreaOfDicService areaOfDicService;
     @Override
     public boolean saveData(JianceDetailOfServiceView jianceDetailOfServiceView, HttpSession httpSession) {
         boolean flag2 = true;
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         //demo
         JianceDetailOfService jianceDetailOfService = new JianceDetailOfService();
-
         BeanUtils.copyProperties(jianceDetailOfServiceView, jianceDetailOfService);
-        //save之后，就有id
-        QueryWrapper<ServiceOfRegister> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("id", sysUser.getCompanyId());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            jianceDetailOfService.setEnterpriseName(serviceOfRegister.getName());
-            jianceDetailOfService.setEnterpriseCode(serviceOfRegister.getCode());
-            jianceDetailOfService.setProvinceName(serviceOfRegister.getProvinceName());
-            jianceDetailOfService.setProvinceCode(serviceOfRegister.getProvinceCode());
-            jianceDetailOfService.setCityName(serviceOfRegister.getCityName());
-            jianceDetailOfService.setCityCode(serviceOfRegister.getCityCode());
-            jianceDetailOfService.setDistrictName(serviceOfRegister.getDistrictName());
-            jianceDetailOfService.setDistrictCode(serviceOfRegister.getDistrictCode());
-            jianceDetailOfService.setRegisterAddress(serviceOfRegister.getRegisterAddress());
-            QueryWrapper<JianceBasicOfService> queryWrapper1 = new QueryWrapper();
-            queryWrapper1.eq("name", serviceOfRegister.getName());
-            List<JianceBasicOfService> list1 = jianceBasicOfServiceService.list(queryWrapper1);
-            for (JianceBasicOfService jianceBasicOfService : list1) {
-                jianceDetailOfService.setJianceBasicId(jianceBasicOfService.getId());
-                this.save(jianceDetailOfService);
+        jianceDetailOfService.setProvinceName((String) jianceDetailOfServiceView.getCascader().get(0));
+
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", (String) jianceDetailOfServiceView.getCascader().get(0));
+        List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list) {
+            jianceDetailOfService.setProvinceCode(String.valueOf(areaOfDic.getCode()));
+        }
+
+        jianceDetailOfService.setCityName((String) jianceDetailOfServiceView.getCascader().get(1));
+
+        QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("name", (String) jianceDetailOfServiceView.getCascader().get(1));
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
+        for (AreaOfDic areaOfDic : list1) {
+            jianceDetailOfService.setCityCode(String.valueOf(areaOfDic.getCode()));
+        }
+
+        if (jianceDetailOfServiceView.getCascader().size() !=3) {
+            jianceDetailOfService.setDistrictName((String) jianceDetailOfServiceView.getCascader().get(1));
+            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+            queryWrapper3.eq("name", (String) jianceDetailOfServiceView.getCascader().get(1));
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                jianceDetailOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
+        } else {
+            jianceDetailOfService.setDistrictName((String) jianceDetailOfServiceView.getCascader().get(2));
+            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("name", (String) jianceDetailOfServiceView.getCascader().get(2));
+            List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+            for (AreaOfDic areaOfDic : list2) {
+                jianceDetailOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+            }
+        }
+                jianceDetailOfService.setJianceBasicId(sysUser.getCompanyId());
+              this.save(jianceDetailOfService);
 
 
             //demoCourse
@@ -97,9 +114,9 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
                 dataSource.forEach(demoCourse -> demoCourse.setJianceDetailId(demoId));
                 dataSource.forEach(demoCourse -> demoCourse.setJianceBasicId(demoBId));
                 //保存
-                flag2 = jianceDetailResultOfServiceService.saveBatch(dataSource);
+               flag2 = jianceDetailResultOfServiceService.saveBatch(dataSource);
             }
-        }
+
         return flag2;
     }
     @Override
@@ -125,12 +142,50 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
         JianceDetailOfService jianceDetailOfService = new JianceDetailOfService();
 
         BeanUtils.copyProperties(jianceDetailOfServiceView, jianceDetailOfService);
+
+        jianceDetailOfService.setProvinceName((String) jianceDetailOfServiceView.getCascader().get(0));
+
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", (String) jianceDetailOfServiceView.getCascader().get(0));
+        List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list) {
+            jianceDetailOfService.setProvinceCode(String.valueOf(areaOfDic.getCode()));
+        }
+
+        jianceDetailOfService.setCityName((String) jianceDetailOfServiceView.getCascader().get(1));
+
+        QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("name", (String) jianceDetailOfServiceView.getCascader().get(1));
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
+        for (AreaOfDic areaOfDic : list1) {
+            jianceDetailOfService.setCityCode(String.valueOf(areaOfDic.getCode()));
+        }
+
+        if (jianceDetailOfServiceView.getCascader().size() !=3) {
+            jianceDetailOfService.setDistrictName((String) jianceDetailOfServiceView.getCascader().get(1));
+            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+            queryWrapper3.eq("name", (String) jianceDetailOfServiceView.getCascader().get(1));
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                jianceDetailOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+            }
+        } else {
+            jianceDetailOfService.setDistrictName((String) jianceDetailOfServiceView.getCascader().get(2));
+            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("name", (String) jianceDetailOfServiceView.getCascader().get(2));
+            List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+            for (AreaOfDic areaOfDic : list2) {
+                jianceDetailOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+            }
+        }
+
+
         flag1 = this.updateById(jianceDetailOfService);
 
         //demoCourse，先删除，后插入
-        QueryWrapper<JianceDetailResultOfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("jianceDetailId", jianceDetailOfServiceView.getId());
-        flag2 = jianceDetailResultOfServiceService.remove(queryWrapper);
+        QueryWrapper<JianceDetailResultOfService> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("jianceDetailId", jianceDetailOfServiceView.getId());
+        flag2 = jianceDetailResultOfServiceService.remove(queryWrapper2);
 
         List<JianceDetailResultOfService> dataSource = jianceDetailOfServiceView.getCourse().getDataSource();
         if (ObjectUtil.length(dataSource) > 0) {
