@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,17 +41,12 @@ public class WorkplaceOfEnterpriseController {
     public boolean add(@RequestBody WorkplaceOfEnterprise workplaceOfEnterprise, HttpSession httpSession) {
         boolean flag=false;
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-        QueryWrapper<EnterpriseOfRegister> queryWrapper=new QueryWrapper();
-        queryWrapper.eq("id",sysUser.getCompanyId());
-        List<EnterpriseOfRegister> list = enterpriseOfRegisterService.list(queryWrapper);
-        for (EnterpriseOfRegister enterpriseOfRegister : list) {
             QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
-            queryWrapper1.eq("name",enterpriseOfRegister.getName());
+            queryWrapper1.eq("name",sysUser.getCompanyName());
             List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
             for (Enterprise enterprise : list1) {
                 workplaceOfEnterprise.setEnterpriseId(enterprise.getId());
                 flag=  workplaceOfEnterpriseService.save(workplaceOfEnterprise);
-            }
         }
         return flag;
     }
@@ -75,14 +71,25 @@ public class WorkplaceOfEnterpriseController {
     }
 
     @GetMapping("/list")
-    public IPage<WorkplaceOfEnterprise> list(String json) {
+    public IPage<WorkplaceOfEnterprise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        List list1 = new ArrayList();
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String username = jsonObject.getString("username");
+        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("name", sysUser.getCompanyName());
+        List<Enterprise> list = enterpriseService.list(queryWrapper1);
+        for (Enterprise enterprise : list) {
+            list1.clear();
+            Long id = enterprise.getId();
+            list1.add(id);
+        }
         QueryWrapper<WorkplaceOfEnterprise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("enterpriseId",list1.get(0));
         if (!Strings.isNullOrEmpty(username)) {
             queryWrapper.eq("username", username);
         }

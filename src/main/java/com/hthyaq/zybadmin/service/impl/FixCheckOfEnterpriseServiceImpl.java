@@ -6,6 +6,7 @@ import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.mapper.FixCheckOfEnterpriseMapper;
 import com.hthyaq.zybadmin.model.vo.FixCheckOfView;
+import com.hthyaq.zybadmin.service.EnterpriseService;
 import com.hthyaq.zybadmin.service.FixCheckOfEnterpriseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hthyaq.zybadmin.service.FixCheckResultOfEnterpriseService;
@@ -31,6 +32,8 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
     FixCheckResultOfEnterpriseService fixCheckResultOfEnterpriseService;
     @Autowired
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
+    @Autowired
+    EnterpriseService enterpriseService;
     @Override
     public boolean saveData(FixCheckOfView fixCheckOfView, HttpSession httpSession) {
         boolean flag1, flag2 = true;
@@ -40,7 +43,12 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
         BeanUtils.copyProperties(fixCheckOfView, fixCheckOfEnterprise);
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-        fixCheckOfEnterprise.setEnterpriseId(sysUser.getCompanyId());
+        QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+        queryWrapper1.eq("name",sysUser.getCompanyName());
+        List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+        for (Enterprise enterprise : list1) {
+            fixCheckOfEnterprise.setEnterpriseId(enterprise.getId());
+        }
         //postDangerId
         fixCheckOfEnterprise.setPostDangerId(Long.parseLong(fixCheckOfView.getTreeSelect()));
 
@@ -55,8 +63,8 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
         if (ObjectUtil.length(dataSource) > 0) {
             //设置demoCourse的demo_id
             long fixCheckId = fixCheckOfEnterprise.getId();
-
-            dataSource.forEach(demoCourse -> demoCourse.setEnterpriseId(sysUser.getCompanyId()));
+            long EnterpriseId = fixCheckOfEnterprise.getEnterpriseId();
+            dataSource.forEach(demoCourse -> demoCourse.setEnterpriseId(EnterpriseId));
             dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(fixCheckId));
             dataSource.forEach(demoCourse -> demoCourse.setPostId(postDangerOfEnterprise.getPostId()));
             dataSource.forEach(demoCourse -> demoCourse.setPostDangerId(Long.parseLong(fixCheckOfView.getTreeSelect())));

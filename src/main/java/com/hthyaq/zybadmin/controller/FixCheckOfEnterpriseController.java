@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.bean.Child;
 import com.hthyaq.zybadmin.model.bean.Child3;
 import com.hthyaq.zybadmin.model.entity.*;
@@ -91,14 +92,25 @@ public class FixCheckOfEnterpriseController {
 
 
     @GetMapping("/list")
-    public IPage< FixCheckOfEnterprise> list(String json) {
+    public IPage< FixCheckOfEnterprise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        List list1 = new ArrayList();
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);jsonObject.getObject("zbry",String.class);
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String decideResult = jsonObject.getString("decideResult");
-        QueryWrapper< FixCheckOfEnterprise> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("name", sysUser.getCompanyName());
+        List<Enterprise> list = enterpriseService.list(queryWrapper1);
+        for (Enterprise enterprise : list) {
+            list1.clear();
+            Long id = enterprise.getId();
+            list1.add(id);
+        }
+        QueryWrapper<FixCheckOfEnterprise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("enterpriseId",list1.get(0));
         if (!Strings.isNullOrEmpty(decideResult)) {
             queryWrapper.eq("decideResult", decideResult);
         }

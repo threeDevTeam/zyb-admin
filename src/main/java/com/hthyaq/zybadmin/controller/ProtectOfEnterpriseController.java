@@ -57,7 +57,12 @@ public class ProtectOfEnterpriseController {
 
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-        protectOfEnterprise.setEnterpriseId(sysUser.getCompanyId());
+        QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+        queryWrapper1.eq("name",sysUser.getCompanyName());
+        List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+        for (Enterprise enterprise : list1) {
+            protectOfEnterprise.setEnterpriseId(enterprise.getId());
+        }
 
         //postDangerId
         protectOfEnterprise.setPostDangerId(Long.parseLong(protectOfEnterpriseView.getTreeSelect()));
@@ -99,7 +104,9 @@ public class ProtectOfEnterpriseController {
     }
 
     @GetMapping("/list")
-    public IPage<ProtectOfEnterprise> list(String json) {
+    public IPage<ProtectOfEnterprise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        List list1 = new ArrayList();
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -107,7 +114,16 @@ public class ProtectOfEnterpriseController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
         String type = jsonObject.getString("type");
+        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("name", sysUser.getCompanyName());
+        List<Enterprise> list = enterpriseService.list(queryWrapper1);
+        for (Enterprise enterprise : list) {
+            list1.clear();
+            Long id = enterprise.getId();
+            list1.add(id);
+        }
         QueryWrapper<ProtectOfEnterprise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("enterpriseId",list1.get(0));
         if (!Strings.isNullOrEmpty(name)) {
             queryWrapper.eq("name", name);
         }

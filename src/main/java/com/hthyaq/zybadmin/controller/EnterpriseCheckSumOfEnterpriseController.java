@@ -58,7 +58,12 @@ public class EnterpriseCheckSumOfEnterpriseController {
 
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-        enterpriseCheckSumOfEnterprise.setEnterpriseId(sysUser.getCompanyId());
+        QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+        queryWrapper1.eq("name",sysUser.getCompanyName());
+        List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+        for (Enterprise enterprise : list1) {
+            enterpriseCheckSumOfEnterprise.setEnterpriseId(enterprise.getId());
+        }
 
         //postDangerId
         enterpriseCheckSumOfEnterprise.setPostDangerId(Long.parseLong(enterpriseCheckSumOfEnterpriseView.getTreeSelect()));
@@ -100,14 +105,25 @@ public class EnterpriseCheckSumOfEnterpriseController {
     }
 
     @GetMapping("/list")
-    public IPage<EnterpriseCheckSumOfEnterprise> list(String json) {
+    public IPage<EnterpriseCheckSumOfEnterprise> list(String json, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        List list1 = new ArrayList();
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String upDate = jsonObject.getString("upDate");
+        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("name", sysUser.getCompanyName());
+        List<Enterprise> list = enterpriseService.list(queryWrapper1);
+        for (Enterprise enterprise : list) {
+            list1.clear();
+            Long id = enterprise.getId();
+            list1.add(id);
+        }
         QueryWrapper<EnterpriseCheckSumOfEnterprise> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("enterpriseId",list1.get(0));
         if (!Strings.isNullOrEmpty(upDate)) {
             queryWrapper.eq("upDate", upDate);
         }

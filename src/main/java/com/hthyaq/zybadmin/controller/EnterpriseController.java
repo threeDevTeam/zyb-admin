@@ -12,6 +12,7 @@ import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.EnterpriseView;
+import com.hthyaq.zybadmin.model.vo.SuperviseView;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
 import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
 import com.hthyaq.zybadmin.service.EnterpriseService;
@@ -74,68 +75,80 @@ public class EnterpriseController {
     }
     @GetMapping("/getById")
     public Enterprise getById(Integer id) {
-
-
-        List list=new ArrayList();
-        EnterpriseView enterpriseView=new EnterpriseView();
+        List list = new ArrayList();
+        EnterpriseView enterpriseView = new EnterpriseView();
         Enterprise enterprise = enterpriseService.getById(id);
         BeanUtils.copyProperties(enterprise, enterpriseView);
-        String provinceName = enterprise.getProvinceName();
-        String cityName = enterprise.getCityName();
-        String districtName = enterprise.getDistrictName();
-        list.add(provinceName);
-        if(cityName.equals(districtName)){
-            list.add(cityName);
-        }else {
-            list.add(cityName);
-            list.add(districtName);
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("code", enterprise.getProvinceCode());
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list1) {
+            list.add(areaOfDic.getId());
         }
+        QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("code",enterprise.getCityCode());
+        List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+        for (AreaOfDic areaOfDic : list2) {
+            list.add(areaOfDic.getId());
+        }
+
+
+        if (enterprise.getCityName().equals(enterprise.getDistrictName())) {
+            for (AreaOfDic areaOfDic : list2) {
+                list.add(areaOfDic.getId());
+            }
+        } else {
+            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
+            queryWrapper3.eq("code",enterprise.getDistrictCode());
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                list.add(areaOfDic.getId());
+            }
+        }
+
 
         enterpriseView.setCascader((ArrayList) list);
         return enterpriseView;
     }
     @PostMapping("/edit")
     public boolean edit(@RequestBody EnterpriseView enterpriseView) {
-        Enterprise enterprise=new Enterprise();
+        Enterprise enterprise = new EnterpriseView();
 
         BeanUtils.copyProperties(enterpriseView, enterprise);
 
-        enterprise.setProvinceName((String) enterpriseView.getCascader().get(0));
-
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", (String) enterpriseView.getCascader().get(0));
+        queryWrapper.eq("id",enterpriseView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
         for (AreaOfDic areaOfDic : list) {
+            enterprise.setProvinceName(String.valueOf(areaOfDic.getName()));
             enterprise.setProvinceCode(String.valueOf(areaOfDic.getCode()));
         }
-
-        enterprise.setCityName((String) enterpriseView.getCascader().get(1));
-
         QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", (String) enterpriseView.getCascader().get(1));
+        queryWrapper1.eq("id", enterpriseView.getCascader().get(1));
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
         for (AreaOfDic areaOfDic : list1) {
+            enterprise.setCityName(String.valueOf(areaOfDic.getName()));
+
             enterprise.setCityCode(String.valueOf(areaOfDic.getCode()));
         }
 
         if (enterpriseView.getCascader().size() !=3) {
-            enterprise.setDistrictName((String) enterpriseView.getCascader().get(1));
             QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
-            queryWrapper3.eq("name", (String) enterpriseView.getCascader().get(1));
+            queryWrapper3.eq("id", enterpriseView.getCascader().get(1));
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
+                enterprise.setDistrictName(String.valueOf(areaOfDic.getName()));
                 enterprise.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         } else {
-            enterprise.setDistrictName((String) enterpriseView.getCascader().get(2));
             QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("name", (String) enterpriseView.getCascader().get(2));
+            queryWrapper2.eq("id", enterpriseView.getCascader().get(2));
             List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
             for (AreaOfDic areaOfDic : list2) {
+                enterprise.setDistrictName(String.valueOf(areaOfDic.getName()));
                 enterprise.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
-
 
         return enterpriseService.updateById(enterprise);
     }
@@ -151,7 +164,7 @@ public class EnterpriseController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
         QueryWrapper<Enterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",sysUser.getCompanyId());
+        queryWrapper.eq("name", sysUser.getCompanyName());
         if (!Strings.isNullOrEmpty(name)) {
             queryWrapper.eq("name", name);
         }
