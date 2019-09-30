@@ -149,7 +149,7 @@ public class SuperviseController {
             }
         }
 
-        return superviseService.editData(supervise);
+        return superviseService.updateById(supervise);
     }
 
     @GetMapping("/list")

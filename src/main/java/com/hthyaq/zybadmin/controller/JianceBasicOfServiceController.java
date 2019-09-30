@@ -46,19 +46,21 @@ public class JianceBasicOfServiceController {
         boolean flag=false;
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<ServiceOfRegister> queryWrapper=new QueryWrapper();
-        queryWrapper.eq("id",sysUser.getCompanyId());
+        queryWrapper.eq("name",sysUser.getCompanyName());
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
         for (ServiceOfRegister serviceOfRegister : list) {
-            jianceBasicOfService.setName(serviceOfRegister.getName());
-            jianceBasicOfService.setCode(serviceOfRegister.getCode());
-            jianceBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
-            jianceBasicOfService.setProvinceCode(serviceOfRegister.getProvinceCode());
-            jianceBasicOfService.setCityName(serviceOfRegister.getCityName());
-            jianceBasicOfService.setCityCode(serviceOfRegister.getCityCode());
-            jianceBasicOfService.setDistrictName(serviceOfRegister.getDistrictName());
-            jianceBasicOfService.setDistrictCode(serviceOfRegister.getDistrictCode());
-            jianceBasicOfService.setRegisterAddress(serviceOfRegister.getRegisterAddress());
-            flag=jianceBasicOfServiceService.save(jianceBasicOfService);
+            if(serviceOfRegister.getType().equals("检测机构")){
+                jianceBasicOfService.setName(serviceOfRegister.getName());
+                jianceBasicOfService.setCode(serviceOfRegister.getCode());
+                jianceBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
+                jianceBasicOfService.setProvinceCode(serviceOfRegister.getProvinceCode());
+                jianceBasicOfService.setCityName(serviceOfRegister.getCityName());
+                jianceBasicOfService.setCityCode(serviceOfRegister.getCityCode());
+                jianceBasicOfService.setDistrictName(serviceOfRegister.getDistrictName());
+                jianceBasicOfService.setDistrictCode(serviceOfRegister.getDistrictCode());
+                jianceBasicOfService.setRegisterAddress(serviceOfRegister.getRegisterAddress());
+                flag=jianceBasicOfServiceService.save(jianceBasicOfService);
+            }
         }
         return flag;
     }
@@ -72,15 +74,31 @@ public class JianceBasicOfServiceController {
         JianceBasicOfView jianceBasicOfView=new JianceBasicOfView();
         JianceBasicOfService jianceBasicOfService = jianceBasicOfServiceService.getById(id);
         BeanUtils.copyProperties(jianceBasicOfService, jianceBasicOfView);
-        String provinceName = jianceBasicOfService.getProvinceName();
-        String cityName = jianceBasicOfService.getCityName();
-        String districtName = jianceBasicOfService.getDistrictName();
-        list.add(provinceName);
-        if(cityName.equals(districtName)){
-            list.add(cityName);
-        }else {
-            list.add(cityName);
-            list.add(districtName);
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("code", jianceBasicOfService.getProvinceCode());
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list1) {
+            list.add(areaOfDic.getId());
+        }
+        QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("code",jianceBasicOfService.getCityCode());
+        List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+        for (AreaOfDic areaOfDic : list2) {
+            list.add(areaOfDic.getId());
+        }
+
+
+        if (jianceBasicOfService.getCityName().equals(jianceBasicOfService.getDistrictName())) {
+            for (AreaOfDic areaOfDic : list2) {
+                list.add(areaOfDic.getId());
+            }
+        } else {
+            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
+            queryWrapper3.eq("code",jianceBasicOfService.getDistrictCode());
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                list.add(areaOfDic.getId());
+            }
         }
 
         jianceBasicOfView.setCascader((ArrayList) list);
@@ -92,38 +110,36 @@ public class JianceBasicOfServiceController {
 
         BeanUtils.copyProperties(jianceBasicOfView, jianceBasicOfService);
 
-        jianceBasicOfService.setProvinceName((String) jianceBasicOfView.getCascader().get(0));
-
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", (String) jianceBasicOfView.getCascader().get(0));
+        queryWrapper.eq("id",jianceBasicOfView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
         for (AreaOfDic areaOfDic : list) {
+            jianceBasicOfService.setProvinceName(String.valueOf(areaOfDic.getName()));
             jianceBasicOfService.setProvinceCode(String.valueOf(areaOfDic.getCode()));
         }
-
-        jianceBasicOfService.setCityName((String) jianceBasicOfView.getCascader().get(1));
-
         QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", (String) jianceBasicOfView.getCascader().get(1));
+        queryWrapper1.eq("id", jianceBasicOfView.getCascader().get(1));
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
         for (AreaOfDic areaOfDic : list1) {
+            jianceBasicOfService.setCityName(String.valueOf(areaOfDic.getName()));
+
             jianceBasicOfService.setCityCode(String.valueOf(areaOfDic.getCode()));
         }
 
         if (jianceBasicOfView.getCascader().size() !=3) {
-            jianceBasicOfService.setDistrictName((String) jianceBasicOfView.getCascader().get(1));
             QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
-            queryWrapper3.eq("name", (String) jianceBasicOfView.getCascader().get(1));
+            queryWrapper3.eq("id", jianceBasicOfView.getCascader().get(1));
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
+                jianceBasicOfService.setDistrictName(String.valueOf(areaOfDic.getName()));
                 jianceBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         } else {
-            jianceBasicOfService.setDistrictName((String) jianceBasicOfView.getCascader().get(2));
             QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("name", (String) jianceBasicOfView.getCascader().get(2));
+            queryWrapper2.eq("id", jianceBasicOfView.getCascader().get(2));
             List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
             for (AreaOfDic areaOfDic : list2) {
+                jianceBasicOfService.setDistrictName(String.valueOf(areaOfDic.getName()));
                 jianceBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
@@ -133,6 +149,7 @@ public class JianceBasicOfServiceController {
     @GetMapping("/list")
     public IPage<JianceBasicOfService> list(String json, HttpSession httpSession) {
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        List list1 = new ArrayList();
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -140,8 +157,17 @@ public class JianceBasicOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
         String code = jsonObject.getString("code");
-        QueryWrapper<JianceBasicOfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",sysUser.getCompanyId());
+        QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
+        queryWrapper1.eq("name",sysUser.getCompanyName());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            if(serviceOfRegister.getType().equals("检测机构")){
+                list1.clear();
+                list1.add(serviceOfRegister.getName());
+            }
+        }
+        QueryWrapper<JianceBasicOfService> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("name", list1.get(0));
         if (!Strings.isNullOrEmpty(name)) {
             queryWrapper.eq("name", name);
         }
