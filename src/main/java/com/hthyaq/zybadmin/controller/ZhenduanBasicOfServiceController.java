@@ -49,17 +49,18 @@ public class ZhenduanBasicOfServiceController {
         queryWrapper.eq("id",sysUser.getCompanyId());
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
         for (ServiceOfRegister serviceOfRegister : list) {
-
-            zhenduanBasicOfService.setName(serviceOfRegister.getName());
-            zhenduanBasicOfService.setCode(serviceOfRegister.getCode());
-            zhenduanBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
-            zhenduanBasicOfService.setProvinceCode(serviceOfRegister.getProvinceCode());
-            zhenduanBasicOfService.setCityName(serviceOfRegister.getCityName());
-            zhenduanBasicOfService.setCityCode(serviceOfRegister.getCityCode());
-            zhenduanBasicOfService.setDistrictName(serviceOfRegister.getDistrictName());
-            zhenduanBasicOfService.setDistrictCode(serviceOfRegister.getDistrictCode());
-            zhenduanBasicOfService.setRegisterAddress(serviceOfRegister.getRegisterAddress());
-            flag=zhenduanBasicOfServiceService.save(zhenduanBasicOfService);
+            if (serviceOfRegister.getType().equals("诊断机构")) {
+                zhenduanBasicOfService.setName(serviceOfRegister.getName());
+                zhenduanBasicOfService.setCode(serviceOfRegister.getCode());
+                zhenduanBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
+                zhenduanBasicOfService.setProvinceCode(serviceOfRegister.getProvinceCode());
+                zhenduanBasicOfService.setCityName(serviceOfRegister.getCityName());
+                zhenduanBasicOfService.setCityCode(serviceOfRegister.getCityCode());
+                zhenduanBasicOfService.setDistrictName(serviceOfRegister.getDistrictName());
+                zhenduanBasicOfService.setDistrictCode(serviceOfRegister.getDistrictCode());
+                zhenduanBasicOfService.setRegisterAddress(serviceOfRegister.getRegisterAddress());
+                flag = zhenduanBasicOfServiceService.save(zhenduanBasicOfService);
+            }
         }
         return flag;
     }
@@ -76,16 +77,33 @@ public class ZhenduanBasicOfServiceController {
         ZhenduanBasicOfServiceView zhenduanBasicOfServiceView=new ZhenduanBasicOfServiceView();
         ZhenduanBasicOfService zhenduanBasicOfService = zhenduanBasicOfServiceService.getById(id);
         BeanUtils.copyProperties(zhenduanBasicOfService, zhenduanBasicOfServiceView);
-        String provinceName = zhenduanBasicOfService.getProvinceName();
-        String cityName = zhenduanBasicOfService.getCityName();
-        String districtName = zhenduanBasicOfService.getDistrictName();
-        list.add(provinceName);
-        if(cityName.equals(districtName)){
-            list.add(cityName);
-        }else {
-            list.add(cityName);
-            list.add(districtName);
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("code", zhenduanBasicOfService.getProvinceCode());
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list1) {
+            list.add(areaOfDic.getId());
         }
+        QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("code",zhenduanBasicOfService.getCityCode());
+        List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+        for (AreaOfDic areaOfDic : list2) {
+            list.add(areaOfDic.getId());
+        }
+
+
+        if (zhenduanBasicOfService.getCityName().equals(zhenduanBasicOfService.getDistrictName())) {
+            for (AreaOfDic areaOfDic : list2) {
+                list.add(areaOfDic.getId());
+            }
+        } else {
+            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
+            queryWrapper3.eq("code",zhenduanBasicOfService.getDistrictCode());
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                list.add(areaOfDic.getId());
+            }
+        }
+
 
         zhenduanBasicOfServiceView.setCascader((ArrayList) list);
         return zhenduanBasicOfServiceView;
@@ -99,42 +117,39 @@ public class ZhenduanBasicOfServiceController {
 
         BeanUtils.copyProperties(zhenduanBasicOfServiceView, zhenduanBasicOfService);
 
-        zhenduanBasicOfService.setProvinceName((String) zhenduanBasicOfServiceView.getCascader().get(0));
-
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", (String) zhenduanBasicOfServiceView.getCascader().get(0));
+        queryWrapper.eq("id",zhenduanBasicOfServiceView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
         for (AreaOfDic areaOfDic : list) {
+            zhenduanBasicOfService.setProvinceName(String.valueOf(areaOfDic.getName()));
             zhenduanBasicOfService.setProvinceCode(String.valueOf(areaOfDic.getCode()));
         }
-
-        zhenduanBasicOfService.setCityName((String) zhenduanBasicOfServiceView.getCascader().get(1));
-
         QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", (String) zhenduanBasicOfServiceView.getCascader().get(1));
+        queryWrapper1.eq("id", zhenduanBasicOfServiceView.getCascader().get(1));
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
         for (AreaOfDic areaOfDic : list1) {
+            zhenduanBasicOfService.setCityName(String.valueOf(areaOfDic.getName()));
+
             zhenduanBasicOfService.setCityCode(String.valueOf(areaOfDic.getCode()));
         }
 
         if (zhenduanBasicOfServiceView.getCascader().size() !=3) {
-            zhenduanBasicOfService.setDistrictName((String) zhenduanBasicOfServiceView.getCascader().get(1));
             QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
-            queryWrapper3.eq("name", (String) zhenduanBasicOfServiceView.getCascader().get(1));
+            queryWrapper3.eq("id", zhenduanBasicOfServiceView.getCascader().get(1));
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
+                zhenduanBasicOfService.setDistrictName(String.valueOf(areaOfDic.getName()));
                 zhenduanBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         } else {
-            zhenduanBasicOfService.setDistrictName((String) zhenduanBasicOfServiceView.getCascader().get(2));
             QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("name", (String) zhenduanBasicOfServiceView.getCascader().get(2));
+            queryWrapper2.eq("id", zhenduanBasicOfServiceView.getCascader().get(2));
             List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
             for (AreaOfDic areaOfDic : list2) {
+                zhenduanBasicOfService.setDistrictName(String.valueOf(areaOfDic.getName()));
                 zhenduanBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
-
 
         return zhenduanBasicOfServiceService.updateById(zhenduanBasicOfService);
     }
@@ -142,7 +157,7 @@ public class ZhenduanBasicOfServiceController {
     @GetMapping("/list")
     public IPage<ZhenduanBasicOfService> list(String json, HttpSession httpSession) {
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-
+        List list1 = new ArrayList();
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -150,8 +165,17 @@ public class ZhenduanBasicOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
 
-        QueryWrapper<ZhenduanBasicOfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",sysUser.getCompanyId());
+        QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
+        queryWrapper1.eq("name",sysUser.getCompanyName());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            if(serviceOfRegister.getType().equals("诊断机构")){
+                list1.clear();
+                list1.add(serviceOfRegister.getName());
+            }
+        }
+        QueryWrapper<ZhenduanBasicOfService> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("name", list1.get(0));
         if (!Strings.isNullOrEmpty(name)) {
             queryWrapper.eq("name", name);
         }

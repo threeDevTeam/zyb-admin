@@ -47,57 +47,54 @@ public class TijianDetail2OfServiceController {
     public boolean add(@RequestBody TijianDetail2OfServiceView tijianDetail2OfServiceView, HttpSession httpSession) {
         boolean flag = false;
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<ServiceOfRegister> qw = new QueryWrapper();
+        qw.eq("name", sysUser.getCompanyName());
+        List<ServiceOfRegister> list4 = serviceOfRegisterService.list(qw);
+        for (ServiceOfRegister serviceOfRegister : list4) {
+            if (serviceOfRegister.getType().equals("体检机构")) {
+                //demo
+                TijianDetail2OfService tijianDetail2OfService = new TijianDetail2OfService();
+                BeanUtils.copyProperties(tijianDetail2OfServiceView, tijianDetail2OfService);
+                QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("id", tijianDetail2OfServiceView.getCascader().get(0));
+                List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
+                for (AreaOfDic areaOfDic : list) {
+                    tijianDetail2OfService.setProvinceName(String.valueOf(areaOfDic.getName()));
+                    tijianDetail2OfService.setProvinceCode(String.valueOf(areaOfDic.getCode()));
+                }
 
+                QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
+                queryWrapper1.eq("id", tijianDetail2OfServiceView.getCascader().get(1));
+                List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
+                for (AreaOfDic areaOfDic : list1) {
+                    tijianDetail2OfService.setCityName(String.valueOf(areaOfDic.getName()));
+                    tijianDetail2OfService.setCityCode(String.valueOf(areaOfDic.getCode()));
+                }
 
-        TijianDetail2OfService tijianDetail2OfService = new TijianDetail2OfServiceView();
-        BeanUtils.copyProperties(tijianDetail2OfServiceView, tijianDetail2OfService);
-        tijianDetail2OfService.setProvinceName((String) tijianDetail2OfServiceView.getCascader().get(0));
-
-        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", (String) tijianDetail2OfServiceView.getCascader().get(0));
-        List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
-        for (AreaOfDic areaOfDic : list) {
-            tijianDetail2OfService.setProvinceCode(String.valueOf(areaOfDic.getCode()));
-        }
-
-        tijianDetail2OfService.setCityName((String) tijianDetail2OfServiceView.getCascader().get(1));
-
-        QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", (String) tijianDetail2OfServiceView.getCascader().get(1));
-        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
-        for (AreaOfDic areaOfDic : list1) {
-            tijianDetail2OfService.setCityCode(String.valueOf(areaOfDic.getCode()));
-        }
-
-        if (tijianDetail2OfServiceView.getCascader().size() != 3) {
-            tijianDetail2OfService.setDistrictName((String) tijianDetail2OfServiceView.getCascader().get(1));
-            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
-            queryWrapper3.eq("name", (String) tijianDetail2OfServiceView.getCascader().get(1));
-            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
-            for (AreaOfDic areaOfDic : list3) {
-                tijianDetail2OfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
-            }
-        } else {
-            tijianDetail2OfService.setDistrictName((String) tijianDetail2OfServiceView.getCascader().get(2));
-            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("name", (String) tijianDetail2OfServiceView.getCascader().get(2));
-            List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
-            for (AreaOfDic areaOfDic : list2) {
-                tijianDetail2OfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
-            }
-        }
-
-
-        QueryWrapper<ServiceOfRegister> queryWrapper2 = new QueryWrapper();
-        queryWrapper2.eq("id", sysUser.getCompanyId());
-        List<ServiceOfRegister> list2 = serviceOfRegisterService.list(queryWrapper2);
-        for (ServiceOfRegister serviceOfRegister : list2) {
-            QueryWrapper<TijianBasicOfService> queryWrapper3 = new QueryWrapper();
-            queryWrapper3.eq("name", serviceOfRegister.getName());
-            List<TijianBasicOfService> list3 = tijianBasicOfServiceService.list(queryWrapper3);
-            for (TijianBasicOfService tijianBasicOfService : list3) {
-                tijianDetail2OfService.setTijianBasicId(tijianBasicOfService.getId());
-                flag = tijianDetail2OfServiceService.save(tijianDetail2OfService);
+                if (tijianDetail2OfServiceView.getCascader().size() != 3) {
+                    QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
+                    queryWrapper3.eq("id", tijianDetail2OfServiceView.getCascader().get(1));
+                    List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+                    for (AreaOfDic areaOfDic : list3) {
+                        tijianDetail2OfService.setDistrictName(String.valueOf(areaOfDic.getName()));
+                        tijianDetail2OfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+                    }
+                } else {
+                    QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+                    queryWrapper2.eq("id", tijianDetail2OfServiceView.getCascader().get(2));
+                    List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+                    for (AreaOfDic areaOfDic : list2) {
+                        tijianDetail2OfService.setDistrictName(String.valueOf(areaOfDic.getName()));
+                        tijianDetail2OfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
+                    }
+                }
+                QueryWrapper<TijianBasicOfService> qw1 = new QueryWrapper();
+                qw1.eq("name", serviceOfRegister.getName());
+                List<TijianBasicOfService> list5 = tijianBasicOfServiceService.list(qw1);
+                for (TijianBasicOfService tijianBasicOfService : list5) {
+                    tijianDetail2OfService.setTijianBasicId(tijianBasicOfService.getId());
+                }
+                flag=tijianDetail2OfServiceService.save(tijianDetail2OfService);
             }
         }
         return flag;
@@ -111,19 +108,35 @@ public class TijianDetail2OfServiceController {
     @GetMapping("/getById")
     public TijianDetail2OfService getById(Integer id) {
 
-        List list = new ArrayList();
-        TijianDetail2OfServiceView tijianDetail2OfServiceView = new TijianDetail2OfServiceView();
+        List list=new ArrayList();
+        TijianDetail2OfServiceView tijianDetail2OfServiceView=new TijianDetail2OfServiceView();
         TijianDetail2OfService tijianDetail2OfService = tijianDetail2OfServiceService.getById(id);
         BeanUtils.copyProperties(tijianDetail2OfService, tijianDetail2OfServiceView);
-        String provinceName = tijianDetail2OfService.getProvinceName();
-        String cityName = tijianDetail2OfService.getCityName();
-        String districtName = tijianDetail2OfService.getDistrictName();
-        list.add(provinceName);
-        if (cityName.equals(districtName)) {
-            list.add(cityName);
+        QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("code", tijianDetail2OfService.getProvinceCode());
+        List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);
+        for (AreaOfDic areaOfDic : list1) {
+            list.add(areaOfDic.getId());
+        }
+        QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("code",tijianDetail2OfService.getCityCode());
+        List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
+        for (AreaOfDic areaOfDic : list2) {
+            list.add(areaOfDic.getId());
+        }
+
+
+        if (tijianDetail2OfService.getCityName().equals(tijianDetail2OfService.getDistrictName())) {
+            for (AreaOfDic areaOfDic : list2) {
+                list.add(areaOfDic.getId());
+            }
         } else {
-            list.add(cityName);
-            list.add(districtName);
+            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
+            queryWrapper3.eq("code",tijianDetail2OfService.getDistrictCode());
+            List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
+            for (AreaOfDic areaOfDic : list3) {
+                list.add(areaOfDic.getId());
+            }
         }
 
         tijianDetail2OfServiceView.setCascader((ArrayList) list);
@@ -135,51 +148,46 @@ public class TijianDetail2OfServiceController {
         TijianDetail2OfService tijianDetail2OfService = new TijianDetail2OfServiceView();
 
         BeanUtils.copyProperties(tijianDetail2OfServiceView, tijianDetail2OfService);
-
-        tijianDetail2OfService.setProvinceName((String) tijianDetail2OfServiceView.getCascader().get(0));
-
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", (String) tijianDetail2OfServiceView.getCascader().get(0));
+        queryWrapper.eq("id",tijianDetail2OfServiceView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
         for (AreaOfDic areaOfDic : list) {
+            tijianDetail2OfService.setProvinceName(String.valueOf(areaOfDic.getName()));
             tijianDetail2OfService.setProvinceCode(String.valueOf(areaOfDic.getCode()));
         }
-
-        tijianDetail2OfService.setCityName((String) tijianDetail2OfServiceView.getCascader().get(1));
-
         QueryWrapper<AreaOfDic> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", (String) tijianDetail2OfServiceView.getCascader().get(1));
+        queryWrapper1.eq("id", tijianDetail2OfServiceView.getCascader().get(1));
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper1);
         for (AreaOfDic areaOfDic : list1) {
+            tijianDetail2OfService.setCityName(String.valueOf(areaOfDic.getName()));
+
             tijianDetail2OfService.setCityCode(String.valueOf(areaOfDic.getCode()));
         }
 
-        if (tijianDetail2OfServiceView.getCascader().size() != 3) {
-            tijianDetail2OfService.setDistrictName((String) tijianDetail2OfServiceView.getCascader().get(1));
-            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
-            queryWrapper3.eq("name", (String) tijianDetail2OfServiceView.getCascader().get(1));
+        if (tijianDetail2OfServiceView.getCascader().size() !=3) {
+            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+            queryWrapper3.eq("id", tijianDetail2OfServiceView.getCascader().get(1));
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
+                tijianDetail2OfService.setDistrictName(String.valueOf(areaOfDic.getName()));
                 tijianDetail2OfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         } else {
-            tijianDetail2OfService.setDistrictName((String) tijianDetail2OfServiceView.getCascader().get(2));
             QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("name", (String) tijianDetail2OfServiceView.getCascader().get(2));
+            queryWrapper2.eq("id", tijianDetail2OfServiceView.getCascader().get(2));
             List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
             for (AreaOfDic areaOfDic : list2) {
+                tijianDetail2OfService.setDistrictName(String.valueOf(areaOfDic.getName()));
                 tijianDetail2OfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
-
-
         return tijianDetail2OfServiceService.updateById(tijianDetail2OfService);
     }
 
     @GetMapping("/list")
     public IPage<TijianDetail2OfService> list(String json, HttpSession httpSession) {
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-
+        List list1 = new ArrayList();
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
@@ -187,8 +195,23 @@ public class TijianDetail2OfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String enterpriseName = jsonObject.getString("enterpriseName");
         String name = jsonObject.getString("name");
+        QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
+        queryWrapper1.eq("name",sysUser.getCompanyName());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            if (serviceOfRegister.getType().equals("体检机构")) {
+                QueryWrapper<TijianBasicOfService> queryWrapper2 = new QueryWrapper();
+                queryWrapper2.eq("name", serviceOfRegister.getName());
+                List<TijianBasicOfService> list2 = tijianBasicOfServiceService.list(queryWrapper2);
+                for (TijianBasicOfService tijianBasicOfService : list2) {
+                    list1.clear();
+                    list1.add(tijianBasicOfService.getId());
+                }
+            }
+        }
+
         QueryWrapper<TijianDetail2OfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", sysUser.getCompanyId());
+        queryWrapper.eq("tijianBasicId", list1.get(0));
         if (!Strings.isNullOrEmpty(enterpriseName)) {
             queryWrapper.eq("enterpriseName", enterpriseName);
         }

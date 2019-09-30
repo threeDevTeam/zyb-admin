@@ -10,5 +10,5 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class TijianBasicOfServiceView  extends TijianBasicOfService {
-    private List<ArrayList> cascader;
+    private ArrayList cascader;
 }

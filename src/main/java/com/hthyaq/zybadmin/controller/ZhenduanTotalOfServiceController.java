@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,12 +45,14 @@ public class ZhenduanTotalOfServiceController {
         queryWrapper.eq("id",sysUser.getCompanyId());
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
         for (ServiceOfRegister serviceOfRegister : list) {
-            QueryWrapper<ZhenduanBasicOfService> queryWrapper1 = new QueryWrapper();
-            queryWrapper1.eq("name", serviceOfRegister.getName());
-            List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(queryWrapper1);
-            for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
-                zhenduanTotalOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
-                flag=zhenduanTotalOfServiceService.save(zhenduanTotalOfService);
+            if (serviceOfRegister.getType().equals("诊断机构")) {
+                QueryWrapper<ZhenduanBasicOfService> queryWrapper1 = new QueryWrapper();
+                queryWrapper1.eq("name", serviceOfRegister.getName());
+                List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(queryWrapper1);
+                for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
+                    zhenduanTotalOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
+                    flag = zhenduanTotalOfServiceService.save(zhenduanTotalOfService);
+                }
             }
         }
         return  flag;
@@ -77,15 +80,30 @@ public class ZhenduanTotalOfServiceController {
     @GetMapping("/list")
     public IPage<ZhenduanTotalOfService> list(String json, HttpSession httpSession) {
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-
+        List list1 = new ArrayList();
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
+        QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
+        queryWrapper1.eq("name",sysUser.getCompanyName());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            if (serviceOfRegister.getType().equals("诊断机构")) {
+                QueryWrapper<ZhenduanBasicOfService> queryWrapper2 = new QueryWrapper();
+                queryWrapper2.eq("name", serviceOfRegister.getName());
+                List<ZhenduanBasicOfService> list2 = zhenduanBasicOfServiceService.list(queryWrapper2);
+                for (ZhenduanBasicOfService zhenduanBasicOfService : list2) {
+                    list1.clear();
+                    list1.add(zhenduanBasicOfService.getId());
+                }
+            }
+        }
+
         QueryWrapper<ZhenduanTotalOfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",sysUser.getCompanyId());
+        queryWrapper.eq("zhenduanBasicId", list1.get(0));
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }
