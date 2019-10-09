@@ -1,11 +1,9 @@
 package com.hthyaq.zybadmin;
 
-import java.io.Serializable;
+import org.apache.commons.io.FilenameUtils;
 
 public class T3 {
     public static void main(String[] args) {
-        Integer i=1;
-        Integer i2=2;
-        System.out.println((float)i/i2);
+        System.out.println(FilenameUtils.getBaseName("d:/aa/a.txt"));
     }
 }

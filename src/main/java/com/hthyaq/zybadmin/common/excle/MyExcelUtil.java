@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.common.excle;
 
 import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.metadata.BaseRowModel;
@@ -15,7 +16,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +75,47 @@ public class MyExcelUtil {
         return dataMap;
     }
 
+    /*
+    生成excel,只有一个sheet
+    file=路径+文件名
+ */
+    public static void writeOneSheetExcel(String file, List<? extends BaseRowModel> dataList, Class<? extends BaseRowModel> modelClass) {
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            ExcelWriter writer = new ExcelWriter(outputStream, getExcelTypeEnum(file));
+            writer.write(dataList, new Sheet(1, 0, modelClass, FilenameUtils.getBaseName(file), null)).finish();
+        } catch (Exception e) {
+            log.error("生成Excel失败了！");
+            log.error(Throwables.getStackTraceAsString(e));
+        } finally {
+            IOUtils.closeQuietly(outputStream);
+        }
+    }
+
+    /*
+    生成excel,多个sheet
+    file=路径+文件名
+    map
+        key-sheet的名字
+        value-数据
+    */
+    public static void writeMoreSheetExcel(String file, Map<String, List<? extends BaseRowModel>> map, Class modelClass) {
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(file);
+            ExcelWriter writer = new ExcelWriter(outputStream, getExcelTypeEnum(file), true);
+            int sheetNo = 1;
+            for (String sheetName : map.keySet()) {
+                writer.write(map.get(sheetName), new Sheet(sheetNo, 0, modelClass, sheetName, null));
+                sheetNo++;
+            }
+            writer.finish();
+        } catch (Exception e) {
+            log.error("生成Excel失败了！");
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+    }
 
     //根据文件获取excel的后缀
     private static ExcelTypeEnum getExcelTypeEnum(String filename) {
