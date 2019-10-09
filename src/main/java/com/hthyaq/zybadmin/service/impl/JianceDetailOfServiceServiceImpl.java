@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,6 +59,15 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
     JianceBasicOfServiceService jianceBasicOfServiceService;
     @Autowired
     AreaOfDicService areaOfDicService;
+    @Autowired
+    TypesofregistrationService typesofregistrationService;
+    @Autowired
+    IndustryOfDicService industryOfDicService;
+    @Autowired
+    GangweiService gangweiService;
+    @Autowired
+    HazardousfactorsService hazardousfactorsService;
+
     @Override
     public boolean saveData(JianceDetailOfServiceView jianceDetailOfServiceView, HttpSession httpSession) {
         boolean flag2 = true;
@@ -67,9 +77,10 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
         List<ServiceOfRegister> list4 = serviceOfRegisterService.list(qw);
         for (ServiceOfRegister serviceOfRegister : list4) {
             if(serviceOfRegister.getType().equals("检测机构")) {
-                //demo
+
                 JianceDetailOfService jianceDetailOfService = new JianceDetailOfService();
                 BeanUtils.copyProperties(jianceDetailOfServiceView, jianceDetailOfService);
+                //省/市/区
                 QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("id", jianceDetailOfServiceView.getCascader().get(0));
                 List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
@@ -103,10 +114,77 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
                         jianceDetailOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
                     }
                 }
+                //登记注册类型
+                    QueryWrapper<Typesofregistration> qwt= new QueryWrapper<>();
+                    qwt.eq("id",jianceDetailOfServiceView.getCascaded1().get(0));
+                    List<Typesofregistration> listt= typesofregistrationService.list(qwt);
+                    for (Typesofregistration typesofregistration : listt) {
+                        jianceDetailOfService.setRegisterSmallName(typesofregistration.getName());
+                    }
+                //所属行业名称
+                QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
+                qw2.eq("id", jianceDetailOfServiceView.getCascaded2().get(0));
+                List<IndustryOfDic> list2 = industryOfDicService.list(qw2);
+                for (IndustryOfDic industryOfDic : list2) {
+                    jianceDetailOfService.setIndustryBigName(industryOfDic.getName());
+                }
+                if(jianceDetailOfServiceView.getCascaded2().size()==2){
+                    QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+                    qw1.eq("id",jianceDetailOfServiceView.getCascaded2().get(1));
+                    List<IndustryOfDic> list3= industryOfDicService.list(qw1);
+                    for (IndustryOfDic industryOfDic : list3) {
+                        jianceDetailOfService.setIndustrySmallName(industryOfDic.getName());
+                    }
+                }if(jianceDetailOfServiceView.getCascaded2().size()==3){
+                    QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+                    qw1.eq("id",jianceDetailOfServiceView.getCascaded2().get(2));
+                    List<IndustryOfDic> listT1= industryOfDicService.list(qw1);
+                    for (IndustryOfDic industryOfDic : listT1) {
+                        jianceDetailOfService.setIndustrySmallName(industryOfDic.getName());
+                    }
+                }else{
+                    jianceDetailOfService.setIndustrySmallName("无");
+                }
+
+                //岗位名称
+                QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
+                qw3.eq("id", jianceDetailOfServiceView.getCascaded3().get(0));
+                List<Gangwei> list3 = gangweiService.list(qw3);
+                for (Gangwei gangwei : list3) {
+                    jianceDetailOfService.setPostBigName(gangwei.getName());
+                }
+                if(jianceDetailOfServiceView.getCascaded3().size()==2){
+                    QueryWrapper<Gangwei> qw1= new QueryWrapper<>();
+                    qw1.eq("id",jianceDetailOfServiceView.getCascaded3().get(1));
+                    List<Gangwei> list5= gangweiService.list(qw1);
+                    for (Gangwei gangwei : list5) {
+                        jianceDetailOfService.setPostSmallName(gangwei.getName());
+                    }
+                }else{
+                    jianceDetailOfService.setPostSmallName("无");
+                }
+                //职业病危害因素名称
+                QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();
+                qw4.eq("id", jianceDetailOfServiceView.getCascaded4().get(0));
+                List<Hazardousfactors> list5 = hazardousfactorsService.list(qw4);
+                for (Hazardousfactors hazardousfactors : list5) {
+                    jianceDetailOfService.setDangerBigName(hazardousfactors.getName());
+                }
+                if(jianceDetailOfServiceView.getCascaded4().size()==2){
+                    QueryWrapper<Hazardousfactors> qw1= new QueryWrapper<>();
+                    qw1.eq("id",jianceDetailOfServiceView.getCascaded4().get(1));
+                    List<Hazardousfactors> list6=hazardousfactorsService.list(qw1);
+                    for (Hazardousfactors hazardousfactors : list6) {
+                        jianceDetailOfService.setDangerSmallName(hazardousfactors.getName());
+                    }
+                }else{
+                    jianceDetailOfService.setDangerSmallName("无");
+                }
+
                 QueryWrapper<JianceBasicOfService> qw1= new QueryWrapper();
                 qw1.eq("name", serviceOfRegister.getName());
-                List<JianceBasicOfService> list5 = jianceBasicOfServiceService.list(qw1);
-                for (JianceBasicOfService jianceBasicOfService : list5) {
+                List<JianceBasicOfService> list7 = jianceBasicOfServiceService.list(qw1);
+                for (JianceBasicOfService jianceBasicOfService : list7) {
                     jianceDetailOfService.setJianceBasicId(jianceBasicOfService.getId());
                 }
                 this.save(jianceDetailOfService);
@@ -185,6 +263,75 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
                 jianceDetailOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
+        //登记注册类型
+        QueryWrapper<Typesofregistration> qwt= new QueryWrapper<>();
+        qwt.eq("id",jianceDetailOfServiceView.getCascaded1().get(0));
+        List<Typesofregistration> listt= typesofregistrationService.list(qwt);
+        for (Typesofregistration typesofregistration : listt) {
+            jianceDetailOfService.setRegisterSmallName(typesofregistration.getName());
+        }
+        //所属行业名称
+        QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
+        qw2.eq("id", jianceDetailOfServiceView.getCascaded2().get(0));
+        List<IndustryOfDic> list2 = industryOfDicService.list(qw2);
+        for (IndustryOfDic industryOfDic : list2) {
+            jianceDetailOfService.setIndustryBigName(industryOfDic.getName());
+        }
+        if(jianceDetailOfServiceView.getCascaded2().size()==2){
+            QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+            qw1.eq("id",jianceDetailOfServiceView.getCascaded2().get(1));
+            List<IndustryOfDic> list3= industryOfDicService.list(qw1);
+            for (IndustryOfDic industryOfDic : list3) {
+                jianceDetailOfService.setIndustrySmallName(industryOfDic.getName());
+            }
+        }if(jianceDetailOfServiceView.getCascaded2().size()==3){
+            QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+            qw1.eq("id",jianceDetailOfServiceView.getCascaded2().get(2));
+            List<IndustryOfDic> listT1= industryOfDicService.list(qw1);
+            for (IndustryOfDic industryOfDic : listT1) {
+                jianceDetailOfService.setIndustrySmallName(industryOfDic.getName());
+            }
+        }else{
+            jianceDetailOfService.setIndustrySmallName("无");
+        }
+
+        //岗位名称
+        QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
+        qw3.eq("id", jianceDetailOfServiceView.getCascaded3().get(0));
+        List<Gangwei> list3 = gangweiService.list(qw3);
+        for (Gangwei gangwei : list3) {
+            jianceDetailOfService.setPostBigName(gangwei.getName());
+        }
+        if(jianceDetailOfServiceView.getCascaded3().size()==2){
+            QueryWrapper<Gangwei> qw1= new QueryWrapper<>();
+            qw1.eq("id",jianceDetailOfServiceView.getCascaded3().get(1));
+            List<Gangwei> list5= gangweiService.list(qw1);
+            for (Gangwei gangwei : list5) {
+                jianceDetailOfService.setPostSmallName(gangwei.getName());
+            }
+        }else{
+            jianceDetailOfService.setPostSmallName("无");
+        }
+        //职业病危害因素名称
+        QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();
+        qw4.eq("id", jianceDetailOfServiceView.getCascaded4().get(0));
+        List<Hazardousfactors> list5 = hazardousfactorsService.list(qw4);
+        for (Hazardousfactors hazardousfactors : list5) {
+            jianceDetailOfService.setDangerBigName(hazardousfactors.getName());
+        }
+        if(jianceDetailOfServiceView.getCascaded4().size()==2){
+            QueryWrapper<Hazardousfactors> qw1= new QueryWrapper<>();
+            qw1.eq("id",jianceDetailOfServiceView.getCascaded4().get(1));
+            List<Hazardousfactors> list6=hazardousfactorsService.list(qw1);
+            for (Hazardousfactors hazardousfactors : list6) {
+                jianceDetailOfService.setDangerSmallName(hazardousfactors.getName());
+            }
+        }else{
+            jianceDetailOfService.setDangerSmallName("无");
+        }
+
+
+
         flag1 = this.updateById(jianceDetailOfService);
 
         //demoCourse，先删除，后插入
@@ -197,9 +344,9 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
             //设置demoCourse的demo_id
             dataSource.forEach(demoCourse -> demoCourse.setJianceDetailId(jianceDetailOfService.getId()));
             //保存
-            flag2 = jianceDetailResultOfServiceService.saveBatch(dataSource);
+         jianceDetailResultOfServiceService.saveBatch(dataSource);
         }
 
-        return flag1 && flag2;
+        return flag1;
     }
 }

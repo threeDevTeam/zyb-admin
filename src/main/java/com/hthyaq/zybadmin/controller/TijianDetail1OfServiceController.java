@@ -44,7 +44,14 @@ public class TijianDetail1OfServiceController {
     TijianBasicOfServiceService tijianBasicOfServiceService;
     @Autowired
     AreaOfDicService areaOfDicService;
-
+    @Autowired
+    TypesofregistrationService typesofregistrationService;
+    @Autowired
+    IndustryOfDicService industryOfDicService;
+    @Autowired
+    GangweiService gangweiService;
+    @Autowired
+    HazardousfactorsService hazardousfactorsService;
     @PostMapping("/add")
     public boolean add(@RequestBody TijianDetail1OfServiceView tijianDetail1OfServiceView, HttpSession httpSession) {
         boolean flag = false;
@@ -90,6 +97,67 @@ public class TijianDetail1OfServiceController {
                         tijianDetail1OfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
                     }
                 }
+                //登记注册类型
+                QueryWrapper<Typesofregistration> qt = new QueryWrapper<>();
+                qt.eq("id", tijianDetail1OfServiceView.getCascaded1().get(0));
+                List<Typesofregistration> list3 = typesofregistrationService.list(qt);
+                for (Typesofregistration typesofregistration : list3) {
+                    tijianDetail1OfService.setRegisterBigName(typesofregistration.getName());
+                }
+                if(tijianDetail1OfServiceView.getCascaded1().size()==2){
+                    QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+                    qw1.eq("id",tijianDetail1OfServiceView.getCascaded1().get(1));
+                    List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+                    for (Typesofregistration typesofregistration : list2) {
+                        tijianDetail1OfService.setRegisterSmallName(typesofregistration.getName());
+                    }
+                } else {
+                    tijianDetail1OfService.setRegisterSmallName("无");
+                }
+                //所属行业名称
+                QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
+                qw2.eq("id", tijianDetail1OfServiceView.getCascaded2().get(0));
+                List<IndustryOfDic> list2 = industryOfDicService.list(qw2);
+                for (IndustryOfDic industryOfDic : list2) {
+                    tijianDetail1OfService.setIndustryBigName(industryOfDic.getName());
+                }
+                if(tijianDetail1OfServiceView.getCascaded2().size()==2){
+                    QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+                    qw1.eq("id",tijianDetail1OfServiceView.getCascaded2().get(1));
+                    List<IndustryOfDic> listI= industryOfDicService.list(qw1);
+                    for (IndustryOfDic industryOfDic : listI) {
+                        tijianDetail1OfService.setIndustrySmallName(industryOfDic.getName());
+                    }
+                }if(tijianDetail1OfServiceView.getCascaded2().size()==3){
+                    QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+                    qw1.eq("id",tijianDetail1OfServiceView.getCascaded2().get(2));
+                    List<IndustryOfDic> listT1= industryOfDicService.list(qw1);
+                    for (IndustryOfDic industryOfDic : listT1) {
+                        tijianDetail1OfService.setIndustrySmallName(industryOfDic.getName());
+                    }
+                }else{
+                    tijianDetail1OfService.setIndustrySmallName("无");
+                }
+
+
+                //岗位名称
+                QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
+                qw3.eq("id", tijianDetail1OfServiceView.getCascaded3().get(0));
+                List<Gangwei> listG = gangweiService.list(qw3);
+                for (Gangwei gangwei : listG) {
+                    tijianDetail1OfService.setPostBigName(gangwei.getName());
+                }
+                if(tijianDetail1OfServiceView.getCascaded3().size()==2){
+                    QueryWrapper<Gangwei> qw1= new QueryWrapper<>();
+                    qw1.eq("id",tijianDetail1OfServiceView.getCascaded3().get(1));
+                    List<Gangwei> list5= gangweiService.list(qw1);
+                    for (Gangwei gangwei : list5) {
+                        tijianDetail1OfService.setPostSmallName(gangwei.getName());
+                    }
+                }else {
+                    tijianDetail1OfService.setPostSmallName("无");
+                }
+
                 QueryWrapper<TijianBasicOfService> qw1 = new QueryWrapper();
                 qw1.eq("name", serviceOfRegister.getName());
                 List<TijianBasicOfService> list5 = tijianBasicOfServiceService.list(qw1);
@@ -110,6 +178,9 @@ public class TijianDetail1OfServiceController {
     @GetMapping("/getById")
     public TijianDetail1OfService getById(Integer id) {
         List list=new ArrayList();
+        List listc1 = new ArrayList();
+        List listc2 = new ArrayList();
+        List listc3 = new ArrayList();
         TijianDetail1OfServiceView tijianDetail1OfServiceView=new TijianDetail1OfServiceView();
         TijianDetail1OfService tijianDetail1OfService = tijianDetail1OfServiceService.getById(id);
         BeanUtils.copyProperties(tijianDetail1OfService, tijianDetail1OfServiceView);
@@ -139,8 +210,53 @@ public class TijianDetail1OfServiceController {
                 list.add(areaOfDic.getId());
             }
         }
-
         tijianDetail1OfServiceView.setCascader((ArrayList) list);
+        //登记注册类型
+        QueryWrapper<Typesofregistration> qwT1 = new QueryWrapper<>();
+        qwT1.eq("name", tijianDetail1OfService.getRegisterBigName());
+        List<Typesofregistration> listTS = typesofregistrationService.list(qwT1);
+        for (Typesofregistration typesofregistration : listTS) {
+            listc1.add(typesofregistration.getId());
+        }
+        QueryWrapper<Typesofregistration> qwT2 = new QueryWrapper<>();
+        qwT2.eq("name", tijianDetail1OfService.getRegisterSmallName());
+        List<Typesofregistration> listT = typesofregistrationService.list(qwT2);
+        for (Typesofregistration typesofregistration : listT) {
+            listc1.add(typesofregistration.getId());
+        }
+        tijianDetail1OfServiceView.setCascaded1((ArrayList) listc1);
+
+
+        //所属行业名称
+        QueryWrapper<IndustryOfDic> qw = new QueryWrapper<>();
+        qw.eq("name", tijianDetail1OfService.getIndustryBigName());
+        List<IndustryOfDic> listI = industryOfDicService.list(qw);
+        for (IndustryOfDic industryOfDic : listI) {
+            listc2.add(industryOfDic.getId());
+        }
+        QueryWrapper<IndustryOfDic> qw3 = new QueryWrapper<>();
+        qw3.eq("name", tijianDetail1OfService.getIndustrySmallName());
+        List<IndustryOfDic> listc = industryOfDicService.list(qw3);
+        for (IndustryOfDic industryOfDic : listc) {
+            listc2.add(industryOfDic.getId());
+        }
+        tijianDetail1OfServiceView.setCascaded2((ArrayList) listc2);
+
+        //岗位名称
+        QueryWrapper<Gangwei> gw1 = new QueryWrapper<>();
+        gw1.eq("name", tijianDetail1OfService.getPostBigName());
+        List<Gangwei> gw = gangweiService.list(gw1);
+        for (Gangwei gangwei : gw) {
+            listc3.add(gangwei.getId());
+        }
+        QueryWrapper<Gangwei> gw5 = new QueryWrapper<>();
+        gw5.eq("name", tijianDetail1OfService.getPostSmallName());
+        List<Gangwei> gw3 = gangweiService.list(gw5);
+        for (Gangwei gangwei : gw3) {
+            listc3.add(gangwei.getId());
+        }
+        tijianDetail1OfServiceView.setCascaded3((ArrayList) listc3);
+
         return tijianDetail1OfServiceView;
     }
 
@@ -182,6 +298,64 @@ public class TijianDetail1OfServiceController {
                 tijianDetail1OfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("id", tijianDetail1OfServiceView.getCascaded1().get(0));
+        List<Typesofregistration> list3 = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : list3) {
+            tijianDetail1OfService.setRegisterBigName(typesofregistration.getName());
+        }
+        if(tijianDetail1OfServiceView.getCascaded1().size()==2){
+            QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+            qw1.eq("id",tijianDetail1OfServiceView.getCascaded1().get(1));
+            List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+            for (Typesofregistration typesofregistration : list2) {
+                tijianDetail1OfService.setRegisterSmallName(typesofregistration.getName());
+            }
+        }else{
+            tijianDetail1OfService.setRegisterSmallName("无");
+        }
+        //所属行业名称
+        QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
+        qw2.eq("id", tijianDetail1OfServiceView.getCascaded2().get(0));
+        List<IndustryOfDic> list2 = industryOfDicService.list(qw2);
+        for (IndustryOfDic industryOfDic : list2) {
+            tijianDetail1OfService.setIndustryBigName(industryOfDic.getName());
+        }
+        if(tijianDetail1OfServiceView.getCascaded2().size()==2){
+            QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+            qw1.eq("id",tijianDetail1OfServiceView.getCascaded2().get(1));
+            List<IndustryOfDic> listI= industryOfDicService.list(qw1);
+            for (IndustryOfDic industryOfDic : listI) {
+                tijianDetail1OfService.setIndustrySmallName(industryOfDic.getName());
+            }
+        }if(tijianDetail1OfServiceView.getCascaded2().size()==3){
+            QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+            qw1.eq("id",tijianDetail1OfServiceView.getCascaded2().get(2));
+            List<IndustryOfDic> listT1= industryOfDicService.list(qw1);
+            for (IndustryOfDic industryOfDic : listT1) {
+                tijianDetail1OfService.setIndustrySmallName(industryOfDic.getName());
+            }
+        }else{
+            tijianDetail1OfService.setIndustrySmallName("无");
+        }
+
+        //岗位名称
+        QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
+        qw3.eq("id", tijianDetail1OfServiceView.getCascaded3().get(0));
+        List<Gangwei> listG = gangweiService.list(qw3);
+        for (Gangwei gangwei : listG) {
+            tijianDetail1OfService.setPostBigName(gangwei.getName());
+        }
+        if(tijianDetail1OfServiceView.getCascaded3().size()==2){
+            QueryWrapper<Gangwei> qw1= new QueryWrapper<>();
+            qw1.eq("id",tijianDetail1OfServiceView.getCascaded3().get(1));
+            List<Gangwei> list5= gangweiService.list(qw1);
+            for (Gangwei gangwei : list5) {
+                tijianDetail1OfService.setPostSmallName(gangwei.getName());
+            }
+            return tijianDetail1OfServiceService.updateById(tijianDetail1OfService);
+        }
+        tijianDetail1OfService.setPostSmallName("无");
         return tijianDetail1OfServiceService.updateById(tijianDetail1OfService);
     }
     @GetMapping("/list")

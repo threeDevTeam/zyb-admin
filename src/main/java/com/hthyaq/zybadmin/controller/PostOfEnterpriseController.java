@@ -10,10 +10,7 @@ import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.PostOfEnterpriseView;
-import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
-import com.hthyaq.zybadmin.service.EnterpriseService;
-import com.hthyaq.zybadmin.service.PostOfEnterpriseService;
-import com.hthyaq.zybadmin.service.WorkplaceOfEnterpriseService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +39,8 @@ public class PostOfEnterpriseController {
     EnterpriseService enterpriseService;
     @Autowired
     WorkplaceOfEnterpriseService workplaceOfEnterpriseService;
-
+    @Autowired
+    GangweiService gangweiService;
     @PostMapping("/add")
     public boolean add(@RequestBody PostOfEnterpriseView postOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -50,7 +48,23 @@ public class PostOfEnterpriseController {
         PostOfEnterprise postOfEnterprise = new PostOfEnterprise();
         //other
         BeanUtils.copyProperties(postOfEnterpriseView, postOfEnterprise);
-
+        //岗位名称
+        QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
+        qw3.eq("id", postOfEnterpriseView.getCascaded1().get(0));
+        List<Gangwei> list3 = gangweiService.list(qw3);
+        for (Gangwei gangwei : list3) {
+            postOfEnterprise.setPostBigName(gangwei.getName());
+        }
+        if(postOfEnterpriseView.getCascaded1().size()==2){
+            QueryWrapper<Gangwei> qw1= new QueryWrapper<>();
+            qw1.eq("id",postOfEnterpriseView.getCascaded1().get(1));
+            List<Gangwei> list5= gangweiService.list(qw1);
+            for (Gangwei gangwei : list5) {
+                postOfEnterprise.setPostSmallName(gangwei.getName());
+            }
+        }else{
+            postOfEnterprise.setPostSmallName("无");
+        }
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
@@ -77,6 +91,7 @@ public class PostOfEnterpriseController {
 
     @GetMapping("/getById")
     public PostOfEnterpriseView getById(Integer id) {
+        List listc1 = new ArrayList();
         PostOfEnterpriseView postOfEnterpriseView=new PostOfEnterpriseView();
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(id);
         BeanUtils.copyProperties(postOfEnterprise, postOfEnterpriseView);
@@ -87,11 +102,48 @@ public class PostOfEnterpriseController {
         for (WorkplaceOfEnterprise workplaceOfEnterprise : List) {
             postOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()));
         }
-       return postOfEnterpriseView;
+        //岗位名称
+        QueryWrapper<Gangwei> gw1 = new QueryWrapper<>();
+        gw1.eq("name", postOfEnterprise.getPostBigName());
+        List<Gangwei> gw = gangweiService.list(gw1);
+        for (Gangwei gangwei : gw) {
+            listc1.add(gangwei.getId());
+        }
+        QueryWrapper<Gangwei> gw5 = new QueryWrapper<>();
+        gw5.eq("name", postOfEnterprise.getPostSmallName());
+        List<Gangwei> gw3 = gangweiService.list(gw5);
+        for (Gangwei gangwei : gw3) {
+            listc1.add(gangwei.getId());
+        }
+        postOfEnterpriseView.setCascaded1((ArrayList) listc1);
+
+        return postOfEnterpriseView;
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody PostOfEnterprise postOfEnterprise) {
+    public boolean edit(@RequestBody PostOfEnterpriseView postOfEnterpriseView) {
+        //demo
+        PostOfEnterprise postOfEnterprise = new PostOfEnterprise();
+
+        BeanUtils.copyProperties(postOfEnterpriseView, postOfEnterprise);
+
+        //岗位名称
+        QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
+        qw3.eq("id", postOfEnterpriseView.getCascaded1().get(0));
+        List<Gangwei> list3 = gangweiService.list(qw3);
+        for (Gangwei gangwei : list3) {
+            postOfEnterprise.setPostBigName(gangwei.getName());
+        }
+        if(postOfEnterpriseView.getCascaded1().size()==2){
+            QueryWrapper<Gangwei> qw1= new QueryWrapper<>();
+            qw1.eq("id",postOfEnterpriseView.getCascaded1().get(1));
+            List<Gangwei> list5= gangweiService.list(qw1);
+            for (Gangwei gangwei : list5) {
+                postOfEnterprise.setPostSmallName(gangwei.getName());
+            }
+        }else{
+            postOfEnterprise.setPostSmallName("无");
+        }
         return postOfEnterpriseService.updateById(postOfEnterprise);
     }
 

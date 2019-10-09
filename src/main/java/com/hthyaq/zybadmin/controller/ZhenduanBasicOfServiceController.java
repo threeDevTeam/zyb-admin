@@ -11,6 +11,7 @@ import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.vo.JianceBasicOfView;
 import com.hthyaq.zybadmin.model.vo.TijianDetail1OfServiceView;
 import com.hthyaq.zybadmin.model.vo.TijianDetail2OfServiceView;
 import com.hthyaq.zybadmin.model.vo.ZhenduanBasicOfServiceView;
@@ -41,8 +42,10 @@ public class ZhenduanBasicOfServiceController {
     ServiceOfRegisterService serviceOfRegisterService;
     @Autowired
     AreaOfDicService areaOfDicService;
+    @Autowired
+    TypesofregistrationService typesofregistrationService;
     @PostMapping("/add")
-    public boolean add(@RequestBody ZhenduanBasicOfService zhenduanBasicOfService ,HttpSession httpSession) {
+    public boolean add(@RequestBody ZhenduanBasicOfServiceView zhenduanBasicOfServiceView ,HttpSession httpSession) {
         boolean flag = false;
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<ServiceOfRegister> queryWrapper=new QueryWrapper();
@@ -50,6 +53,24 @@ public class ZhenduanBasicOfServiceController {
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
         for (ServiceOfRegister serviceOfRegister : list) {
             if (serviceOfRegister.getType().equals("诊断机构")) {
+                ZhenduanBasicOfService zhenduanBasicOfService=new ZhenduanBasicOfService();
+                BeanUtils.copyProperties(zhenduanBasicOfServiceView, zhenduanBasicOfService);
+                QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+                qw.eq("id", zhenduanBasicOfServiceView.getCascaded1().get(0));
+                List<Typesofregistration> list1 = typesofregistrationService.list(qw);
+                for (Typesofregistration typesofregistration : list1) {
+                    zhenduanBasicOfService.setRegisterBigName(typesofregistration.getName());
+                }
+                if(zhenduanBasicOfServiceView.getCascaded1().size()==2){
+                    QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+                    qw1.eq("id",zhenduanBasicOfServiceView.getCascaded1().get(1));
+                    List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+                    for (Typesofregistration typesofregistration : list2) {
+                        zhenduanBasicOfService.setRegisterSmallName(typesofregistration.getName());
+                    }
+                }else{
+                    zhenduanBasicOfService.setRegisterSmallName("无");
+                }
                 zhenduanBasicOfService.setName(serviceOfRegister.getName());
                 zhenduanBasicOfService.setCode(serviceOfRegister.getCode());
                 zhenduanBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
@@ -74,6 +95,7 @@ public class ZhenduanBasicOfServiceController {
     public ZhenduanBasicOfService getById(Integer id) {
 
         List list=new ArrayList();
+        List list4=new ArrayList();
         ZhenduanBasicOfServiceView zhenduanBasicOfServiceView=new ZhenduanBasicOfServiceView();
         ZhenduanBasicOfService zhenduanBasicOfService = zhenduanBasicOfServiceService.getById(id);
         BeanUtils.copyProperties(zhenduanBasicOfService, zhenduanBasicOfServiceView);
@@ -106,6 +128,19 @@ public class ZhenduanBasicOfServiceController {
 
 
         zhenduanBasicOfServiceView.setCascader((ArrayList) list);
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("name", zhenduanBasicOfService.getRegisterBigName());
+        List<Typesofregistration> listT = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : listT) {
+            list4.add(typesofregistration.getId());
+        }
+        QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
+        qw2.eq("name", zhenduanBasicOfService.getRegisterSmallName());
+        List<Typesofregistration> listTS = typesofregistrationService.list(qw2);
+        for (Typesofregistration typesofregistration : listTS) {
+            list4.add(typesofregistration.getId());
+        }
+        zhenduanBasicOfServiceView.setCascaded1((ArrayList) list4);
         return zhenduanBasicOfServiceView;
     }
 
@@ -150,7 +185,22 @@ public class ZhenduanBasicOfServiceController {
                 zhenduanBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
-
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("id", zhenduanBasicOfServiceView.getCascaded1().get(0));
+        List<Typesofregistration> list3 = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : list3) {
+            zhenduanBasicOfService.setRegisterBigName(typesofregistration.getName());
+        }
+        if(zhenduanBasicOfServiceView.getCascaded1().size()==2){
+            QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+            qw1.eq("id",zhenduanBasicOfServiceView.getCascaded1().get(1));
+            List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+            for (Typesofregistration typesofregistration : list2) {
+                zhenduanBasicOfService.setRegisterSmallName(typesofregistration.getName());
+            }
+        }else{
+            zhenduanBasicOfService.setRegisterSmallName("无");
+        }
         return zhenduanBasicOfServiceService.updateById(zhenduanBasicOfService);
     }
 

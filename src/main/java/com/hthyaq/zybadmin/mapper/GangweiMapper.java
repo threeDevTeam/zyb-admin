@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * <p>
- * 数据表1 Mapper 接口
+ * 岗位 Mapper 接口
  * </p>
  *
  * @author zhangqiang
- * @since 2019-09-05
+ * @since 2019-10-06
  */
 public interface GangweiMapper extends BaseMapper<Gangwei> {
 

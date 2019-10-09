@@ -9,4 +9,6 @@ import java.util.ArrayList;
 @Accessors(chain = true)
 public class EnterpriseView extends Enterprise {
     private ArrayList cascader;
+    private ArrayList cascaded1;
+    private ArrayList cascaded2;
 }

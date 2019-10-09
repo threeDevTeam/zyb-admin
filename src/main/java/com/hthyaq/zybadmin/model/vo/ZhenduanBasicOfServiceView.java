@@ -11,4 +11,5 @@ import java.util.List;
 @Accessors(chain = true)
 public class ZhenduanBasicOfServiceView extends ZhenduanBasicOfService {
     private ArrayList cascader;
+    private ArrayList cascaded1;
 }

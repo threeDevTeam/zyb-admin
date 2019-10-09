@@ -9,10 +9,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.entity.*;
-import com.hthyaq.zybadmin.service.AccidentPersonOfEnterpriseService;
-import com.hthyaq.zybadmin.service.AccidentSumOfEnterpriseService;
-import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
-import com.hthyaq.zybadmin.service.EnterpriseService;
+import com.hthyaq.zybadmin.model.vo.AccidentSumOfEnterpriseView;
+import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
+import com.hthyaq.zybadmin.service.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,10 +37,33 @@ public class AccidentSumOfEnterpriseController {
     EnterpriseOfRegisterService enterpriseOfRegisterService;
     @Autowired
     EnterpriseService enterpriseService;
-
+    @Autowired
+    HazardousfactorsService hazardousfactorsService;
     @PostMapping("/add")
-    public boolean add(@RequestBody AccidentSumOfEnterprise accidentSumOfEnterprise, HttpSession httpSession) {
+    public boolean add(@RequestBody AccidentSumOfEnterpriseView accidentSumOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
+        AccidentSumOfEnterprise accidentSumOfEnterprise = new AccidentSumOfEnterprise();
+        BeanUtils.copyProperties(accidentSumOfEnterpriseView, accidentSumOfEnterprise);
+
+        //职业病危害因素名称
+        QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();
+        qw4.eq("id", accidentSumOfEnterpriseView.getCascaded1().get(0));
+        List<Hazardousfactors> list5 = hazardousfactorsService.list(qw4);
+        for (Hazardousfactors hazardousfactors : list5) {
+            accidentSumOfEnterprise.setDangerBigName(hazardousfactors.getName());
+        }
+        if(accidentSumOfEnterpriseView.getCascaded1().size()==2){
+            QueryWrapper<Hazardousfactors> qw1= new QueryWrapper<>();
+            qw1.eq("id",accidentSumOfEnterpriseView.getCascaded1().get(1));
+            List<Hazardousfactors> list6=hazardousfactorsService.list(qw1);
+            for (Hazardousfactors hazardousfactors : list6) {
+                accidentSumOfEnterprise.setDangerSmallName(hazardousfactors.getName());
+            }
+        }else{
+            accidentSumOfEnterprise.setDangerSmallName("无");
+        }
+
+
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<EnterpriseOfRegister> queryWrapper = new QueryWrapper();
         queryWrapper.eq("id", sysUser.getCompanyId());
@@ -51,8 +74,8 @@ public class AccidentSumOfEnterpriseController {
             List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
             for (Enterprise enterprise : list1) {
                 accidentSumOfEnterprise.setEnterpriseId(enterprise.getId());
-                flag = accidentSumOfEnterpriseService.save(accidentSumOfEnterprise);
             }
+            flag = accidentSumOfEnterpriseService.save(accidentSumOfEnterprise);
         }
         return flag;
     }
@@ -64,18 +87,57 @@ public class AccidentSumOfEnterpriseController {
 
     @GetMapping("/getById")
     public AccidentSumOfEnterprise getById(Integer id) {
-
+        List listc1 = new ArrayList();
         AccidentSumOfEnterprise accidentSumOfEnterprise = accidentSumOfEnterpriseService.getById(id);
+        AccidentSumOfEnterpriseView accidentSumOfEnterpriseView = new AccidentSumOfEnterpriseView();
+
+        BeanUtils.copyProperties(accidentSumOfEnterprise, accidentSumOfEnterpriseView);
+        //职业病危害因素名称
+        QueryWrapper<Hazardousfactors> qw6 = new QueryWrapper<>();
+        qw6.eq("name", accidentSumOfEnterprise.getDangerBigName());
+        List<Hazardousfactors> hd = hazardousfactorsService.list(qw6);
+        for (Hazardousfactors hazardousfactors : hd) {
+            listc1.add(hazardousfactors.getId());
+        }
+        QueryWrapper<Hazardousfactors> qw7 = new QueryWrapper<>();
+        qw7.eq("name", accidentSumOfEnterprise.getDangerSmallName());
+        List<Hazardousfactors> hd2 = hazardousfactorsService.list(qw7);
+        for (Hazardousfactors hazardousfactors : hd2) {
+            listc1.add(hazardousfactors.getId());
+        }
+        accidentSumOfEnterpriseView.setCascaded1((ArrayList) listc1);
+
+
         //demoCourse
         QueryWrapper<AccidentSumOfEnterprise> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
         List<AccidentSumOfEnterprise> demoCourseList = accidentSumOfEnterpriseService.list(queryWrapper);
         //将demoCourse的数据设置到demoData
-        return accidentSumOfEnterprise;
+        return accidentSumOfEnterpriseView;
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody AccidentSumOfEnterprise accidentSumOfEnterprise) {
+    public boolean edit(@RequestBody AccidentSumOfEnterpriseView accidentSumOfEnterpriseView) {
+        AccidentSumOfEnterprise accidentSumOfEnterprise=new AccidentSumOfEnterprise();
+        BeanUtils.copyProperties(accidentSumOfEnterpriseView, accidentSumOfEnterprise);
+        //职业病危害因素名称
+        QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();
+        qw4.eq("id", accidentSumOfEnterpriseView.getCascaded1().get(0));
+        List<Hazardousfactors> list5 = hazardousfactorsService.list(qw4);
+        for (Hazardousfactors hazardousfactors : list5) {
+            accidentSumOfEnterprise.setDangerBigName(hazardousfactors.getName());
+        }
+        if(accidentSumOfEnterpriseView.getCascaded1().size()==2){
+            QueryWrapper<Hazardousfactors> qw1= new QueryWrapper<>();
+            qw1.eq("id",accidentSumOfEnterpriseView.getCascaded1().get(1));
+            List<Hazardousfactors> list6=hazardousfactorsService.list(qw1);
+            for (Hazardousfactors hazardousfactors : list6) {
+                accidentSumOfEnterprise.setDangerSmallName(hazardousfactors.getName());
+            }
+        }else{
+            accidentSumOfEnterprise.setDangerSmallName("无");
+        }
+
         return accidentSumOfEnterpriseService.updateById(accidentSumOfEnterprise);
     }
 

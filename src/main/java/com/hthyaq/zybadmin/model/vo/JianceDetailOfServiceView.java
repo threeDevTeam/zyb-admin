@@ -16,4 +16,8 @@ import java.util.List;
 public class JianceDetailOfServiceView extends JianceDetailOfService {
     private Child2<JianceDetailResultOfService> course;
     private ArrayList cascader;
+    private ArrayList cascaded1;
+    private ArrayList cascaded2;
+    private ArrayList cascaded3;
+    private ArrayList cascaded4;
 }

@@ -46,6 +46,8 @@ public class SickOfEnterpriseController {
     PostOfEnterpriseService postOfEnterpriseService;
     @Autowired
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
+    @Autowired
+    ZybnameService zybnameService;
     @PostMapping("/add")
     public boolean add(@RequestBody SickOfEnterpriseView sickOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -54,6 +56,23 @@ public class SickOfEnterpriseController {
 
         //other
         BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
+        //职业病名称
+        QueryWrapper<Zybname> qw4 = new QueryWrapper<>();
+        qw4.eq("id", sickOfEnterpriseView.getCascaded1().get(0));
+        List<Zybname> list5 = zybnameService.list(qw4);
+        for (Zybname zybname : list5) {
+            sickOfEnterprise.setSickBigName(zybname.getName());
+        }
+        if (sickOfEnterpriseView.getCascaded1().size() == 2) {
+            QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
+            qw1.eq("id", sickOfEnterpriseView.getCascaded1().get(1));
+            List<Zybname> list6 = zybnameService.list(qw1);
+            for (Zybname zybname : list6) {
+                sickOfEnterprise.setSickSmallName(zybname.getName());
+            }
+        } else {
+            sickOfEnterprise.setSickSmallName("无");
+        }
 
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
@@ -84,6 +103,7 @@ public class SickOfEnterpriseController {
 
     @GetMapping("/getById")
     public SickOfEnterprise getById(Integer id) {
+        List listc1 = new ArrayList();
         SickOfEnterpriseView sickOfEnterpriseView=new SickOfEnterpriseView();
         SickOfEnterprise sickOfEnterprise = sickOfEnterpriseService.getById(id);
         BeanUtils.copyProperties(sickOfEnterprise,sickOfEnterpriseView);
@@ -94,11 +114,45 @@ public class SickOfEnterpriseController {
 
         System.out.println(sickOfEnterpriseView);
         //将demoCourse的数据设置到demoData
+        //职业病名称
+        QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
+        qwZ.eq("name", sickOfEnterpriseView.getSickBigName());
+        List<Zybname> hdZ1 = zybnameService.list(qwZ);
+        for (Zybname zybname : hdZ1) {
+            listc1.add(zybname.getId());
+        }
+        QueryWrapper<Zybname> qwZ2 = new QueryWrapper<>();
+        qwZ2.eq("name", sickOfEnterpriseView.getSickSmallName());
+        List<Zybname> hdZ = zybnameService.list(qwZ2);
+        for (Zybname zybname : hdZ) {
+            listc1.add(zybname.getId());
+        }
+        sickOfEnterpriseView.setCascaded1((ArrayList) listc1);
         return sickOfEnterpriseView;
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody SickOfEnterprise sickOfEnterprise) {
+    public boolean edit(@RequestBody SickOfEnterpriseView sickOfEnterpriseView) {
+        SickOfEnterprise sickOfEnterprise = new SickOfEnterprise();
+
+        BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
+        //职业病名称
+        QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
+        qwZ.eq("id", sickOfEnterpriseView.getCascaded1().get(0));
+        List<Zybname> listZ = zybnameService.list(qwZ);
+        for (Zybname zybname : listZ) {
+            sickOfEnterprise.setSickBigName(zybname.getName());
+        }
+        if (sickOfEnterpriseView.getCascaded1().size() == 2) {
+            QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
+            qw1.eq("id", sickOfEnterpriseView.getCascaded1().get(1));
+            List<Zybname> list6 = zybnameService.list(qw1);
+            for (Zybname zybname : list6) {
+                sickOfEnterprise.setSickSmallName(zybname.getName());
+            }
+        } else {
+            sickOfEnterprise.setSickSmallName("无");
+        }
         return sickOfEnterpriseService.updateById(sickOfEnterprise);
     }
 
@@ -161,7 +215,7 @@ public class SickOfEnterpriseController {
 
                 for (PostDangerOfEnterprise postDangerOfEnterprise : list2) {
                     TreeSelcetDataSickOfEnterprise treeSelcetDataSickOfEnterprise2 = new TreeSelcetDataSickOfEnterprise();
-                    treeSelcetDataSickOfEnterprise2.setTitle(postDangerOfEnterprise.getDangerBigName());
+                    treeSelcetDataSickOfEnterprise2.setTitle(postDangerOfEnterprise.getDangerBigName()+"---"+postDangerOfEnterprise.getDangerSmallName());
                     treeSelcetDataSickOfEnterprise2.setValue(String.valueOf(postDangerOfEnterprise.getId()));
                     treeSelcetDataSickOfEnterprise2.setKey(String.valueOf(postDangerOfEnterprise.getId()));
                     chilren2.add(treeSelcetDataSickOfEnterprise2);

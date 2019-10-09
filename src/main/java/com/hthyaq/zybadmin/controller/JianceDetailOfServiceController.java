@@ -12,6 +12,7 @@ import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.bean.Child2;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.vo.FuView;
 import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
 import com.hthyaq.zybadmin.service.*;
 import org.springframework.beans.BeanUtils;
@@ -68,6 +69,14 @@ public class JianceDetailOfServiceController {
     JianceBasicOfServiceService jianceBasicOfServiceService;
     @Autowired
     AreaOfDicService areaOfDicService;
+    @Autowired
+    TypesofregistrationService typesofregistrationService;
+    @Autowired
+   GangweiService gangweiService;
+    @Autowired
+    IndustryOfDicService industryOfDicService;
+    @Autowired
+    HazardousfactorsService hazardousfactorsService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody JianceDetailOfServiceView jianceDetailOfServiceView, HttpSession httpSession) {
@@ -84,10 +93,72 @@ public class JianceDetailOfServiceController {
     public JianceDetailOfServiceView getById(Integer id) {
         JianceDetailOfServiceView jianceDetailOfServiceView = new JianceDetailOfServiceView();
         List list = new ArrayList();
+        List listc1 = new ArrayList();
+        List listc2 = new ArrayList();
+        List listc3 = new ArrayList();
+        List listc4 = new ArrayList();
         //demo
         JianceDetailOfService jianceDetailOfService = jianceDetailOfServiceService.getById(id);
         //将demo的数据设置到demoData
         BeanUtils.copyProperties(jianceDetailOfService, jianceDetailOfServiceView);
+       //登记注册类型
+        QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
+        qw2.eq("name", jianceDetailOfService.getRegisterSmallName());
+        List<Typesofregistration> listTS = typesofregistrationService.list(qw2);
+        for (Typesofregistration typesofregistration : listTS) {
+            listc1.add(typesofregistration.getId());
+        }
+        jianceDetailOfServiceView.setCascaded1((ArrayList) listc1);
+
+
+        //所属行业名称
+        QueryWrapper<IndustryOfDic> qw = new QueryWrapper<>();
+        qw.eq("name", jianceDetailOfService.getIndustryBigName());
+        List<IndustryOfDic> listT = industryOfDicService.list(qw);
+        for (IndustryOfDic industryOfDic : listT) {
+            listc2.add(industryOfDic.getId());
+        }
+        QueryWrapper<IndustryOfDic> qw3 = new QueryWrapper<>();
+        qw3.eq("name", jianceDetailOfService.getIndustrySmallName());
+        List<IndustryOfDic> listc = industryOfDicService.list(qw3);
+        for (IndustryOfDic industryOfDic : listc) {
+            listc2.add(industryOfDic.getId());
+        }
+        jianceDetailOfServiceView.setCascaded2((ArrayList) listc2);
+
+        //岗位名称
+        QueryWrapper<Gangwei> gw1 = new QueryWrapper<>();
+        gw1.eq("name", jianceDetailOfService.getPostBigName());
+        List<Gangwei> gw = gangweiService.list(gw1);
+        for (Gangwei gangwei : gw) {
+            listc3.add(gangwei.getId());
+        }
+        QueryWrapper<Gangwei> gw5 = new QueryWrapper<>();
+        gw5.eq("name", jianceDetailOfService.getPostSmallName());
+        List<Gangwei> gw3 = gangweiService.list(gw5);
+        for (Gangwei gangwei : gw3) {
+            listc3.add(gangwei.getId());
+        }
+        jianceDetailOfServiceView.setCascaded3((ArrayList) listc3);
+
+        //职业病危害因素名称
+        QueryWrapper<Hazardousfactors> qw6 = new QueryWrapper<>();
+        qw6.eq("name", jianceDetailOfService.getDangerBigName());
+        List<Hazardousfactors> hd = hazardousfactorsService.list(qw6);
+        for (Hazardousfactors hazardousfactors : hd) {
+            listc4.add(hazardousfactors.getId());
+        }
+        QueryWrapper<Hazardousfactors> qw7 = new QueryWrapper<>();
+        qw7.eq("name", jianceDetailOfService.getDangerSmallName());
+        List<Hazardousfactors> hd2 = hazardousfactorsService.list(qw7);
+        for (Hazardousfactors hazardousfactors : hd2) {
+            listc4.add(hazardousfactors.getId());
+        }
+        jianceDetailOfServiceView.setCascaded4((ArrayList) listc4);
+
+
+
+        //省/市/区
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("code", jianceDetailOfService.getProvinceCode());
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);
@@ -114,9 +185,9 @@ public class JianceDetailOfServiceController {
                 list.add(areaOfDic.getId());
             }
         }
-
-
         jianceDetailOfServiceView.setCascader((ArrayList) list);
+
+
         //demoCourse
         QueryWrapper<JianceDetailResultOfService> queryWrapper4 = new QueryWrapper<>();
         queryWrapper4.eq("jianceDetailId", id);
@@ -172,6 +243,38 @@ public class JianceDetailOfServiceController {
 
         return page;
     }
+    @GetMapping("/cascadeData1")
+    public List cascadeData() {
+        List list1=new ArrayList();
 
+        QueryWrapper<Typesofregistration> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("level",2);
+        List<Typesofregistration> list = typesofregistrationService.list(queryWrapper);
+        for (Typesofregistration typesofregistration : list) {
+            FuView fuView=new FuView();
+            fuView.setLabel(typesofregistration.getName());
+            fuView.setValue(Integer.parseInt(String.valueOf(typesofregistration.getId())));
+            list1.add(fuView);
+        }
+        return list1;
+    }
+    @GetMapping("/cascadeData2")
+    public List<CascadeView> cascadeData2() {
+        List<IndustryOfDic> list = industryOfDicService.list();
+        System.out.println(list);
+        return CascadeUtil.get(list);
+    }
+    @GetMapping("/cascadeData3")
+    public List<CascadeView> cascadeData3() {
+        List<Gangwei> list = gangweiService.list();
+        System.out.println(list);
+        return CascadeUtil.get(list);
+    }
+    @GetMapping("/cascadeData4")
+    public List<CascadeView> cascadeData4() {
+        List<Hazardousfactors> list = hazardousfactorsService.list();
+        System.out.println(list);
+        return CascadeUtil.get(list);
+    }
 }
 

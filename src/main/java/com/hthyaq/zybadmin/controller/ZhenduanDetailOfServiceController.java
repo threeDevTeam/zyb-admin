@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
+import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.TijianDetail1OfServiceView;
 import com.hthyaq.zybadmin.model.vo.ZhenduanBasicOfServiceView;
@@ -40,6 +42,16 @@ public class ZhenduanDetailOfServiceController {
     ZhenduanBasicOfServiceService zhenduanBasicOfServiceService;
     @Autowired
     AreaOfDicService areaOfDicService;
+    @Autowired
+    ZybnameService zybnameService;
+    @Autowired
+    TypesofregistrationService typesofregistrationService;
+    @Autowired
+    IndustryOfDicService industryOfDicService;
+    @Autowired
+    GangweiService gangweiService;
+    @Autowired
+    HazardousfactorsService hazardousfactorsService;
     @PostMapping("/add")
     public boolean add(@RequestBody ZhenduanDetailOfServiceView zhenduanDetailOfServiceView, HttpSession httpSession) {
         boolean flag = false;
@@ -51,7 +63,7 @@ public class ZhenduanDetailOfServiceController {
             if (serviceOfRegister.getType().equals("诊断机构")) {
                 //demo
                 ZhenduanDetailOfService zhenduanDetailOfService = new ZhenduanDetailOfService();
-                BeanUtils.copyProperties(zhenduanDetailOfService, zhenduanDetailOfServiceView);
+                BeanUtils.copyProperties(zhenduanDetailOfServiceView, zhenduanDetailOfService);
                 QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("id", zhenduanDetailOfServiceView.getCascader().get(0));
                 List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
@@ -85,10 +97,107 @@ public class ZhenduanDetailOfServiceController {
                         zhenduanDetailOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
                     }
                 }
+                //登记注册类型
+                QueryWrapper<Typesofregistration> qT = new QueryWrapper<>();
+                qT.eq("id", zhenduanDetailOfServiceView.getCascaded1().get(0));
+                List<Typesofregistration> listT = typesofregistrationService.list(qT);
+                for (Typesofregistration typesofregistration : listT) {
+                    zhenduanDetailOfService.setRegisterBigName(typesofregistration.getName());
+                }
+                if (zhenduanDetailOfServiceView.getCascaded1().size() == 2) {
+                    QueryWrapper<Typesofregistration> qw1 = new QueryWrapper<>();
+                    qw1.eq("id", zhenduanDetailOfServiceView.getCascaded1().get(1));
+                    List<Typesofregistration> list2 = typesofregistrationService.list(qw1);
+                    for (Typesofregistration typesofregistration : list2) {
+                        zhenduanDetailOfService.setRegisterSmallName(typesofregistration.getName());
+                    }
+                } else {
+                    zhenduanDetailOfService.setRegisterSmallName("无");
+                }
+                //所属行业名称
+                QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
+                qw2.eq("id", zhenduanDetailOfServiceView.getCascaded2().get(0));
+                List<IndustryOfDic> list2 = industryOfDicService.list(qw2);
+                for (IndustryOfDic industryOfDic : list2) {
+                    zhenduanDetailOfService.setIndustryBigName(industryOfDic.getName());
+                }
+                if (zhenduanDetailOfServiceView.getCascaded2().size() == 2) {
+                    QueryWrapper<IndustryOfDic> qw1 = new QueryWrapper<>();
+                    qw1.eq("id", zhenduanDetailOfServiceView.getCascaded2().get(1));
+                    List<IndustryOfDic> list3 = industryOfDicService.list(qw1);
+                    for (IndustryOfDic industryOfDic : list3) {
+                        zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
+                    }
+                } if (zhenduanDetailOfServiceView.getCascaded2().size() == 3) {
+                    QueryWrapper<IndustryOfDic> qw1 = new QueryWrapper<>();
+                    qw1.eq("id", zhenduanDetailOfServiceView.getCascaded2().get(2));
+                    List<IndustryOfDic> list3 = industryOfDicService.list(qw1);
+                    for (IndustryOfDic industryOfDic : list3) {
+                        zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
+                    }
+                }else {
+                    zhenduanDetailOfService.setIndustrySmallName("无");
+                }
+                //岗位名称
+                QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
+                qw3.eq("id", zhenduanDetailOfServiceView.getCascaded3().get(0));
+                List<Gangwei> list3 = gangweiService.list(qw3);
+                for (Gangwei gangwei : list3) {
+                    zhenduanDetailOfService.setPostBigName(gangwei.getName());
+                }
+                if (zhenduanDetailOfServiceView.getCascaded3().size() == 2) {
+                    QueryWrapper<Gangwei> qw1 = new QueryWrapper<>();
+                    qw1.eq("id", zhenduanDetailOfServiceView.getCascaded3().get(1));
+                    List<Gangwei> list5 = gangweiService.list(qw1);
+                    for (Gangwei gangwei : list5) {
+                        zhenduanDetailOfService.setPostSmallName(gangwei.getName());
+                    }
+                } else {
+                    zhenduanDetailOfService.setPostSmallName("无");
+                }
+                //职业病名称
+                QueryWrapper<Zybname> qw4 = new QueryWrapper<>();
+                qw4.eq("id", zhenduanDetailOfServiceView.getCascaded5().get(0));
+                List<Zybname> list5 = zybnameService.list(qw4);
+                for (Zybname zybname : list5) {
+                    zhenduanDetailOfService.setSickBigName(zybname.getName());
+                }
+                if (zhenduanDetailOfServiceView.getCascaded5().size() == 2) {
+                    QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
+                    qw1.eq("id", zhenduanDetailOfServiceView.getCascaded5().get(1));
+                    List<Zybname> list6 = zybnameService.list(qw1);
+                    for (Zybname zybname : list6) {
+                        zhenduanDetailOfService.setSickSmallName(zybname.getName());
+                    }
+                } else {
+                    zhenduanDetailOfService.setSickSmallName("无");
+                }
+
+                //职业病危害因素名称
+                QueryWrapper<Hazardousfactors> qwH = new QueryWrapper<>();
+                qwH.eq("id", zhenduanDetailOfServiceView.getCascaded4().get(0));
+                List<Hazardousfactors> listH = hazardousfactorsService.list(qwH);
+                for (Hazardousfactors hazardousfactors : listH) {
+                    zhenduanDetailOfService.setDangerBigName(hazardousfactors.getName());
+                }
+                if (zhenduanDetailOfServiceView.getCascaded4().size() == 2) {
+                    QueryWrapper<Hazardousfactors> qw1 = new QueryWrapper<>();
+                    qw1.eq("id", zhenduanDetailOfServiceView.getCascaded4().get(1));
+                    List<Hazardousfactors> list6 = hazardousfactorsService.list(qw1);
+                    for (Hazardousfactors hazardousfactors : list6) {
+                        zhenduanDetailOfService.setDangerSmallName(hazardousfactors.getName());
+                    }
+                } else {
+                    zhenduanDetailOfService.setDangerSmallName("无");
+                }
+
+
+
+
                 QueryWrapper<ZhenduanBasicOfService> qw1 = new QueryWrapper();
                 qw1.eq("name", serviceOfRegister.getName());
-                List<ZhenduanBasicOfService> list5 = zhenduanBasicOfServiceService.list(qw1);
-                for (ZhenduanBasicOfService zhenduanBasicOfService : list5) {
+                List<ZhenduanBasicOfService> listZ = zhenduanBasicOfServiceService.list(qw1);
+                for (ZhenduanBasicOfService zhenduanBasicOfService : listZ) {
                     zhenduanDetailOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
                 }
                 flag=zhenduanDetailOfServiceService.save(zhenduanDetailOfService);
@@ -105,6 +214,11 @@ public class ZhenduanDetailOfServiceController {
     @GetMapping("/getById")
     public ZhenduanDetailOfService getById(Integer id) {
         List list=new ArrayList();
+        List listc1 = new ArrayList();
+        List listc2 = new ArrayList();
+        List listc3 = new ArrayList();
+        List listc4 = new ArrayList();
+        List listc5 = new ArrayList();
         ZhenduanDetailOfServiceView zhenduanDetailOfServiceView=new ZhenduanDetailOfServiceView();
         ZhenduanDetailOfService zhenduanDetailOfService = zhenduanDetailOfServiceService.getById(id);
         BeanUtils.copyProperties(zhenduanDetailOfService, zhenduanDetailOfServiceView);
@@ -136,6 +250,79 @@ public class ZhenduanDetailOfServiceController {
         }
 
         zhenduanDetailOfServiceView.setCascader((ArrayList) list);
+        //登记注册类型
+        QueryWrapper<Typesofregistration> qT = new QueryWrapper<>();
+        qT.eq("name", zhenduanDetailOfService.getRegisterBigName());
+        List<Typesofregistration> listT = typesofregistrationService.list(qT);
+        for (Typesofregistration typesofregistration : listT) {
+            listc1.add(typesofregistration.getId());
+        }
+        QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
+        qw2.eq("name", zhenduanDetailOfService.getRegisterSmallName());
+        List<Typesofregistration> listTS = typesofregistrationService.list(qw2);
+        for (Typesofregistration typesofregistration : listTS) {
+            listc1.add(typesofregistration.getId());
+        }
+        zhenduanDetailOfServiceView.setCascaded1((ArrayList) listc1);
+        //所属行业名称
+        QueryWrapper<IndustryOfDic> qw = new QueryWrapper<>();
+        qw.eq("name", zhenduanDetailOfService.getIndustryBigName());
+        List<IndustryOfDic> listI = industryOfDicService.list(qw);
+        for (IndustryOfDic industryOfDic : listI) {
+            listc2.add(industryOfDic.getId());
+        }
+        QueryWrapper<IndustryOfDic> qw3 = new QueryWrapper<>();
+        qw3.eq("name", zhenduanDetailOfService.getIndustrySmallName());
+        List<IndustryOfDic> listc = industryOfDicService.list(qw3);
+        for (IndustryOfDic industryOfDic : listc) {
+            listc2.add(industryOfDic.getId());
+        }
+        zhenduanDetailOfServiceView.setCascaded2((ArrayList) listc2);
+
+        //岗位名称
+        QueryWrapper<Gangwei> gw1 = new QueryWrapper<>();
+        gw1.eq("name", zhenduanDetailOfService.getPostBigName());
+        List<Gangwei> gw = gangweiService.list(gw1);
+        for (Gangwei gangwei : gw) {
+            listc3.add(gangwei.getId());
+        }
+        QueryWrapper<Gangwei> qwQ = new QueryWrapper<>();
+        qwQ.eq("name", zhenduanDetailOfService.getPostSmallName());
+        List<Gangwei> listQ = gangweiService.list(qwQ);
+        for (Gangwei gangwei : listQ) {
+            listc1.add(gangwei.getId());
+        }
+        zhenduanDetailOfServiceView.setCascaded3((ArrayList) listc3);
+
+        //职业病名称
+        QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
+        qwZ.eq("name", zhenduanDetailOfService.getSickBigName());
+        List<Zybname> hd = zybnameService.list(qwZ);
+        for (Zybname zybname : hd) {
+            listc5.add(zybname.getId());
+        }
+        QueryWrapper<Zybname> qwZ2 = new QueryWrapper<>();
+        qwZ2.eq("name", zhenduanDetailOfService.getSickSmallName());
+        List<Zybname> hd2 = zybnameService.list(qwZ2);
+        for (Zybname zybname : hd2) {
+            listc5.add(zybname.getId());
+        }
+        zhenduanDetailOfServiceView.setCascaded5((ArrayList) listc5);
+        //职业病危害因素名称
+        QueryWrapper<Hazardousfactors> qw6 = new QueryWrapper<>();
+        qw6.eq("name", zhenduanDetailOfService.getDangerBigName());
+        List<Hazardousfactors> hdf = hazardousfactorsService.list(qw6);
+        for (Hazardousfactors hazardousfactors : hdf) {
+            listc4.add(hazardousfactors.getId());
+        }
+        QueryWrapper<Hazardousfactors> qw7 = new QueryWrapper<>();
+        qw7.eq("name", zhenduanDetailOfService.getDangerSmallName());
+        List<Hazardousfactors> hdf2 = hazardousfactorsService.list(qw7);
+        for (Hazardousfactors hazardousfactors : hdf2) {
+            listc4.add(hazardousfactors.getId());
+        }
+        zhenduanDetailOfServiceView.setCascaded4((ArrayList) listc4);
+
         return zhenduanDetailOfServiceView;
     }
 
@@ -178,6 +365,100 @@ public class ZhenduanDetailOfServiceController {
                 zhenduanDetailOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
+        //登记注册类型
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("id", zhenduanDetailOfServiceView.getCascaded1().get(0));
+        List<Typesofregistration> list3 = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : list3) {
+            zhenduanDetailOfService.setRegisterBigName(typesofregistration.getName());
+        }
+        if (zhenduanDetailOfServiceView.getCascaded1().size() == 2) {
+            QueryWrapper<Typesofregistration> qw1 = new QueryWrapper<>();
+            qw1.eq("id", zhenduanDetailOfServiceView.getCascaded1().get(1));
+            List<Typesofregistration> list2 = typesofregistrationService.list(qw1);
+            for (Typesofregistration typesofregistration : list2) {
+                zhenduanDetailOfService.setRegisterSmallName(typesofregistration.getName());
+            }
+        } else {
+            zhenduanDetailOfService.setRegisterSmallName("无");
+        }
+        //所属行业名称
+        QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
+        qw2.eq("id", zhenduanDetailOfServiceView.getCascaded2().get(0));
+        List<IndustryOfDic> list2 = industryOfDicService.list(qw2);
+        for (IndustryOfDic industryOfDic : list2) {
+            zhenduanDetailOfService.setIndustryBigName(industryOfDic.getName());
+        }
+        if (zhenduanDetailOfServiceView.getCascaded2().size() == 2) {
+            QueryWrapper<IndustryOfDic> qw1 = new QueryWrapper<>();
+            qw1.eq("id", zhenduanDetailOfServiceView.getCascaded2().get(1));
+            List<IndustryOfDic> listI = industryOfDicService.list(qw1);
+            for (IndustryOfDic industryOfDic : listI) {
+                zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
+            }
+        }  if (zhenduanDetailOfServiceView.getCascaded2().size() ==3) {
+            QueryWrapper<IndustryOfDic> qw1 = new QueryWrapper<>();
+            qw1.eq("id", zhenduanDetailOfServiceView.getCascaded2().get(2));
+            List<IndustryOfDic> listI = industryOfDicService.list(qw1);
+            for (IndustryOfDic industryOfDic : listI) {
+                zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
+            }
+        }
+        else {
+            zhenduanDetailOfService.setIndustrySmallName("无");
+        }
+
+        //岗位名称
+        QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
+        qw3.eq("id", zhenduanDetailOfServiceView.getCascaded3().get(0));
+        List<Gangwei> listG = gangweiService.list(qw3);
+        for (Gangwei gangwei : listG) {
+            zhenduanDetailOfService.setPostBigName(gangwei.getName());
+        }
+        if (zhenduanDetailOfServiceView.getCascaded3().size() == 2) {
+            QueryWrapper<Gangwei> qw1 = new QueryWrapper<>();
+            qw1.eq("id", zhenduanDetailOfServiceView.getCascaded3().get(1));
+            List<Gangwei> list5 = gangweiService.list(qw1);
+            for (Gangwei gangwei : list5) {
+                zhenduanDetailOfService.setPostSmallName(gangwei.getName());
+            }
+        } else {
+            zhenduanDetailOfService.setPostSmallName("无");
+        }
+        //职业病名称
+        QueryWrapper<Zybname> qw4 = new QueryWrapper<>();
+        qw4.eq("id", zhenduanDetailOfServiceView.getCascaded5().get(0));
+        List<Zybname> list5 = zybnameService.list(qw4);
+        for (Zybname zybname : list5) {
+            zhenduanDetailOfService.setSickBigName(zybname.getName());
+        }
+        if (zhenduanDetailOfServiceView.getCascaded5().size() == 2) {
+            QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
+            qw1.eq("id", zhenduanDetailOfServiceView.getCascaded5().get(1));
+            List<Zybname> list6 = zybnameService.list(qw1);
+            for (Zybname zybname : list6) {
+                zhenduanDetailOfService.setSickSmallName(zybname.getName());
+            }
+        } else {
+            zhenduanDetailOfService.setSickSmallName("无");
+        }
+        //职业病危害因素名称
+        QueryWrapper<Hazardousfactors> qwH = new QueryWrapper<>();
+        qwH.eq("id", zhenduanDetailOfServiceView.getCascaded4().get(0));
+        List<Hazardousfactors> listH = hazardousfactorsService.list(qwH);
+        for (Hazardousfactors hazardousfactors : listH) {
+            zhenduanDetailOfService.setDangerBigName(hazardousfactors.getName());
+        }
+        if (zhenduanDetailOfServiceView.getCascaded4().size() == 2) {
+            QueryWrapper<Hazardousfactors> qw1 = new QueryWrapper<>();
+            qw1.eq("id", zhenduanDetailOfServiceView.getCascaded4().get(1));
+            List<Hazardousfactors> list6 = hazardousfactorsService.list(qw1);
+            for (Hazardousfactors hazardousfactors : list6) {
+                zhenduanDetailOfService.setDangerSmallName(hazardousfactors.getName());
+            }
+        } else {
+            zhenduanDetailOfService.setDangerSmallName("无");
+        }
         return zhenduanDetailOfServiceService.updateById(zhenduanDetailOfService);
     }
 
@@ -219,6 +500,13 @@ public class ZhenduanDetailOfServiceController {
         IPage<ZhenduanDetailOfService> page = zhenduanDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;
+    }
+    @GetMapping("/cascadeData5")
+    public List<CascadeView> cascadeData() {
+        List<Zybname> list = zybnameService.list();
+        System.out.println(list);
+        return CascadeUtil.get(list);
+
     }
 }
 

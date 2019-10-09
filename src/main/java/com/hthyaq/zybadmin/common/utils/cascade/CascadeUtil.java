@@ -29,8 +29,8 @@ public class CascadeUtil {
         for (T item : list) {
             String[] tmp = columns.split(",");
             //通过反射获取出item中的id、name、pid的属性值
-            Integer id = (Integer) ReflectUtil.getFieldValue(item, tmp[0]);
-            Integer pid = (Integer) ReflectUtil.getFieldValue(item, tmp[1]);
+            Integer id = Integer.parseInt(String.valueOf(ReflectUtil.getFieldValue(item, tmp[0])));
+            Integer pid = Integer.parseInt(String.valueOf(ReflectUtil.getFieldValue(item, tmp[1])));
             String name = (String) ReflectUtil.getFieldValue(item, tmp[2]);
             if (pid == -1) {
                 rootList.add(new CascadeDto(id, pid, name));

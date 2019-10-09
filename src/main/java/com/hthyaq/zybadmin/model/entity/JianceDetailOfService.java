@@ -179,7 +179,7 @@ public class JianceDetailOfService implements Serializable {
      * 岗位的小类名称
      */
     @TableField("postSmallName")
-    private Integer postSmallName;
+    private String postSmallName;
 
     /**
      * 职业病危害因素大类名称

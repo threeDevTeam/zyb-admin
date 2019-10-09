@@ -12,10 +12,9 @@ import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.EnterpriseView;
+import com.hthyaq.zybadmin.model.vo.JianceBasicOfView;
 import com.hthyaq.zybadmin.model.vo.SuperviseView;
-import com.hthyaq.zybadmin.service.AreaOfDicService;
-import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
-import com.hthyaq.zybadmin.service.EnterpriseService;
+import com.hthyaq.zybadmin.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,14 +40,63 @@ public class EnterpriseController {
     EnterpriseOfRegisterService enterpriseOfRegisterService;
     @Autowired
     AreaOfDicService areaOfDicService;
+    @Autowired
+    TypesofregistrationService typesofregistrationService;
+    @Autowired
+    IndustryOfDicService industryOfDicService;
     @PostMapping("/add")
-    public boolean add(@RequestBody  Enterprise enterprise, HttpSession httpSession) {
+    public boolean add(@RequestBody  EnterpriseView enterpriseView, HttpSession httpSession) {
         boolean flag=false;
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<EnterpriseOfRegister> queryWrapper=new QueryWrapper();
         queryWrapper.eq("id",sysUser.getCompanyId());
         List<EnterpriseOfRegister> list = enterpriseOfRegisterService.list(queryWrapper);
         for (EnterpriseOfRegister enterpriseOfRegister : list) {
+
+            Enterprise enterprise=new Enterprise();
+            BeanUtils.copyProperties(enterpriseView, enterprise);
+            QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+            qw.eq("id", enterpriseView.getCascaded1().get(0));
+            List<Typesofregistration> list1 = typesofregistrationService.list(qw);
+            for (Typesofregistration typesofregistration : list1) {
+                enterprise.setRegisterBigName(typesofregistration.getName());
+            }
+            if(enterpriseView.getCascaded1().size()==2){
+                QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+                qw1.eq("id",enterpriseView.getCascaded1().get(1));
+                List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+                for (Typesofregistration typesofregistration : list2) {
+                    enterprise.setRegisterSmallName(typesofregistration.getName());
+                }
+            }else{
+                enterprise.setRegisterSmallName("无");
+            }
+
+            //所属行业名称
+            QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
+            qw2.eq("id", enterpriseView.getCascaded2().get(0));
+            List<IndustryOfDic> list2 = industryOfDicService.list(qw2);
+            for (IndustryOfDic industryOfDic : list2) {
+                enterprise.setIndustryBigName(industryOfDic.getName());
+            }
+            if(enterpriseView.getCascaded2().size()==2){
+                QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+                qw1.eq("id",enterpriseView.getCascaded2().get(1));
+                List<IndustryOfDic> list3= industryOfDicService.list(qw1);
+                for (IndustryOfDic industryOfDic : list3) {
+                    enterprise.setIndustrySmallName(industryOfDic.getName());
+                }
+            }if(enterpriseView.getCascaded2().size()==3){
+                QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+                qw1.eq("id",enterpriseView.getCascaded2().get(2));
+                List<IndustryOfDic> listT1= industryOfDicService.list(qw1);
+                for (IndustryOfDic industryOfDic : listT1) {
+                    enterprise.setIndustrySmallName(industryOfDic.getName());
+                }
+            }else{
+                enterprise.setIndustrySmallName("无");
+            }
+
             enterprise.setName(enterpriseOfRegister.getName());
             enterprise.setCode(enterpriseOfRegister.getCode());
             enterprise.setProvinceName(enterpriseOfRegister.getProvinceName());
@@ -76,6 +124,8 @@ public class EnterpriseController {
     @GetMapping("/getById")
     public Enterprise getById(Integer id) {
         List list = new ArrayList();
+        List listc1 = new ArrayList();
+        List listc2 = new ArrayList();
         EnterpriseView enterpriseView = new EnterpriseView();
         Enterprise enterprise = enterpriseService.getById(id);
         BeanUtils.copyProperties(enterprise, enterpriseView);
@@ -105,9 +155,38 @@ public class EnterpriseController {
                 list.add(areaOfDic.getId());
             }
         }
-
-
         enterpriseView.setCascader((ArrayList) list);
+
+
+
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("name", enterprise.getRegisterBigName());
+        List<Typesofregistration> listT = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : listT) {
+            listc1.add(typesofregistration.getId());
+        }
+        QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
+        qw2.eq("name", enterprise.getRegisterSmallName());
+        List<Typesofregistration> listTS = typesofregistrationService.list(qw2);
+        for (Typesofregistration typesofregistration : listTS) {
+            listc1.add(typesofregistration.getId());
+        }
+        enterpriseView.setCascaded1((ArrayList) listc1);
+
+        //所属行业名称
+        QueryWrapper<IndustryOfDic> qwI = new QueryWrapper<>();
+        qwI.eq("name", enterprise.getIndustryBigName());
+        List<IndustryOfDic> listI = industryOfDicService.list(qwI);
+        for (IndustryOfDic industryOfDic : listI) {
+            listc2.add(industryOfDic.getId());
+        }
+        QueryWrapper<IndustryOfDic> qw3 = new QueryWrapper<>();
+        qw3.eq("name", enterprise.getIndustrySmallName());
+        List<IndustryOfDic> listc = industryOfDicService.list(qw3);
+        for (IndustryOfDic industryOfDic : listc) {
+            listc2.add(industryOfDic.getId());
+        }
+        enterpriseView.setCascaded2((ArrayList) listc2);
         return enterpriseView;
     }
     @PostMapping("/edit")
@@ -148,6 +227,47 @@ public class EnterpriseController {
                 enterprise.setDistrictName(String.valueOf(areaOfDic.getName()));
                 enterprise.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
+        }
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("id", enterpriseView.getCascaded1().get(0));
+        List<Typesofregistration> list3 = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : list3) {
+            enterprise.setRegisterBigName(typesofregistration.getName());
+        }
+        if(enterpriseView.getCascaded1().size()==2){
+            QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+            qw1.eq("id",enterpriseView.getCascaded1().get(1));
+            List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+            for (Typesofregistration typesofregistration : list2) {
+                enterprise.setRegisterSmallName(typesofregistration.getName());
+            }
+        }else{
+            enterprise.setRegisterSmallName("无");
+        }
+
+        //所属行业名称
+        QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
+        qw2.eq("id", enterpriseView.getCascaded2().get(0));
+        List<IndustryOfDic> list2 = industryOfDicService.list(qw2);
+        for (IndustryOfDic industryOfDic : list2) {
+            enterprise.setIndustryBigName(industryOfDic.getName());
+        }
+        if(enterpriseView.getCascaded2().size()==2){
+            QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+            qw1.eq("id",enterpriseView.getCascaded2().get(1));
+            List<IndustryOfDic> listI= industryOfDicService.list(qw1);
+            for (IndustryOfDic industryOfDic : listI) {
+                enterprise.setIndustrySmallName(industryOfDic.getName());
+            }
+        }if(enterpriseView.getCascaded2().size()==3){
+            QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
+            qw1.eq("id",enterpriseView.getCascaded2().get(2));
+            List<IndustryOfDic> listT1= industryOfDicService.list(qw1);
+            for (IndustryOfDic industryOfDic : listT1) {
+                enterprise.setIndustrySmallName(industryOfDic.getName());
+            }
+        }else{
+            enterprise.setIndustrySmallName("无");
         }
 
         return enterpriseService.updateById(enterprise);

@@ -11,5 +11,5 @@ import java.util.List;
 @Accessors(chain = true)
 public class JianceBasicOfView extends JianceBasicOfService {
     private ArrayList cascader;
-
+    private ArrayList cascaded1;
 }

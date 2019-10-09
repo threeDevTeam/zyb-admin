@@ -16,6 +16,7 @@ import com.hthyaq.zybadmin.model.vo.TijianBasicOfServiceView;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
 import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
 import com.hthyaq.zybadmin.service.TijianBasicOfServiceService;
+import com.hthyaq.zybadmin.service.TypesofregistrationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,16 +42,38 @@ public class TijianBasicOfServiceController {
     ServiceOfRegisterService serviceOfRegisterService;
     @Autowired
     AreaOfDicService areaOfDicService;
-
+    @Autowired
+    TypesofregistrationService typesofregistrationService;
     @PostMapping("/add")
-    public boolean add(@RequestBody TijianBasicOfService tijianBasicOfService, HttpSession httpSession) {
+    public boolean add(@RequestBody TijianBasicOfServiceView tijianBasicOfServiceView, HttpSession httpSession) {
         boolean flag=false;
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<ServiceOfRegister> queryWrapper=new QueryWrapper();
         queryWrapper.eq("id",sysUser.getCompanyId());
+
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
         for (ServiceOfRegister serviceOfRegister : list) {
             if (serviceOfRegister.getType().equals("体检机构")) {
+                TijianBasicOfService tijianBasicOfService=new TijianBasicOfServiceView();
+                BeanUtils.copyProperties(tijianBasicOfServiceView, tijianBasicOfService);
+
+                QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+                qw.eq("id", tijianBasicOfServiceView.getCascaded1().get(0));
+                List<Typesofregistration> list1 = typesofregistrationService.list(qw);
+                for (Typesofregistration typesofregistration : list1) {
+                    tijianBasicOfService.setRegisterBigName(typesofregistration.getName());
+                }
+                if(tijianBasicOfServiceView.getCascaded1().size()==2){
+                    QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+                    qw1.eq("id",tijianBasicOfServiceView.getCascaded1().get(1));
+                    List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+                    for (Typesofregistration typesofregistration : list2) {
+                        tijianBasicOfService.setRegisterSmallName(typesofregistration.getName());
+                    }
+                }else{
+                    tijianBasicOfService.setRegisterSmallName("无");
+                }
+
                 tijianBasicOfService.setName(serviceOfRegister.getName());
                 tijianBasicOfService.setCode(serviceOfRegister.getCode());
                 tijianBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
@@ -71,7 +94,7 @@ public class TijianBasicOfServiceController {
     }
     @GetMapping("/getById")
     public TijianBasicOfService getById(Integer id) {
-
+        List list4=new ArrayList();
         List list=new ArrayList();
         TijianBasicOfServiceView tijianBasicOfServiceView=new TijianBasicOfServiceView();
         TijianBasicOfService tijianBasicOfService = tijianBasicOfServiceService.getById(id);
@@ -104,6 +127,20 @@ public class TijianBasicOfServiceController {
         }
 
         tijianBasicOfServiceView.setCascader((ArrayList) list);
+
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("name", tijianBasicOfService.getRegisterBigName());
+        List<Typesofregistration> listT = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : listT) {
+            list4.add(typesofregistration.getId());
+        }
+        QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
+        qw2.eq("name", tijianBasicOfService.getRegisterSmallName());
+        List<Typesofregistration> listTS = typesofregistrationService.list(qw2);
+        for (Typesofregistration typesofregistration : listTS) {
+            list4.add(typesofregistration.getId());
+        }
+        tijianBasicOfServiceView.setCascaded1((ArrayList) list4);
         return tijianBasicOfServiceView;
     }
     @PostMapping("/edit")
@@ -144,6 +181,22 @@ public class TijianBasicOfServiceController {
                 tijianBasicOfService.setDistrictName(String.valueOf(areaOfDic.getName()));
                 tijianBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
+        }
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("id", tijianBasicOfServiceView.getCascaded1().get(0));
+        List<Typesofregistration> list3 = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : list3) {
+            tijianBasicOfService.setRegisterBigName(typesofregistration.getName());
+        }
+        if(tijianBasicOfServiceView.getCascaded1().size()==2){
+            QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+            qw1.eq("id",tijianBasicOfServiceView.getCascaded1().get(1));
+            List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+            for (Typesofregistration typesofregistration : list2) {
+                tijianBasicOfService.setRegisterSmallName(typesofregistration.getName());
+            }
+        }else{
+            tijianBasicOfService.setRegisterSmallName("无");
         }
         return tijianBasicOfServiceService.updateById(tijianBasicOfService);
     }

@@ -7,6 +7,8 @@ import com.hthyaq.zybadmin.model.entity.PostOfEnterprise;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+
 /**
  * @author Administrator
  */
@@ -14,6 +16,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class PostOfEnterpriseView extends  PostOfEnterprise {
     private String treeSelect;
-
+    private ArrayList cascaded1;
 
 }

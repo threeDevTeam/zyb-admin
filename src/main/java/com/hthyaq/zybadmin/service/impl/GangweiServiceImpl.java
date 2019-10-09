@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- * 数据表1 服务实现类
+ * 岗位 服务实现类
  * </p>
  *
  * @author zhangqiang
- * @since 2019-09-05
+ * @since 2019-10-06
  */
 @Service
 public class GangweiServiceImpl extends ServiceImpl<GangweiMapper, Gangwei> implements GangweiService {

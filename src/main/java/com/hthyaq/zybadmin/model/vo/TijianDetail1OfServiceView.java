@@ -11,4 +11,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class TijianDetail1OfServiceView extends TijianDetail1OfService {
     private ArrayList cascader;
+    private ArrayList cascaded1;
+    private ArrayList cascaded2;
+    private ArrayList cascaded3;
+
 }

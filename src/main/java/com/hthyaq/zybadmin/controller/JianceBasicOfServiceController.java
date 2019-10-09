@@ -15,6 +15,7 @@ import com.hthyaq.zybadmin.model.vo.JianceBasicOfView;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
 import com.hthyaq.zybadmin.service.JianceBasicOfServiceService;
 import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
+import com.hthyaq.zybadmin.service.TypesofregistrationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,16 +41,36 @@ public class JianceBasicOfServiceController {
     ServiceOfRegisterService serviceOfRegisterService;
     @Autowired
     AreaOfDicService areaOfDicService;
-
+    @Autowired
+    TypesofregistrationService typesofregistrationService;
     @PostMapping("/add")
-    public boolean add(@RequestBody JianceBasicOfService jianceBasicOfService, HttpSession httpSession) {
+    public boolean add(@RequestBody JianceBasicOfView jianceBasicOfView, HttpSession httpSession) {
         boolean flag=false;
+
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<ServiceOfRegister> queryWrapper=new QueryWrapper();
         queryWrapper.eq("name",sysUser.getCompanyName());
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
         for (ServiceOfRegister serviceOfRegister : list) {
             if(serviceOfRegister.getType().equals("检测机构")){
+                JianceBasicOfService jianceBasicOfService=new JianceBasicOfView();
+                BeanUtils.copyProperties(jianceBasicOfView, jianceBasicOfService);
+                QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+                qw.eq("id", jianceBasicOfView.getCascaded1().get(0));
+                List<Typesofregistration> list1 = typesofregistrationService.list(qw);
+                for (Typesofregistration typesofregistration : list1) {
+                    jianceBasicOfService.setRegisterBigName(typesofregistration.getName());
+                }
+                if(jianceBasicOfView.getCascaded1().size()==2){
+                    QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+                    qw1.eq("id",jianceBasicOfView.getCascaded1().get(1));
+                    List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+                    for (Typesofregistration typesofregistration : list2) {
+                        jianceBasicOfService.setRegisterSmallName(typesofregistration.getName());
+                    }
+                }else{
+                    jianceBasicOfService.setRegisterSmallName("无");
+                }
                 jianceBasicOfService.setName(serviceOfRegister.getName());
                 jianceBasicOfService.setCode(serviceOfRegister.getCode());
                 jianceBasicOfService.setProvinceName(serviceOfRegister.getProvinceName());
@@ -71,6 +92,7 @@ public class JianceBasicOfServiceController {
     @GetMapping("/getById")
     public JianceBasicOfService getById(Integer id) {
         List list=new ArrayList();
+        List list4=new ArrayList();
         JianceBasicOfView jianceBasicOfView=new JianceBasicOfView();
         JianceBasicOfService jianceBasicOfService = jianceBasicOfServiceService.getById(id);
         BeanUtils.copyProperties(jianceBasicOfService, jianceBasicOfView);
@@ -81,7 +103,7 @@ public class JianceBasicOfServiceController {
             list.add(areaOfDic.getId());
         }
         QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-        queryWrapper2.eq("code",jianceBasicOfService.getCityCode());
+        queryWrapper2.eq("code", jianceBasicOfService.getCityCode());
         List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
         for (AreaOfDic areaOfDic : list2) {
             list.add(areaOfDic.getId());
@@ -94,14 +116,28 @@ public class JianceBasicOfServiceController {
             }
         } else {
             QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
-            queryWrapper3.eq("code",jianceBasicOfService.getDistrictCode());
+            queryWrapper3.eq("code", jianceBasicOfService.getDistrictCode());
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
                 list.add(areaOfDic.getId());
             }
         }
-
         jianceBasicOfView.setCascader((ArrayList) list);
+
+
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("name", jianceBasicOfService.getRegisterBigName());
+        List<Typesofregistration> listT = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : listT) {
+            list4.add(typesofregistration.getId());
+        }
+        QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
+        qw2.eq("name", jianceBasicOfService.getRegisterSmallName());
+        List<Typesofregistration> listTS = typesofregistrationService.list(qw2);
+        for (Typesofregistration typesofregistration : listTS) {
+            list4.add(typesofregistration.getId());
+        }
+        jianceBasicOfView.setCascaded1((ArrayList) list4);
         return jianceBasicOfView;
     }
     @PostMapping("/edit")
@@ -143,6 +179,23 @@ public class JianceBasicOfServiceController {
                 jianceBasicOfService.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
+
+        QueryWrapper<Typesofregistration> qw = new QueryWrapper<>();
+        qw.eq("id", jianceBasicOfView.getCascaded1().get(0));
+        List<Typesofregistration> list3 = typesofregistrationService.list(qw);
+        for (Typesofregistration typesofregistration : list3) {
+            jianceBasicOfService.setRegisterBigName(typesofregistration.getName());
+        }
+        if(jianceBasicOfView.getCascaded1().size()==2){
+            QueryWrapper<Typesofregistration> qw1= new QueryWrapper<>();
+            qw1.eq("id",jianceBasicOfView.getCascaded1().get(1));
+            List<Typesofregistration> list2= typesofregistrationService.list(qw1);
+            for (Typesofregistration typesofregistration : list2) {
+                jianceBasicOfService.setRegisterSmallName(typesofregistration.getName());
+            }
+        }else{
+            jianceBasicOfService.setRegisterSmallName("无");
+        }
         return jianceBasicOfServiceService.updateById(jianceBasicOfService);
     }
 
@@ -179,5 +232,11 @@ public class JianceBasicOfServiceController {
 
         return page;
     }
+    @GetMapping("/cascadeData")
+    public List<CascadeView> cascadeData() {
+        List<Typesofregistration> list = typesofregistrationService.list();
+        System.out.println(list);
+        return CascadeUtil.get(list);
 
+    }
 }
