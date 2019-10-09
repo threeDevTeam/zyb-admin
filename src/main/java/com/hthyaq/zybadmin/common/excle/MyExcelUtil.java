@@ -16,6 +16,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -80,6 +81,11 @@ public class MyExcelUtil {
     file=路径+文件名
  */
     public static void writeOneSheetExcel(String file, List<? extends BaseRowModel> dataList, Class<? extends BaseRowModel> modelClass) {
+        String pathStr = FilenameUtils.getFullPath(file);
+        File path = new File(pathStr);
+        if (!path.exists()) {
+            path.mkdirs();
+        }
         OutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(file);
