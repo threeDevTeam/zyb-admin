@@ -80,7 +80,7 @@ public class MyExcelUtil {
     生成excel,只有一个sheet
     file=路径+文件名
  */
-    public static void writeOneSheetExcel(String file, List<? extends BaseRowModel> dataList, Class<? extends BaseRowModel> modelClass) {
+    public static void writeOneSheetExcel(String file, Class<? extends BaseRowModel> modelClass) {
         String pathStr = FilenameUtils.getFullPath(file);
         File path = new File(pathStr);
         if (!path.exists()) {
@@ -90,7 +90,8 @@ public class MyExcelUtil {
         try {
             outputStream = new FileOutputStream(file);
             ExcelWriter writer = new ExcelWriter(outputStream, getExcelTypeEnum(file));
-            writer.write(dataList, new Sheet(1, 0, modelClass, FilenameUtils.getBaseName(file), null)).finish();
+            List<BaseRowModel> list = Lists.newArrayList();
+            writer.write(list, new Sheet(1, 0, modelClass, FilenameUtils.getBaseName(file), null)).finish();
         } catch (Exception e) {
             log.error("生成Excel失败了！");
             log.error(Throwables.getStackTraceAsString(e));
@@ -106,14 +107,15 @@ public class MyExcelUtil {
         key-sheet的名字
         value-数据
     */
-    public static void writeMoreSheetExcel(String file, Map<String, List<? extends BaseRowModel>> map, Class modelClass) {
+    public static void writeMoreSheetExcel(String file, String[] sheetNameArr, Class[] modelClassArr) {
         OutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(file);
             ExcelWriter writer = new ExcelWriter(outputStream, getExcelTypeEnum(file), true);
             int sheetNo = 1;
-            for (String sheetName : map.keySet()) {
-                writer.write(map.get(sheetName), new Sheet(sheetNo, 0, modelClass, sheetName, null));
+            for (int i = 0; i < sheetNameArr.length; i++) {
+                List<BaseRowModel> list = Lists.newArrayList();
+                writer.write(list, new Sheet(sheetNo, 0, modelClassArr[i], sheetNameArr[i], null));
                 sheetNo++;
             }
             writer.finish();
