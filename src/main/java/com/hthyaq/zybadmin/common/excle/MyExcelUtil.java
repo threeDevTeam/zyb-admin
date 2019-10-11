@@ -47,7 +47,7 @@ public class MyExcelUtil {
     }
 
     //读取多个sheet
-    public static Map<String, List<Object>> readMoreSheetExcel(MultipartFile[] files, Class<? extends BaseRowModel> modelClass) {
+    public static Map<String, List<Object>> readMoreSheetExcel(MultipartFile[] files, Class<? extends BaseRowModel>[] modelClassArr) {
         Map<String, List<Object>> dataMap = Maps.newTreeMap();
         List<Object> dataList = Lists.newArrayList();
         InputStream inputStream = null;
@@ -57,9 +57,10 @@ public class MyExcelUtil {
             // 解析每行结果在listener中处理
             ExcelReader excelReader = new ExcelReader(inputStream, getExcelTypeEnum(filename), null, new ExcelListener(dataList));
             List<Sheet> sheets = excelReader.getSheets();
-            for (int i = 0; i < sheets.size(); i++) {
+            if (sheets.size() != modelClassArr.length) throw new RuntimeException("sheet数量和传入的modelClass数量不相同");
+            for (int i = 0; i < modelClassArr.length; i++) {
                 Sheet sheet = sheets.get(i);
-                sheet.setClazz(modelClass);
+                sheet.setClazz(modelClassArr[i]);
                 sheet.setHeadLineMun(1);
                 excelReader.read(sheet);
                 //
@@ -107,7 +108,7 @@ public class MyExcelUtil {
         key-sheet的名字
         value-数据
     */
-    public static void writeMoreSheetExcel(String file, String[] sheetNameArr, Class[] modelClassArr) {
+    public static void writeMoreSheetExcel(String file, String[] sheetNameArr, Class<? extends BaseRowModel>[] modelClassArr) {
         OutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(file);
