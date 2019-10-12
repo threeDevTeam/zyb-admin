@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 
 //demo的页面数据
 @Data
-@Accessors(chain = true)
+@Accessors(chain = false)
 public class DemoView extends Demo {
     private Child<DemoCourse> course;
 }

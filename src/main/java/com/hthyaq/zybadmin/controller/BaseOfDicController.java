@@ -43,7 +43,7 @@ public class BaseOfDicController {
     public Boolean moreSheetExcel(MultipartFile[] files) {
         boolean flag = true;
         //excel->model
-        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, BaseOfDicModel.class);
+        Map<String, List<Object>> modelMap = (Map<String, List<Object>>) MyExcelUtil.readOneSheetExcel(files, BaseOfDicModel.class);
         //model->entity
         for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
             String type = entry.getKey();
