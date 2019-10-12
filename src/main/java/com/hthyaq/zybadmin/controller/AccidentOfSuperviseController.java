@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -9,18 +10,26 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.AccidentOfSuperviseModel;
+import com.hthyaq.zybadmin.model.excelModel.JianceDetailOfServiceModel;
+import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
 import com.hthyaq.zybadmin.service.AccidentOfSuperviseService;
 import com.hthyaq.zybadmin.service.ServiceSuperviseOfSuperviseService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.formula.functions.T;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -39,6 +48,7 @@ public class AccidentOfSuperviseController {
     SuperviseService superviseService;
     @Autowired
     AccidentOfSuperviseService accidentOfSuperviseService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody AccidentOfSupervise accidentOfSupervise, HttpSession httpSession) {
         boolean flag = false;
@@ -57,10 +67,12 @@ public class AccidentOfSuperviseController {
         }
         return flag;
     }
+
     @GetMapping("/delete")
     public boolean delete(String id) {
         return accidentOfSuperviseService.removeById(id);
     }
+
     @GetMapping("/getById")
     public AccidentOfSupervise getById(Integer id) {
 
@@ -72,6 +84,7 @@ public class AccidentOfSuperviseController {
         //将demoCourse的数据设置到demoData
         return accidentOfSupervise;
     }
+
     @PostMapping("/edit")
     public boolean edit(@RequestBody AccidentOfSupervise accidentOfSupervise) {
         return accidentOfSuperviseService.updateById(accidentOfSupervise);
@@ -97,7 +110,7 @@ public class AccidentOfSuperviseController {
             list1.add(id);
         }
         QueryWrapper<AccidentOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superviseId",list1.get(0));
+        queryWrapper.eq("superviseId", list1.get(0));
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }
@@ -109,4 +122,47 @@ public class AccidentOfSuperviseController {
 
         return page;
     }
+
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]=AccidentOfSuperviseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
+
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<AccidentOfSupervise> dataList = getDataList(modelList, type, httpSession);
+            flag = accidentOfSuperviseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+
+    private List<AccidentOfSupervise> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<AccidentOfSupervise> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            AccidentOfSuperviseModel accidentOfSuperviseModel = (AccidentOfSuperviseModel) object;
+            //业务处理
+            AccidentOfSupervise accidentOfSupervise = new AccidentOfSupervise();
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<SuperviseOfRegister> queryWrapper = new QueryWrapper();
+            queryWrapper.eq("id", sysUser.getCompanyId());
+            List<SuperviseOfRegister> list = superviseOfRegisterService.list(queryWrapper);
+            for (SuperviseOfRegister superviseOfRegister : list) {
+                QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper();
+                queryWrapper1.eq("name", superviseOfRegister.getName());
+                List<Supervise> list1 = superviseService.list(queryWrapper1);
+                for (Supervise supervise : list1) {
+                    accidentOfSupervise.setSuperviseId(supervise.getId());
+                }
+            }
+            BeanUtils.copyProperties(accidentOfSuperviseModel, accidentOfSupervise);
+            dataList.add(accidentOfSupervise);
+        }
+        return dataList;
+    }
+
 }

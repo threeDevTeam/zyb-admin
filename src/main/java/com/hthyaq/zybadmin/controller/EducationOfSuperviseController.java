@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,16 +9,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.EducationOfSuperviseModel;
+import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
 import com.hthyaq.zybadmin.service.EducationOfSuperviseService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,6 +44,7 @@ public class EducationOfSuperviseController {
     SuperviseService superviseService;
     @Autowired
     EducationOfSuperviseService educationOfSuperviseService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody EducationOfSupervise educationOfSupervise, HttpSession httpSession) {
         boolean flag = false;
@@ -54,10 +63,12 @@ public class EducationOfSuperviseController {
         }
         return flag;
     }
+
     @GetMapping("/delete")
     public boolean delete(String id) {
         return educationOfSuperviseService.removeById(id);
     }
+
     @GetMapping("/getById")
     public EducationOfSupervise getById(Integer id) {
 
@@ -69,6 +80,7 @@ public class EducationOfSuperviseController {
         //将demoCourse的数据设置到demoData
         return educationOfSupervise;
     }
+
     @PostMapping("/edit")
     public boolean edit(@RequestBody EducationOfSupervise educationOfSupervise) {
         return educationOfSuperviseService.updateById(educationOfSupervise);
@@ -93,7 +105,7 @@ public class EducationOfSuperviseController {
             list1.add(id);
         }
         QueryWrapper<EducationOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superviseId",list1.get(0));
+        queryWrapper.eq("superviseId", list1.get(0));
         if (!Strings.isNullOrEmpty(year)) {
             queryWrapper.eq("year", year);
         }
@@ -104,5 +116,46 @@ public class EducationOfSuperviseController {
         IPage<EducationOfSupervise> page = educationOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;
+    }
+
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]= EducationOfSuperviseModel.class;
+        Map<String, List<Object>> modelMap =MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<EducationOfSupervise> dataList = getDataList(modelList, type, httpSession);
+            flag = educationOfSuperviseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+
+    private List<EducationOfSupervise> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<EducationOfSupervise> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            EducationOfSuperviseModel educationOfSuperviseModel = (EducationOfSuperviseModel) object;
+            //业务处理
+            EducationOfSupervise educationOfSupervise = new EducationOfSupervise();
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<SuperviseOfRegister> queryWrapper = new QueryWrapper();
+            queryWrapper.eq("id", sysUser.getCompanyId());
+            List<SuperviseOfRegister> list = superviseOfRegisterService.list(queryWrapper);
+            for (SuperviseOfRegister superviseOfRegister : list) {
+                QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper();
+                queryWrapper1.eq("name", superviseOfRegister.getName());
+                List<Supervise> list1 = superviseService.list(queryWrapper1);
+                for (Supervise supervise : list1) {
+                    educationOfSupervise.setSuperviseId(supervise.getId());
+                }
+            }
+            BeanUtils.copyProperties(educationOfSuperviseModel, educationOfSupervise);
+            dataList.add(educationOfSupervise);
+        }
+        return dataList;
     }
 }

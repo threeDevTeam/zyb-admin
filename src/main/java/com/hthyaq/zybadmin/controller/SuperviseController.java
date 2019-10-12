@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,20 +9,27 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.AccidentOfSuperviseModel;
+import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
+import com.hthyaq.zybadmin.model.excelModel.TableMapInfoModel;
 import com.hthyaq.zybadmin.model.vo.SuperviseView;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -84,7 +92,7 @@ public class SuperviseController {
             list.add(areaOfDic.getId());
         }
         QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-        queryWrapper2.eq("code",supervise.getCityCode());
+        queryWrapper2.eq("code", supervise.getCityCode());
         List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
         for (AreaOfDic areaOfDic : list2) {
             list.add(areaOfDic.getId());
@@ -97,7 +105,7 @@ public class SuperviseController {
             }
         } else {
             QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
-            queryWrapper3.eq("code",supervise.getDistrictCode());
+            queryWrapper3.eq("code", supervise.getDistrictCode());
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
                 list.add(areaOfDic.getId());
@@ -116,7 +124,7 @@ public class SuperviseController {
         BeanUtils.copyProperties(superviseView, supervise);
 
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",superviseView.getCascader().get(0));
+        queryWrapper.eq("id", superviseView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
         for (AreaOfDic areaOfDic : list) {
             supervise.setProvinceName(String.valueOf(areaOfDic.getName()));
@@ -131,8 +139,8 @@ public class SuperviseController {
             supervise.setCityCode(String.valueOf(areaOfDic.getCode()));
         }
 
-        if (superviseView.getCascader().size() !=3) {
-            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+        if (superviseView.getCascader().size() != 3) {
+            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
             queryWrapper3.eq("id", superviseView.getCascader().get(1));
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
@@ -175,6 +183,34 @@ public class SuperviseController {
         IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;
+    }
+
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]= SuperviseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<Supervise> dataList = getDataList(modelList, type);
+            flag = superviseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+    private List<Supervise> getDataList(List<Object> modelList, String type) {
+        List<Supervise> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            SuperviseModel superviseModel = (SuperviseModel) object;
+            //业务处理
+            Supervise supervise = new Supervise();
+            BeanUtils.copyProperties(superviseModel, supervise);
+            dataList.add(supervise);
+        }
+        return dataList;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,20 +9,27 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.bean.Child2;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.JianceBasicOfServiceModel;
+import com.hthyaq.zybadmin.model.excelModel.JianceDetailOfServiceModel;
+import com.hthyaq.zybadmin.model.excelModel.JianceDetailResultOfServiceModel;
 import com.hthyaq.zybadmin.model.vo.FuView;
 import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
 import com.hthyaq.zybadmin.service.*;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -276,5 +284,47 @@ public class JianceDetailOfServiceController {
         System.out.println(list);
         return CascadeUtil.get(list);
     }
-}
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[2];
+        modelClassArr[1]=JianceDetailOfServiceModel.class;
+        modelClassArr[2]=JianceDetailResultOfServiceModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<JianceDetailOfService> dataList = getDataList(modelList, type,httpSession);
+             jianceDetailOfServiceService.saveBatch(dataList);
+            List<JianceDetailResultOfService> dataList1 = getDataList1(modelList, type,httpSession);
+            jianceDetailResultOfServiceService.saveBatch(dataList1);
+        }
+        return flag;
+    }
+
+    private List<JianceDetailOfService> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<JianceDetailOfService> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            JianceDetailOfServiceModel jianceDetailOfServiceModel = (JianceDetailOfServiceModel) object;
+            //业务处理
+            JianceDetailOfService jianceDetailOfService = new JianceDetailOfService();
+            BeanUtils.copyProperties(jianceDetailOfServiceModel, jianceDetailOfService);
+            dataList.add(jianceDetailOfService);
+        }
+        return dataList;
+    }
+    private List<JianceDetailResultOfService> getDataList1(List<Object> modelList, String type, HttpSession httpSession) {
+        List<JianceDetailResultOfService> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            JianceDetailResultOfServiceModel jianceDetailResultOfServiceModel = (JianceDetailResultOfServiceModel) object;
+            //业务处理
+            JianceDetailResultOfService jianceDetailResultOfService = new JianceDetailResultOfService();
+            BeanUtils.copyProperties(jianceDetailResultOfServiceModel, jianceDetailResultOfService);
+            dataList.add(jianceDetailResultOfService);
+        }
+        return dataList;
+    }
+    }
 

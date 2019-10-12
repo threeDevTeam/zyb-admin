@@ -77,7 +77,7 @@ public class IndustryOfDicController {
     public Boolean moreSheetExcel(MultipartFile[] files) {
         boolean flag = true;
         //excel->model
-        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, IndustryOfDicModel.class);
+        Map<String, List<Object>> modelMap = (Map<String, List<Object>>) MyExcelUtil.readOneSheetExcel(files, IndustryOfDicModel.class);
         //model->entity
         for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
             String type = entry.getKey();
