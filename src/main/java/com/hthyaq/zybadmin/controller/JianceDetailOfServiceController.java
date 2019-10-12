@@ -80,7 +80,7 @@ public class JianceDetailOfServiceController {
     @Autowired
     TypesofregistrationService typesofregistrationService;
     @Autowired
-   GangweiService gangweiService;
+    GangweiService gangweiService;
     @Autowired
     IndustryOfDicService industryOfDicService;
     @Autowired
@@ -109,7 +109,7 @@ public class JianceDetailOfServiceController {
         JianceDetailOfService jianceDetailOfService = jianceDetailOfServiceService.getById(id);
         //将demo的数据设置到demoData
         BeanUtils.copyProperties(jianceDetailOfService, jianceDetailOfServiceView);
-       //登记注册类型
+        //登记注册类型
         QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
         qw2.eq("name", jianceDetailOfService.getRegisterSmallName());
         List<Typesofregistration> listTS = typesofregistrationService.list(qw2);
@@ -163,7 +163,6 @@ public class JianceDetailOfServiceController {
             listc4.add(hazardousfactors.getId());
         }
         jianceDetailOfServiceView.setCascaded4((ArrayList) listc4);
-
 
 
         //省/市/区
@@ -251,80 +250,112 @@ public class JianceDetailOfServiceController {
 
         return page;
     }
+
     @GetMapping("/cascadeData1")
     public List cascadeData() {
-        List list1=new ArrayList();
+        List list1 = new ArrayList();
 
-        QueryWrapper<Typesofregistration> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("level",2);
+        QueryWrapper<Typesofregistration> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("level", 2);
         List<Typesofregistration> list = typesofregistrationService.list(queryWrapper);
         for (Typesofregistration typesofregistration : list) {
-            FuView fuView=new FuView();
+            FuView fuView = new FuView();
             fuView.setLabel(typesofregistration.getName());
             fuView.setValue(Integer.parseInt(String.valueOf(typesofregistration.getId())));
             list1.add(fuView);
         }
         return list1;
     }
+
     @GetMapping("/cascadeData2")
     public List<CascadeView> cascadeData2() {
         List<IndustryOfDic> list = industryOfDicService.list();
         System.out.println(list);
         return CascadeUtil.get(list);
     }
+
     @GetMapping("/cascadeData3")
     public List<CascadeView> cascadeData3() {
         List<Gangwei> list = gangweiService.list();
         System.out.println(list);
         return CascadeUtil.get(list);
     }
+
     @GetMapping("/cascadeData4")
     public List<CascadeView> cascadeData4() {
         List<Hazardousfactors> list = hazardousfactorsService.list();
         System.out.println(list);
         return CascadeUtil.get(list);
     }
+
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;
         //excel->model
         Class<? extends BaseRowModel>[] modelClassArr = new Class[2];
-        modelClassArr[1]=JianceDetailOfServiceModel.class;
-        modelClassArr[2]=JianceDetailResultOfServiceModel.class;
-        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        modelClassArr[0] = JianceDetailOfServiceModel.class;
+        modelClassArr[1] = JianceDetailResultOfServiceModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
         //model->entity
+        long id = 0;
+        long fid = 0;
         for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
-            String type = entry.getKey();
-            List<Object> modelList = entry.getValue();
-            List<JianceDetailOfService> dataList = getDataList(modelList, type,httpSession);
-             jianceDetailOfServiceService.saveBatch(dataList);
-            List<JianceDetailResultOfService> dataList1 = getDataList1(modelList, type,httpSession);
-            jianceDetailResultOfServiceService.saveBatch(dataList1);
+            if (entry.getKey().equals("1")) {
+                String type = entry.getKey();
+                List<Object> modelList = entry.getValue();
+                JianceDetailOfService jianceDetailOfService = getDataList(modelList, type, httpSession);
+                jianceDetailOfServiceService.save(jianceDetailOfService);
+                id = jianceDetailOfService.getId();
+                fid = jianceDetailOfService.getJianceBasicId();
+            } else if (entry.getKey().equals("2")) {
+                String type = entry.getKey();
+                List<Object> modelList = entry.getValue();
+                JianceDetailResultOfService jianceDetailResultOfService = getDataList1(modelList, type, httpSession);
+                jianceDetailResultOfService.setJianceBasicId(fid);
+                jianceDetailResultOfService.setJianceDetailId(id);
+                jianceDetailResultOfServiceService.save(jianceDetailResultOfService);
+            }
         }
         return flag;
     }
 
-    private List<JianceDetailOfService> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
-        List<JianceDetailOfService> dataList = Lists.newArrayList();
-        for (Object object : modelList) {
-            JianceDetailOfServiceModel jianceDetailOfServiceModel = (JianceDetailOfServiceModel) object;
-            //业务处理
-            JianceDetailOfService jianceDetailOfService = new JianceDetailOfService();
-            BeanUtils.copyProperties(jianceDetailOfServiceModel, jianceDetailOfService);
-            dataList.add(jianceDetailOfService);
-        }
-        return dataList;
-    }
-    private List<JianceDetailResultOfService> getDataList1(List<Object> modelList, String type, HttpSession httpSession) {
-        List<JianceDetailResultOfService> dataList = Lists.newArrayList();
+    private JianceDetailResultOfService getDataList1(List<Object> modelList, String type, HttpSession httpSession) {
+
         for (Object object : modelList) {
             JianceDetailResultOfServiceModel jianceDetailResultOfServiceModel = (JianceDetailResultOfServiceModel) object;
             //业务处理
             JianceDetailResultOfService jianceDetailResultOfService = new JianceDetailResultOfService();
             BeanUtils.copyProperties(jianceDetailResultOfServiceModel, jianceDetailResultOfService);
-            dataList.add(jianceDetailResultOfService);
+            return jianceDetailResultOfService;
         }
-        return dataList;
+        return null;
     }
+
+    private JianceDetailOfService getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+
+        for (Object object : modelList) {
+            JianceDetailOfServiceModel jianceDetailOfServiceModel = (JianceDetailOfServiceModel) object;
+            //业务处理
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<ServiceOfRegister> qw = new QueryWrapper();
+            qw.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list4 = serviceOfRegisterService.list(qw);
+            for (ServiceOfRegister serviceOfRegister : list4) {
+                JianceDetailOfService jianceDetailOfService = new JianceDetailOfService();
+                QueryWrapper<JianceBasicOfService> qw1 = new QueryWrapper();
+                qw1.eq("name", serviceOfRegister.getName());
+                List<JianceBasicOfService> list7 = jianceBasicOfServiceService.list(qw1);
+                for (JianceBasicOfService jianceBasicOfService : list7) {
+                    jianceDetailOfService.setJianceBasicId(jianceBasicOfService.getId());
+                }
+
+                BeanUtils.copyProperties(jianceDetailOfServiceModel, jianceDetailOfService);
+                return jianceDetailOfService;
+            }
+        }
+        return null;
     }
+
+
+}
 

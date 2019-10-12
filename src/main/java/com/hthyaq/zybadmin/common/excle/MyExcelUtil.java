@@ -28,6 +28,12 @@ import java.util.Map;
 public class MyExcelUtil {
     //读取单个sheet
     public static List<Object> readOneSheetExcel(MultipartFile[] files, Class<? extends BaseRowModel> modelClass) {
+        List<Object> dataList = readOneSheetExcel(files, modelClass, 1);
+        return dataList;
+    }
+
+    //读取单个sheet,sheetNo从1开始
+    private static List<Object> readOneSheetExcel(MultipartFile[] files, Class<? extends BaseRowModel> modelClass, int sheetNo) {
         List<Object> dataList = Lists.newArrayList();
         InputStream inputStream = null;
         try {
@@ -36,7 +42,7 @@ public class MyExcelUtil {
             // 解析每行结果在listener中处理
             ExcelReader excelReader = new ExcelReader(inputStream, getExcelTypeEnum(filename), null, new ExcelListener(dataList));
             //headLineMun 从第二行开始读数据
-            excelReader.read(new Sheet(1, 1, modelClass));
+            excelReader.read(new Sheet(sheetNo, 1, modelClass));
         } catch (Exception e) {
             log.error("读取Excel失败了！");
             log.error(Throwables.getStackTraceAsString(e));
@@ -49,30 +55,9 @@ public class MyExcelUtil {
     //读取多个sheet
     public static Map<String, List<Object>> readMoreSheetExcel(MultipartFile[] files, Class<? extends BaseRowModel>[] modelClassArr) {
         Map<String, List<Object>> dataMap = Maps.newTreeMap();
-        List<Object> dataList = Lists.newArrayList();
-        InputStream inputStream = null;
-        try {
-            inputStream = files[0].getInputStream();
-            String filename = files[0].getOriginalFilename();
-            // 解析每行结果在listener中处理
-            ExcelReader excelReader = new ExcelReader(inputStream, getExcelTypeEnum(filename), null, new ExcelListener(dataList));
-            List<Sheet> sheets = excelReader.getSheets();
-            if (sheets.size() != modelClassArr.length) throw new RuntimeException("sheet数量和传入的modelClass数量不相同");
-            for (int i = 0; i < modelClassArr.length; i++) {
-                Sheet sheet = sheets.get(i);
-                sheet.setClazz(modelClassArr[i]);
-                sheet.setHeadLineMun(1);
-                excelReader.read(sheet);
-                //
-                dataMap.put(sheet.getSheetName(), new ArrayList<>(dataList));
-                //清空dataList
-                dataList.clear();
-            }
-        } catch (Exception e) {
-            log.error("读取Excel失败了！");
-            log.error(Throwables.getStackTraceAsString(e));
-        } finally {
-            IOUtils.closeQuietly(inputStream);
+        for (int i = 0; i < modelClassArr.length; i++) {
+            List<Object> dataList = readOneSheetExcel(files, modelClassArr[i], i + 1);
+            dataMap.put(String.valueOf(i + 1), dataList);
         }
         return dataMap;
     }
