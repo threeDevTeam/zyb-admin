@@ -1,7 +1,6 @@
 package com.hthyaq.zybadmin.controller;
 
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,10 +8,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
-import com.hthyaq.zybadmin.common.utils.treeSelect.TreeSelectUtil;
-import com.hthyaq.zybadmin.common.utils.treeSelect.TreeSelectView;
 import com.hthyaq.zybadmin.model.bean.GlobalResult;
-import com.hthyaq.zybadmin.model.entity.AreaCopy;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.TreeSelcetData;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
@@ -67,6 +63,7 @@ public class AreaOfDicController {
         return GlobalResult.success("", list.get(0).getGeoJson());
     }
 
+    //https://datav.aliyun.com/tools/atlas/
     @GetMapping("/getGeoJsonFromRemoteServer")
     public boolean getGeoJsonFromRemoteServer() throws InterruptedException {
         List<AreaOfDic> list = areaOfDicService.list(new QueryWrapper<AreaOfDic>().gt("child_num", 0));
