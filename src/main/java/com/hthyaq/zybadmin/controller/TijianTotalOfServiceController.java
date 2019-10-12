@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,16 +9,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.TijianBasicOfServiceModel;
+import com.hthyaq.zybadmin.model.excelModel.TijianTotalOfServiceModel;
 import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
 import com.hthyaq.zybadmin.service.TijianBasicOfServiceService;
 import com.hthyaq.zybadmin.service.TijianTotalOfServiceService;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,6 +44,7 @@ public class TijianTotalOfServiceController {
     TijianBasicOfServiceService tijianBasicOfServiceService;
     @Autowired
     ServiceOfRegisterService serviceOfRegisterService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody TijianTotalOfService tijianTotalOfService, HttpSession httpSession) {
         boolean flag = false;
@@ -56,10 +65,12 @@ public class TijianTotalOfServiceController {
         }
         return flag;
     }
+
     @GetMapping("/delete")
     public boolean delete(String id) {
         return tijianTotalOfServiceService.removeById(id);
     }
+
     @GetMapping("/getById")
     public TijianTotalOfService getById(Integer id) {
 
@@ -71,6 +82,7 @@ public class TijianTotalOfServiceController {
         //将demoCourse的数据设置到demoData
         return tijianTotalOfService;
     }
+
     @PostMapping("/edit")
     public boolean edit(@RequestBody TijianTotalOfService tijianTotalOfService) {
         return tijianTotalOfServiceService.updateById(tijianTotalOfService);
@@ -109,4 +121,45 @@ public class TijianTotalOfServiceController {
 
         return page;
     }
-}
+
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0] = TijianTotalOfServiceModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<TijianTotalOfService> dataList = getDataList(modelList, type, httpSession);
+            flag = tijianTotalOfServiceService.saveBatch(dataList);
+        }
+        return flag;
+    }
+
+    private List<TijianTotalOfService> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<TijianTotalOfService> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            TijianTotalOfServiceModel tijianTotalOfServiceModel = (TijianTotalOfServiceModel) object;
+            //业务处理
+            TijianTotalOfService tijianTotalOfService = new TijianTotalOfService();
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<ServiceOfRegister> queryWrapper = new QueryWrapper();
+            queryWrapper.eq("id", sysUser.getCompanyId());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                    QueryWrapper<TijianBasicOfService> queryWrapper1 = new QueryWrapper();
+                    queryWrapper1.eq("name", serviceOfRegister.getName());
+                    List<TijianBasicOfService> list1 = tijianBasicOfServiceService.list(queryWrapper1);
+                    for (TijianBasicOfService tijianBasicOfService : list1) {
+                        tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
+                    }
+                    BeanUtils.copyProperties(tijianTotalOfServiceModel, tijianTotalOfService);
+                    dataList.add(tijianTotalOfService);
+                }
+            }
+            return dataList;
+        }
+    }

@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,9 +9,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.TijianBasicOfServiceModel;
+import com.hthyaq.zybadmin.model.excelModel.TijianDetail2OfServiceModel;
 import com.hthyaq.zybadmin.model.vo.TijianDetail1OfServiceView;
 import com.hthyaq.zybadmin.model.vo.TijianDetail2OfServiceView;
 import com.hthyaq.zybadmin.service.*;
@@ -18,10 +22,12 @@ import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -52,6 +58,7 @@ public class TijianDetail2OfServiceController {
     HazardousfactorsService hazardousfactorsService;
     @Autowired
     ZybnameService zybnameService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody TijianDetail2OfServiceView tijianDetail2OfServiceView, HttpSession httpSession) {
         boolean flag = false;
@@ -128,14 +135,15 @@ public class TijianDetail2OfServiceController {
                     for (IndustryOfDic industryOfDic : list3) {
                         tijianDetail2OfService.setIndustrySmallName(industryOfDic.getName());
                     }
-                } if(tijianDetail2OfServiceView.getCascaded2().size()==3){
-                    QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
-                    qw1.eq("id",tijianDetail2OfServiceView.getCascaded2().get(2));
-                    List<IndustryOfDic> listT1= industryOfDicService.list(qw1);
+                }
+                if (tijianDetail2OfServiceView.getCascaded2().size() == 3) {
+                    QueryWrapper<IndustryOfDic> qw1 = new QueryWrapper<>();
+                    qw1.eq("id", tijianDetail2OfServiceView.getCascaded2().get(2));
+                    List<IndustryOfDic> listT1 = industryOfDicService.list(qw1);
                     for (IndustryOfDic industryOfDic : listT1) {
                         tijianDetail2OfService.setIndustrySmallName(industryOfDic.getName());
                     }
-                }else{
+                } else {
                     tijianDetail2OfService.setIndustrySmallName("无");
                 }
 
@@ -393,14 +401,15 @@ public class TijianDetail2OfServiceController {
             for (IndustryOfDic industryOfDic : listI) {
                 tijianDetail2OfService.setIndustrySmallName(industryOfDic.getName());
             }
-        } if(tijianDetail2OfServiceView.getCascaded2().size()==3){
-            QueryWrapper<IndustryOfDic> qw1= new QueryWrapper<>();
-            qw1.eq("id",tijianDetail2OfServiceView.getCascaded2().get(2));
-            List<IndustryOfDic> listT1= industryOfDicService.list(qw1);
+        }
+        if (tijianDetail2OfServiceView.getCascaded2().size() == 3) {
+            QueryWrapper<IndustryOfDic> qw1 = new QueryWrapper<>();
+            qw1.eq("id", tijianDetail2OfServiceView.getCascaded2().get(2));
+            List<IndustryOfDic> listT1 = industryOfDicService.list(qw1);
             for (IndustryOfDic industryOfDic : listT1) {
                 tijianDetail2OfService.setIndustrySmallName(industryOfDic.getName());
             }
-        }else{
+        } else {
             tijianDetail2OfService.setIndustrySmallName("无");
         }
 
@@ -499,5 +508,46 @@ public class TijianDetail2OfServiceController {
         return page;
     }
 
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0] = TijianDetail2OfServiceModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<TijianDetail2OfService> dataList = getDataList(modelList, type,httpSession);
+            flag = tijianDetail2OfServiceService.saveBatch(dataList);
+        }
+        return flag;
+    }
 
+    private List<TijianDetail2OfService> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<TijianDetail2OfService> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            TijianDetail2OfServiceModel tijianDetail2OfServiceModel = (TijianDetail2OfServiceModel) object;
+            //业务处理
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<ServiceOfRegister> qw = new QueryWrapper();
+            qw.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list4 = serviceOfRegisterService.list(qw);
+            for (ServiceOfRegister serviceOfRegister : list4) {
+
+                TijianDetail2OfService tijianDetail2OfService = new TijianDetail2OfService();
+
+                QueryWrapper<TijianBasicOfService> qw1 = new QueryWrapper();
+                qw1.eq("name", serviceOfRegister.getName());
+                List<TijianBasicOfService> listTj = tijianBasicOfServiceService.list(qw1);
+                for (TijianBasicOfService tijianBasicOfService : listTj) {
+                    tijianDetail2OfService.setTijianBasicId(tijianBasicOfService.getId());
+                }
+                BeanUtils.copyProperties(tijianDetail2OfServiceModel, tijianDetail2OfService);
+                dataList.add(tijianDetail2OfService);
+            }
+        }
+        return dataList;
+    }
 }

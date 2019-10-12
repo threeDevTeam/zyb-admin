@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,20 +9,26 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.ZhenduanBasicOfServiceModel;
+import com.hthyaq.zybadmin.model.excelModel.ZhenduanDetailOfServiceModel;
 import com.hthyaq.zybadmin.model.vo.TijianDetail1OfServiceView;
 import com.hthyaq.zybadmin.model.vo.ZhenduanBasicOfServiceView;
 import com.hthyaq.zybadmin.model.vo.ZhenduanDetailOfServiceView;
 import com.hthyaq.zybadmin.service.*;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -52,6 +59,7 @@ public class ZhenduanDetailOfServiceController {
     GangweiService gangweiService;
     @Autowired
     HazardousfactorsService hazardousfactorsService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody ZhenduanDetailOfServiceView zhenduanDetailOfServiceView, HttpSession httpSession) {
         boolean flag = false;
@@ -128,14 +136,15 @@ public class ZhenduanDetailOfServiceController {
                     for (IndustryOfDic industryOfDic : list3) {
                         zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
                     }
-                } if (zhenduanDetailOfServiceView.getCascaded2().size() == 3) {
+                }
+                if (zhenduanDetailOfServiceView.getCascaded2().size() == 3) {
                     QueryWrapper<IndustryOfDic> qw1 = new QueryWrapper<>();
                     qw1.eq("id", zhenduanDetailOfServiceView.getCascaded2().get(2));
                     List<IndustryOfDic> list3 = industryOfDicService.list(qw1);
                     for (IndustryOfDic industryOfDic : list3) {
                         zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
                     }
-                }else {
+                } else {
                     zhenduanDetailOfService.setIndustrySmallName("无");
                 }
                 //岗位名称
@@ -192,15 +201,13 @@ public class ZhenduanDetailOfServiceController {
                 }
 
 
-
-
                 QueryWrapper<ZhenduanBasicOfService> qw1 = new QueryWrapper();
                 qw1.eq("name", serviceOfRegister.getName());
                 List<ZhenduanBasicOfService> listZ = zhenduanBasicOfServiceService.list(qw1);
                 for (ZhenduanBasicOfService zhenduanBasicOfService : listZ) {
                     zhenduanDetailOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
                 }
-                flag=zhenduanDetailOfServiceService.save(zhenduanDetailOfService);
+                flag = zhenduanDetailOfServiceService.save(zhenduanDetailOfService);
             }
         }
         return flag;
@@ -213,13 +220,13 @@ public class ZhenduanDetailOfServiceController {
 
     @GetMapping("/getById")
     public ZhenduanDetailOfService getById(Integer id) {
-        List list=new ArrayList();
+        List list = new ArrayList();
         List listc1 = new ArrayList();
         List listc2 = new ArrayList();
         List listc3 = new ArrayList();
         List listc4 = new ArrayList();
         List listc5 = new ArrayList();
-        ZhenduanDetailOfServiceView zhenduanDetailOfServiceView=new ZhenduanDetailOfServiceView();
+        ZhenduanDetailOfServiceView zhenduanDetailOfServiceView = new ZhenduanDetailOfServiceView();
         ZhenduanDetailOfService zhenduanDetailOfService = zhenduanDetailOfServiceService.getById(id);
         BeanUtils.copyProperties(zhenduanDetailOfService, zhenduanDetailOfServiceView);
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
@@ -229,7 +236,7 @@ public class ZhenduanDetailOfServiceController {
             list.add(areaOfDic.getId());
         }
         QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-        queryWrapper2.eq("code",zhenduanDetailOfService.getCityCode());
+        queryWrapper2.eq("code", zhenduanDetailOfService.getCityCode());
         List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
         for (AreaOfDic areaOfDic : list2) {
             list.add(areaOfDic.getId());
@@ -242,7 +249,7 @@ public class ZhenduanDetailOfServiceController {
             }
         } else {
             QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
-            queryWrapper3.eq("code",zhenduanDetailOfService.getDistrictCode());
+            queryWrapper3.eq("code", zhenduanDetailOfService.getDistrictCode());
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
                 list.add(areaOfDic.getId());
@@ -329,11 +336,11 @@ public class ZhenduanDetailOfServiceController {
     @PostMapping("/edit")
     public boolean edit(@RequestBody ZhenduanDetailOfServiceView zhenduanDetailOfServiceView) {
 
-        ZhenduanDetailOfService zhenduanDetailOfService=new ZhenduanDetailOfServiceView();
+        ZhenduanDetailOfService zhenduanDetailOfService = new ZhenduanDetailOfServiceView();
 
         BeanUtils.copyProperties(zhenduanDetailOfServiceView, zhenduanDetailOfService);
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",zhenduanDetailOfServiceView.getCascader().get(0));
+        queryWrapper.eq("id", zhenduanDetailOfServiceView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
         for (AreaOfDic areaOfDic : list) {
             zhenduanDetailOfService.setProvinceName(String.valueOf(areaOfDic.getName()));
@@ -348,8 +355,8 @@ public class ZhenduanDetailOfServiceController {
             zhenduanDetailOfService.setCityCode(String.valueOf(areaOfDic.getCode()));
         }
 
-        if (zhenduanDetailOfServiceView.getCascader().size() !=3) {
-            QueryWrapper<AreaOfDic> queryWrapper3= new QueryWrapper<>();
+        if (zhenduanDetailOfServiceView.getCascader().size() != 3) {
+            QueryWrapper<AreaOfDic> queryWrapper3 = new QueryWrapper<>();
             queryWrapper3.eq("id", zhenduanDetailOfServiceView.getCascader().get(1));
             List<AreaOfDic> list3 = areaOfDicService.list(queryWrapper3);
             for (AreaOfDic areaOfDic : list3) {
@@ -396,15 +403,15 @@ public class ZhenduanDetailOfServiceController {
             for (IndustryOfDic industryOfDic : listI) {
                 zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
             }
-        }  if (zhenduanDetailOfServiceView.getCascaded2().size() ==3) {
+        }
+        if (zhenduanDetailOfServiceView.getCascaded2().size() == 3) {
             QueryWrapper<IndustryOfDic> qw1 = new QueryWrapper<>();
             qw1.eq("id", zhenduanDetailOfServiceView.getCascaded2().get(2));
             List<IndustryOfDic> listI = industryOfDicService.list(qw1);
             for (IndustryOfDic industryOfDic : listI) {
                 zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
             }
-        }
-        else {
+        } else {
             zhenduanDetailOfService.setIndustrySmallName("无");
         }
 
@@ -473,8 +480,8 @@ public class ZhenduanDetailOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String enterpriseName = jsonObject.getString("enterpriseName");
         String name = jsonObject.getString("name");
-        QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
-        queryWrapper1.eq("name",sysUser.getCompanyName());
+        QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+        queryWrapper1.eq("name", sysUser.getCompanyName());
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
         for (ServiceOfRegister serviceOfRegister : list) {
             if (serviceOfRegister.getType().equals("诊断机构")) {
@@ -501,12 +508,54 @@ public class ZhenduanDetailOfServiceController {
 
         return page;
     }
+
     @GetMapping("/cascadeData5")
     public List<CascadeView> cascadeData() {
         List<Zybname> list = zybnameService.list();
         System.out.println(list);
         return CascadeUtil.get(list);
 
+    }
+
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0] = ZhenduanDetailOfServiceModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<ZhenduanDetailOfService> dataList = getDataList(modelList, type,httpSession);
+            flag = zhenduanDetailOfServiceService.saveBatch(dataList);
+        }
+        return flag;
+    }
+
+    private List<ZhenduanDetailOfService> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<ZhenduanDetailOfService> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            ZhenduanDetailOfServiceModel zhenduanDetailOfServiceModel = (ZhenduanDetailOfServiceModel) object;
+            //业务处理
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<ServiceOfRegister> qw = new QueryWrapper();
+            qw.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list4 = serviceOfRegisterService.list(qw);
+            for (ServiceOfRegister serviceOfRegister : list4) {
+                ZhenduanDetailOfService zhenduanDetailOfService = new ZhenduanDetailOfService();
+                QueryWrapper<ZhenduanBasicOfService> qw1 = new QueryWrapper();
+                qw1.eq("name", serviceOfRegister.getName());
+                List<ZhenduanBasicOfService> listZ = zhenduanBasicOfServiceService.list(qw1);
+                for (ZhenduanBasicOfService zhenduanBasicOfService : listZ) {
+                    zhenduanDetailOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
+                }
+                BeanUtils.copyProperties(zhenduanDetailOfServiceModel, zhenduanDetailOfService);
+                dataList.add(zhenduanDetailOfService);
+            }
+        }
+        return dataList;
     }
 }
 
