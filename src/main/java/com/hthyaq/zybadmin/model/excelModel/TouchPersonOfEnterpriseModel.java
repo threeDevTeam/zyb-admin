@@ -36,4 +36,12 @@ public class TouchPersonOfEnterpriseModel extends BaseRowModel {
 	@ExcelProperty(value = {"是否参加职业卫生培训"},index=9)
 	private String isPractice;
 
+    @ExcelProperty(value = {"工作场所"},index=10)
+    private String workplaceId;
+
+    @ExcelProperty(value = {"岗位"},index=11)
+    private String postId;
+
+    @ExcelProperty(value = {"岗位危害信息"},index=12)
+    private String postDangerId;
 }

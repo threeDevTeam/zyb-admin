@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,17 +9,22 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
+import com.hthyaq.zybadmin.model.excelModel.PostOfEnterpriseModel;
 import com.hthyaq.zybadmin.model.vo.PostOfEnterpriseView;
 import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -41,6 +47,8 @@ public class PostOfEnterpriseController {
     WorkplaceOfEnterpriseService workplaceOfEnterpriseService;
     @Autowired
     GangweiService gangweiService;
+    @Autowired
+    SysUserService sysUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody PostOfEnterpriseView postOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -177,10 +185,21 @@ public class PostOfEnterpriseController {
     }
 
     @GetMapping("/TreeSelcetData")
-    public List<TreeSelcetDataPostofenterprise> TreeSelcetData() {
+    public List<TreeSelcetDataPostofenterprise> TreeSelcetData(HttpSession httpSession) {
         List<TreeSelcetDataPostofenterprise> treeSelcetDatalist = new ArrayList();
-        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list();
-        for (WorkplaceOfEnterprise workplaceOfEnterprise : list) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SysUser> qws=new QueryWrapper<>();
+        qws.eq("loginName",sysUser.getLoginName());
+        SysUser one = sysUserService.getOne(qws);
+        QueryWrapper<Enterprise> qwe=new QueryWrapper<>();
+        qwe.eq("name",one.getCompanyName());
+        Enterprise one1 = enterpriseService.getOne(qwe);
+
+        QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper<>();
+        qww.eq("enterpriseId",one1.getId());
+        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list(qww);
+
+      for (WorkplaceOfEnterprise workplaceOfEnterprise : list) {
             TreeSelcetDataPostofenterprise treeSelcetDataPostofenterprise = new TreeSelcetDataPostofenterprise();
             treeSelcetDataPostofenterprise.setTitle(workplaceOfEnterprise.getName());
             treeSelcetDataPostofenterprise.setValue(String.valueOf(workplaceOfEnterprise.getId()));
@@ -188,5 +207,52 @@ public class PostOfEnterpriseController {
             treeSelcetDatalist.add(treeSelcetDataPostofenterprise);
         }
         return treeSelcetDatalist;
+    }
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]= PostOfEnterpriseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<PostOfEnterprise> dataList = getDataList(modelList, type,httpSession);
+            flag = postOfEnterpriseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+    private List<PostOfEnterprise> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<PostOfEnterprise> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            PostOfEnterpriseModel postOfEnterpriseModel = (PostOfEnterpriseModel) object;
+            //业务处理
+            PostOfEnterprise postOfEnterprise = new PostOfEnterprise();
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+            queryWrapper1.eq("name",sysUser.getCompanyName());
+            List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list1) {
+                postOfEnterprise.setEnterpriseId(enterprise.getId());
+            }
+            //场所
+            QueryWrapper<WorkplaceOfEnterprise> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("name", postOfEnterpriseModel.getName());
+            WorkplaceOfEnterprise one = workplaceOfEnterpriseService.getOne(queryWrapper);
+            postOfEnterprise.setWorkplaceId(one.getId());
+            //大类名岗位
+            QueryWrapper<Gangwei> qwg1=new QueryWrapper<>();
+            qwg1.eq("name",postOfEnterpriseModel.getPostSmallName());
+            Gangwei gangwei = gangweiService.getOne(qwg1);
+            QueryWrapper<Gangwei> qwg2=new QueryWrapper<>();
+            qwg2.eq("id",gangwei.getPid());
+            Gangwei gangwei1 = gangweiService.getOne(qwg2);
+            postOfEnterprise.setPostBigName(gangwei1.getName());
+            BeanUtils.copyProperties(postOfEnterpriseModel, postOfEnterprise);
+            dataList.add(postOfEnterprise);
+        }
+        return dataList;
     }
 }

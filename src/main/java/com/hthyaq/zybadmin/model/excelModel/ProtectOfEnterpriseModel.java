@@ -23,5 +23,12 @@ public class ProtectOfEnterpriseModel extends BaseRowModel {
 
 	@ExcelProperty(value = {"工程防护效果"},index=5)
 	private String protectEffect;
+    @ExcelProperty(value = {"工作场所"},index=6)
+    private String workplaceId;
 
+    @ExcelProperty(value = {"岗位"},index=7)
+    private String postId;
+
+    @ExcelProperty(value = {"岗位危害信息"},index=8)
+    private String postDangerId;
 }

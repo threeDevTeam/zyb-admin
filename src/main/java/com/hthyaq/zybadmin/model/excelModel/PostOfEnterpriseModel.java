@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class PostOfEnterpriseModel extends BaseRowModel {
-	@ExcelProperty(value = {"岗位的大类名称"},index=0)
-	private String postBigName;
+	@ExcelProperty(value = {"工作场所名称"},index=0)
+	private String name;
 
 	@ExcelProperty(value = {"岗位的小类名称"},index=1)
 	private String postSmallName;

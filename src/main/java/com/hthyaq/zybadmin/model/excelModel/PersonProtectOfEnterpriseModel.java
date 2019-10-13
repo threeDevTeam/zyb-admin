@@ -26,5 +26,13 @@ public class PersonProtectOfEnterpriseModel extends BaseRowModel {
 
 	@ExcelProperty(value = {"是否定期更换个人防护用品"},index=6)
 	private String isReplace;
+    @ExcelProperty(value = {"工作场所"},index=7)
+    private String workplaceId;
 
+    @ExcelProperty(value = {"岗位"},index=8)
+    private String postId;
+
+    @ExcelProperty(value = {"岗位危害信息"},index=9)
+    private String postDangerId;
 }
+

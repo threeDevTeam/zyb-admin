@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class PostDangerOfEnterpriseModel extends BaseRowModel {
 	@ExcelProperty(value = {"申报时间"},index=0)
-	private Integer upDate;
+	private Integer upDatee;
 
 	@ExcelProperty(value = {"申报年份"},index=1)
 	private Integer upYear;
@@ -45,4 +45,9 @@ public class PostDangerOfEnterpriseModel extends BaseRowModel {
 	@ExcelProperty(value = {"作业方式"},index=12)
 	private String touchMode;
 
+    @ExcelProperty(value = {"工作场所"},index=13)
+    private String workplaceId;
+
+    @ExcelProperty(value = {"岗位"},index=14)
+    private String postId;
 }

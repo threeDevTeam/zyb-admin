@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,7 +10,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.AlikeSickOfEnterpriseModel;
+import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.TreeSelcetDataAlikeSickOfEnterprise;
 import com.hthyaq.zybadmin.model.excelModel.TreeSelcetDataSickOfEnterprise;
 import com.hthyaq.zybadmin.model.vo.AlikeSickOfEnterpriseView;
@@ -18,10 +22,12 @@ import com.hthyaq.zybadmin.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -46,6 +52,8 @@ public class AlikeSickOfEnterpriseController {
     PostOfEnterpriseService postOfEnterpriseService;
     @Autowired
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
+    @Autowired
+    SysUserService sysUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody AlikeSickOfEnterpriseView alikeSickOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -90,7 +98,7 @@ public class AlikeSickOfEnterpriseController {
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(alikeSickOfEnterprise.getPostDangerId());
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(alikeSickOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(alikeSickOfEnterprise.getWorkplaceId());
-        alikeSickOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostBigName()+"--"+postDangerOfEnterprise.getDangerBigName()));
+        alikeSickOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
 
         System.out.println(alikeSickOfEnterpriseView);
         //将demoCourse的数据设置到demoData
@@ -130,9 +138,22 @@ public class AlikeSickOfEnterpriseController {
         return page;
     }
     @GetMapping("/TreeSelcetData")
-    public List<TreeSelcetDataAlikeSickOfEnterprise> TreeSelcetData() {
+    public List<TreeSelcetDataAlikeSickOfEnterprise> TreeSelcetData(HttpSession httpSession) {
+
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SysUser> qws=new QueryWrapper<>();
+        qws.eq("loginName",sysUser.getLoginName());
+        SysUser one = sysUserService.getOne(qws);
+
+        QueryWrapper<Enterprise> qwe=new QueryWrapper<>();
+        qwe.eq("name",one.getCompanyName());
+        Enterprise one1 = enterpriseService.getOne(qwe);
+
+
         List<TreeSelcetDataAlikeSickOfEnterprise> treeSelcetDatalist = new ArrayList();
-        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list();
+        QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper<>();
+        qww.eq("enterpriseId",one1.getId());
+        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list(qww);
         for (WorkplaceOfEnterprise workplaceOfEnterprise : list) {
             List<TreeSelcetDataAlikeSickOfEnterprise> chilren = Lists.newArrayList();
 
@@ -150,7 +171,7 @@ public class AlikeSickOfEnterpriseController {
             for (PostOfEnterprise postOfEnterprise : list1) {
 
                 TreeSelcetDataAlikeSickOfEnterprise treeSelcetDataAlikeSickOfEnterprise = new TreeSelcetDataAlikeSickOfEnterprise();
-                treeSelcetDataAlikeSickOfEnterprise.setTitle(postOfEnterprise.getPostBigName());
+                treeSelcetDataAlikeSickOfEnterprise.setTitle(postOfEnterprise.getPostSmallName());
                 treeSelcetDataAlikeSickOfEnterprise.setValue(String.valueOf(postOfEnterprise.getId()));
                 treeSelcetDataAlikeSickOfEnterprise.setKey(String.valueOf(postOfEnterprise.getId()));
                 chilren.add(treeSelcetDataAlikeSickOfEnterprise);
@@ -161,7 +182,7 @@ public class AlikeSickOfEnterpriseController {
 
                 for (PostDangerOfEnterprise postDangerOfEnterprise : list2) {
                     TreeSelcetDataAlikeSickOfEnterprise treeSelcetDataAlikeSickOfEnterprise2 = new TreeSelcetDataAlikeSickOfEnterprise();
-                    treeSelcetDataAlikeSickOfEnterprise2.setTitle(postDangerOfEnterprise.getDangerBigName());
+                    treeSelcetDataAlikeSickOfEnterprise2.setTitle(postDangerOfEnterprise.getDangerSmallName());
                     treeSelcetDataAlikeSickOfEnterprise2.setValue(String.valueOf(postDangerOfEnterprise.getId()));
                     treeSelcetDataAlikeSickOfEnterprise2.setKey(String.valueOf(postDangerOfEnterprise.getId()));
                     chilren2.add(treeSelcetDataAlikeSickOfEnterprise2);
@@ -170,6 +191,57 @@ public class AlikeSickOfEnterpriseController {
             }
         }
         return treeSelcetDatalist;
+    }
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]= AlikeSickOfEnterpriseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<AlikeSickOfEnterprise> dataList = getDataList(modelList, type,httpSession);
+            flag = alikeSickOfEnterpriseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+    private List<AlikeSickOfEnterprise> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<AlikeSickOfEnterprise> dataList = org.apache.commons.compress.utils.Lists.newArrayList();
+        for (Object object : modelList) {
+            AlikeSickOfEnterpriseModel alikeSickOfEnterpriseModel = (AlikeSickOfEnterpriseModel) object;
+            //业务处理
+            AlikeSickOfEnterprise alikeSickOfEnterprise = new AlikeSickOfEnterprise();
+            //enterpriseId
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+            queryWrapper1.eq("name",sysUser.getCompanyName());
+            List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list1) {
+                alikeSickOfEnterprise.setEnterpriseId(enterprise.getId());
+            }
+            //workplaceId
+            QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper();
+            qww.eq("name",alikeSickOfEnterpriseModel.getWorkplaceId()).eq("enterpriseId",alikeSickOfEnterprise.getEnterpriseId());
+            WorkplaceOfEnterprise one1 = workplaceOfEnterpriseService.getOne(qww);
+            alikeSickOfEnterprise.setWorkplaceId(one1.getId());
+            //postId
+            QueryWrapper<PostOfEnterprise> qwp=new QueryWrapper();
+            qwp.eq("postSmallName",alikeSickOfEnterpriseModel.getPostId()).eq("enterpriseId",alikeSickOfEnterprise.getEnterpriseId()).eq("workplaceId", alikeSickOfEnterprise.getWorkplaceId());
+            PostOfEnterprise one = postOfEnterpriseService.getOne(qwp);
+            alikeSickOfEnterprise.setPostId(one.getId());
+            //postDangerId
+            QueryWrapper<PostDangerOfEnterprise> qwD=new QueryWrapper();
+            qwD.eq("dangerSmallName",alikeSickOfEnterpriseModel.getPostDangerId()).eq("enterpriseId",alikeSickOfEnterprise.getEnterpriseId()).eq("workplaceId", alikeSickOfEnterprise.getWorkplaceId()).eq("postId", alikeSickOfEnterprise.getPostId());
+            PostDangerOfEnterprise one2 = postDangerOfEnterpriseService.getOne(qwD);
+            alikeSickOfEnterprise.setPostDangerId(one2.getId());
+
+            BeanUtils.copyProperties(alikeSickOfEnterpriseModel, alikeSickOfEnterprise);
+            dataList.add(alikeSickOfEnterprise);
+        }
+        return dataList;
     }
 }
 

@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,17 +9,24 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
+import com.hthyaq.zybadmin.model.excelModel.WorkplaceOfEnterpriseModel;
 import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
 import com.hthyaq.zybadmin.service.EnterpriseService;
 import com.hthyaq.zybadmin.service.ProcuctionOfEnterpriseService;
 import com.hthyaq.zybadmin.service.WorkplaceOfEnterpriseService;
+import org.apache.commons.compress.utils.Lists;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -96,5 +104,38 @@ public class WorkplaceOfEnterpriseController {
         IPage<WorkplaceOfEnterprise> page = workplaceOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;
+    }
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]= WorkplaceOfEnterpriseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<WorkplaceOfEnterprise> dataList = getDataList(modelList, type,httpSession);
+            flag = workplaceOfEnterpriseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+    private List<WorkplaceOfEnterprise> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<WorkplaceOfEnterprise> dataList = Lists.newArrayList();
+        for (Object object : modelList) {
+            WorkplaceOfEnterpriseModel workplaceOfEnterpriseModel = (WorkplaceOfEnterpriseModel) object;
+            //业务处理
+            WorkplaceOfEnterprise workplaceOfEnterprise = new WorkplaceOfEnterprise();
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+            queryWrapper1.eq("name",sysUser.getCompanyName());
+            List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list1) {
+                workplaceOfEnterprise.setEnterpriseId(enterprise.getId());}
+            BeanUtils.copyProperties(workplaceOfEnterpriseModel, workplaceOfEnterprise);
+            dataList.add(workplaceOfEnterprise);
+        }
+        return dataList;
     }
 }

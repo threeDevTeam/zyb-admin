@@ -29,5 +29,12 @@ public class AlikeSickOfEnterpriseModel extends BaseRowModel {
 
 	@ExcelProperty(value = {"是否进行了疑似职业病病人报告"},index=7)
 	private String isReport;
+    @ExcelProperty(value = {"工作场所"},index=8)
+    private String workplaceId;
 
+    @ExcelProperty(value = {"岗位"},index=9)
+    private String postId;
+
+    @ExcelProperty(value = {"岗位危害信息"},index=10)
+    private String postDangerId;
 }

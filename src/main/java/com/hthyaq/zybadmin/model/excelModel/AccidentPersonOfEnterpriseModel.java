@@ -26,5 +26,9 @@ public class AccidentPersonOfEnterpriseModel extends BaseRowModel {
 
 	@ExcelProperty(value = {"死亡日期"},index=6)
 	private Integer dieDate;
+    @ExcelProperty(value = {"工作场所"},index=7)
+    private String workplaceId;
 
+    @ExcelProperty(value = {"岗位"},index=8)
+    private String postId;
 }
