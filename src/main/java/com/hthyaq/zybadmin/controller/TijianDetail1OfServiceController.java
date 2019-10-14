@@ -444,6 +444,18 @@ public class TijianDetail1OfServiceController {
                 }
 
                 BeanUtils.copyProperties(tijianDetail1OfServiceModel, tijianDetail1OfService);
+                if(tijianDetail1OfServiceModel.getTijianType().equals("上岗前") ||tijianDetail1OfServiceModel.getTijianType().equals("离岗时") ||tijianDetail1OfServiceModel.getTijianType().equals("应急")
+                        ||tijianDetail1OfServiceModel.getTijianType().equals("在岗期间")){
+                    tijianDetail1OfService.setTijianType(tijianDetail1OfServiceModel.getTijianType());
+                }else{
+                    return null;
+                }
+                if(tijianDetail1OfServiceModel.getResult().equals("复查") ||tijianDetail1OfServiceModel.getResult().equals("目前未见异常") ||tijianDetail1OfServiceModel.getResult().equals("其他疾病")
+                        ||tijianDetail1OfServiceModel.getResult().equals("职业禁忌证")){
+                    tijianDetail1OfService.setResult(tijianDetail1OfServiceModel.getResult());
+                }else{
+                    return null;
+                }
                 dataList.add(tijianDetail1OfService);
             }
         }

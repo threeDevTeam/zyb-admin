@@ -203,11 +203,11 @@ public class FixCheckOfEnterpriseController {
                 String type = entry.getKey();
                 List<Object> modelList = entry.getValue();
                 FixCheckOfEnterprise fixCheckOfEnterprise = getDataList(modelList, type, httpSession);
+                flag = fixCheckOfEnterpriseService.save(fixCheckOfEnterprise);
                 enterpriseId=fixCheckOfEnterprise.getEnterpriseId();
                 workplaceId=  fixCheckOfEnterprise.getWorkplaceId();
                 postId =fixCheckOfEnterprise.getPostId();
                 postDangerId=fixCheckOfEnterprise.getPostDangerId();
-                flag = fixCheckOfEnterpriseService.save(fixCheckOfEnterprise);
                 fixCheckId  =fixCheckOfEnterprise.getId();
             } else if (entry.getKey().equals("2")) {
                 String type = entry.getKey();
@@ -226,7 +226,6 @@ public class FixCheckOfEnterpriseController {
     }
 
     private FixCheckOfEnterprise getDataList(List<Object> modelList, String type, HttpSession httpSession) {
-
         for (Object object : modelList) {
             FixCheckOfEnterpriseModel fixCheckOfEnterpriseModel = (FixCheckOfEnterpriseModel) object;
             //业务处理
@@ -256,10 +255,16 @@ public class FixCheckOfEnterpriseController {
             fixCheckOfEnterprise.setPostDangerId(one2.getId());
 
             BeanUtils.copyProperties(fixCheckOfEnterpriseModel, fixCheckOfEnterprise);
+            if(fixCheckOfEnterpriseModel.getDangerLevel().equals("轻度") || fixCheckOfEnterpriseModel.getDangerLevel().equals("中度") ||fixCheckOfEnterpriseModel.getDangerLevel().equals("高度")||fixCheckOfEnterpriseModel.getDangerLevel().equals("极度")){
+                fixCheckOfEnterprise.setDangerLevel(fixCheckOfEnterpriseModel.getDangerLevel());
+            }else{
+                return null;
+            }
             return fixCheckOfEnterprise;
         }
         return null;
     }
+
 
     private FixCheckResultOfEnterprise getDataList1(List<Object> modelList, String type, HttpSession httpSession) {
         for (Object object : modelList) {
@@ -267,6 +272,12 @@ public class FixCheckOfEnterpriseController {
             //业务处理
             FixCheckResultOfEnterprise fixCheckResultOfEnterprise = new FixCheckResultOfEnterprise();
             BeanUtils.copyProperties(fixCheckResultOfEnterpriseModel, fixCheckResultOfEnterprise);
+            if(fixCheckResultOfEnterpriseModel.getType().equals("CSTEL") ||fixCheckResultOfEnterpriseModel.getType().equals("超限倍数") ||fixCheckResultOfEnterpriseModel.getType().equals("其他")
+                    ||fixCheckResultOfEnterpriseModel.getType().equals("CTWA")||fixCheckResultOfEnterpriseModel.getType().equals("CMAC")){
+                fixCheckResultOfEnterprise.setType(fixCheckResultOfEnterpriseModel.getType());
+            }else{
+                return null;
+            }
             return fixCheckResultOfEnterprise;
         }
         return null;

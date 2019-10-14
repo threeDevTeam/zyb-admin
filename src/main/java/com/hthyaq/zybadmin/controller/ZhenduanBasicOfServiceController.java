@@ -264,6 +264,22 @@ public class ZhenduanBasicOfServiceController {
             //业务处理
             ZhenduanBasicOfService zhenduanBasicOfService = new ZhenduanBasicOfService();
             BeanUtils.copyProperties(zhenduanBasicOfServiceModel, zhenduanBasicOfService);
+            if(zhenduanBasicOfServiceModel.getLevel().equals("甲级") ||zhenduanBasicOfServiceModel.getLevel().equals("乙级") ||zhenduanBasicOfServiceModel.getLevel().equals("丙级")){
+                zhenduanBasicOfService.setLevel(zhenduanBasicOfServiceModel.getLevel());
+            }else{
+                return null;
+            }
+            if(zhenduanBasicOfServiceModel.getScope().equals("粉尘") ||zhenduanBasicOfServiceModel.getScope().equals("化学因素") ||zhenduanBasicOfServiceModel.getScope().equals("物理因素")
+                    ||zhenduanBasicOfServiceModel.getScope().equals("放射性因素")||zhenduanBasicOfServiceModel.getScope().equals("生物因素")){
+                zhenduanBasicOfService.setScope(zhenduanBasicOfServiceModel.getScope());
+            }else{
+                return null;
+            }
+            if(zhenduanBasicOfServiceModel.getHospitalLevel().equals("一级") ||zhenduanBasicOfServiceModel.getHospitalLevel().equals("二级") ||zhenduanBasicOfServiceModel.getHospitalLevel().equals("三级")){
+                zhenduanBasicOfService.setHospitalLevel(zhenduanBasicOfServiceModel.getHospitalLevel());
+            }else{
+                return null;
+            }
             dataList.add(zhenduanBasicOfService);
         }
         return dataList;

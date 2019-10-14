@@ -240,6 +240,16 @@ public class TestOfEnterpriseController {
             testOfEnterprise.setPostDangerId(one2.getId());
 
             BeanUtils.copyProperties(testOfEnterpriseModel, testOfEnterprise);
+            if(testOfEnterpriseModel.getType().equals("离岗时") || testOfEnterpriseModel.getType().equals("在岗期间") ||testOfEnterpriseModel.getType().equals("上岗前")){
+                testOfEnterprise.setType(testOfEnterpriseModel.getType());
+            }else{
+                return null;
+            }
+            if(testOfEnterpriseModel.getResult().equals("正常") || testOfEnterpriseModel.getResult().equals("异常") ||testOfEnterpriseModel.getResult().equals("职业禁忌证")||testOfEnterpriseModel.getResult().equals("疑似职业病")){
+                testOfEnterprise.setResult(testOfEnterpriseModel.getResult());
+            }else{
+                return null;
+            }
             dataList.add(testOfEnterprise);
         }
         return dataList;

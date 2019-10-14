@@ -157,6 +157,11 @@ public class EquipmentOfSuperviseController {
                 }
             }
             BeanUtils.copyProperties(equipmentOfSuperviseModel, equipmentOfSupervise);
+            if(equipmentOfSuperviseModel.getStatus().equals("在用") || equipmentOfSuperviseModel.getStatus().equals("停用") || equipmentOfSuperviseModel.getStatus().equals("报废")){
+                equipmentOfSupervise.setStatus(equipmentOfSuperviseModel.getStatus());
+            }else{
+                return null;
+            }
             dataList.add(equipmentOfSupervise);
         }
         return dataList;

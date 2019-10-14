@@ -241,7 +241,25 @@ public class ProtectOfEnterpriseController {
             PostDangerOfEnterprise one2 = postDangerOfEnterpriseService.getOne(qwD);
             protectOfEnterprise.setPostDangerId(one2.getId());
 
-            BeanUtils.copyProperties(protectOfEnterpriseModel, protectOfEnterprise);
+            BeanUtils.copyProperties(protectOfEnterpriseModel, protectOfEnterpriseModel);
+            if(protectOfEnterpriseModel.getType().equals("防尘设施") || protectOfEnterpriseModel.getType().equals("防毒设施") ||protectOfEnterpriseModel.getType().equals("防噪声设施")||protectOfEnterpriseModel.getType().equals("防高温设施")
+                    ||protectOfEnterpriseModel.getType().equals("防辐射设施")||protectOfEnterpriseModel.getType().equals("其他")){
+                protectOfEnterpriseModel.setType(protectOfEnterpriseModel.getType());
+            }else{
+                return null;
+            }
+            if(protectOfEnterpriseModel.getStatus().equals("正常") || protectOfEnterpriseModel.getStatus().equals("故障") ||protectOfEnterpriseModel.getStatus().equals("报废")||protectOfEnterpriseModel.getStatus().equals("其他")
+                    ||protectOfEnterpriseModel.getStatus().equals("维修")||protectOfEnterpriseModel.getStatus().equals("停用")){
+                protectOfEnterpriseModel.setType(protectOfEnterpriseModel.getType());
+            }else{
+                return null;
+            }
+            if(protectOfEnterpriseModel.getProtectEffect().equals("差") || protectOfEnterpriseModel.getProtectEffect().equals("一般") ||protectOfEnterpriseModel.getProtectEffect().equals("良好")){
+                protectOfEnterpriseModel.setProtectEffect(protectOfEnterpriseModel.getProtectEffect());
+            }else{
+                return null;
+            }
+
             dataList.add(protectOfEnterprise);
         }
         return dataList;

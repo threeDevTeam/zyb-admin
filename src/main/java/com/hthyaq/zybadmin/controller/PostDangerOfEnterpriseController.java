@@ -319,6 +319,11 @@ public class PostDangerOfEnterpriseController {
             PostOfEnterprise one = postOfEnterpriseService.getOne(qwp);
             postDangerOfEnterprise.setPostId(one.getId());
             BeanUtils.copyProperties(postDangerOfEnterpriseModel, postDangerOfEnterprise);
+            if(postDangerOfEnterpriseModel.getTouchMode().equals("定点作业") || postDangerOfEnterpriseModel.getTouchMode().equals("巡检作业") ||postDangerOfEnterpriseModel.getTouchMode().equals("手工作业")||postDangerOfEnterpriseModel.getTouchMode().equals("自动控制")){
+                postDangerOfEnterprise.setTouchMode(postDangerOfEnterpriseModel.getTouchMode());
+            }else{
+                return null;
+            }
             dataList.add(postDangerOfEnterprise);
         }
         return dataList;

@@ -154,6 +154,11 @@ public class ProcuctionOfEnterpriseController {
                     procuctionOfEnterprise.setEnterpriseId(enterprise.getId());
                 }
                 BeanUtils.copyProperties(procuctionOfEnterpriseModel, procuctionOfEnterprise);
+                if(procuctionOfEnterpriseModel.getStatus().equals("固态") || procuctionOfEnterpriseModel.getStatus().equals("液态") ||procuctionOfEnterpriseModel.getStatus().equals("气态")||procuctionOfEnterpriseModel.getStatus().equals("其他")){
+                    procuctionOfEnterprise.setStatus(procuctionOfEnterpriseModel.getStatus());
+                }else{
+                    return null;
+                }
                 dataList.add(procuctionOfEnterprise);
             }
         }

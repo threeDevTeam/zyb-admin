@@ -326,6 +326,12 @@ public class JianceDetailOfServiceController {
             //业务处理
             JianceDetailResultOfService jianceDetailResultOfService = new JianceDetailResultOfService();
             BeanUtils.copyProperties(jianceDetailResultOfServiceModel, jianceDetailResultOfService);
+            if(jianceDetailResultOfServiceModel.getType().equals("CSTEL") ||jianceDetailResultOfServiceModel.getType().equals("超限倍数") ||jianceDetailResultOfServiceModel.getType().equals("其他")
+                    ||jianceDetailResultOfServiceModel.getType().equals("CTWA")||jianceDetailResultOfServiceModel.getType().equals("CMAC")){
+                jianceDetailResultOfService.setType(jianceDetailResultOfServiceModel.getType());
+            }else{
+                return null;
+            }
             return jianceDetailResultOfService;
         }
         return null;

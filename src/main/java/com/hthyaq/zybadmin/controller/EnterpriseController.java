@@ -322,6 +322,16 @@ public class EnterpriseController {
             //业务处理
             Enterprise enterprise = new Enterprise();
             BeanUtils.copyProperties(enterpriseModel, enterprise);
+            if(enterpriseModel.getRiskLevel().equals("I级") ||enterpriseModel.getRiskLevel().equals("Ⅱ级") ||enterpriseModel.getRiskLevel().equals("Ⅲ级")){
+                enterprise.setRiskLevel(enterpriseModel.getRiskLevel());
+            }else{
+                return null;
+            }
+            if(enterpriseModel.getSize().equals("大型") ||enterpriseModel.getSize().equals("小型") ||enterpriseModel.getSize().equals("中型")||enterpriseModel.getSize().equals("微型")){
+                enterprise.setSize(enterpriseModel.getSize());
+            }else{
+                return null;
+            }
             dataList.add(enterprise);
         }
         return dataList;
