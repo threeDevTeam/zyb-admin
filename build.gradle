@@ -25,7 +25,8 @@ repositories {
 }
 
 dependencies {
-
+    //MD5
+    implementation 'org.apache.commons:commons-lang3:3.3.2'
     //jsoup
     implementation 'org.jsoup:jsoup:1.12.1'
     //fastjson
