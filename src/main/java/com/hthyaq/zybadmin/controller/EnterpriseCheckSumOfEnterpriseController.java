@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,7 +10,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.EnterpriseCheckSumOfEnterpriseModel;
+import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.TreeSelcetDataEnterpriseCheckSumOfEnterprise;
 import com.hthyaq.zybadmin.model.excelModel.TreeSelcetDataTouchPersonOfEnterprise;
 import com.hthyaq.zybadmin.model.vo.EnterpriseCheckSumOfEnterpriseView;
@@ -18,10 +22,12 @@ import com.hthyaq.zybadmin.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -46,7 +52,8 @@ public class EnterpriseCheckSumOfEnterpriseController {
     PostOfEnterpriseService postOfEnterpriseService;
     @Autowired
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
-
+    @Autowired
+    SysUserService sysUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody EnterpriseCheckSumOfEnterpriseView enterpriseCheckSumOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -92,7 +99,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(enterpriseCheckSumOfEnterprise.getPostDangerId());
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(enterpriseCheckSumOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(enterpriseCheckSumOfEnterprise.getWorkplaceId());
-        enterpriseCheckSumOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostBigName()+"--"+postDangerOfEnterprise.getDangerBigName()));
+        enterpriseCheckSumOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
 
         System.out.println(enterpriseCheckSumOfEnterprise);
         //将demoCourse的数据设置到demoData
@@ -132,9 +139,24 @@ public class EnterpriseCheckSumOfEnterpriseController {
         return page;
     }
     @GetMapping("/TreeSelcetData")
-    public List<TreeSelcetDataEnterpriseCheckSumOfEnterprise> TreeSelcetData() {
+    public List<TreeSelcetDataEnterpriseCheckSumOfEnterprise> TreeSelcetData(HttpSession httpSession) {
+
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SysUser> qws=new QueryWrapper<>();
+        qws.eq("loginName",sysUser.getLoginName());
+        SysUser one = sysUserService.getOne(qws);
+
+        QueryWrapper<Enterprise> qwe=new QueryWrapper<>();
+        qwe.eq("name",one.getCompanyName());
+        Enterprise one1 = enterpriseService.getOne(qwe);
+
+
+
         List<TreeSelcetDataEnterpriseCheckSumOfEnterprise> treeSelcetDatalist = new ArrayList();
-        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list();
+        QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper<>();
+        qww.eq("enterpriseId",one1.getId());
+        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list(qww);
+
         for (WorkplaceOfEnterprise workplaceOfEnterprise : list) {
             List<TreeSelcetDataEnterpriseCheckSumOfEnterprise> chilren = Lists.newArrayList();
 
@@ -152,7 +174,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
             for (PostOfEnterprise postOfEnterprise : list1) {
 
                 TreeSelcetDataEnterpriseCheckSumOfEnterprise treeSelcetDataEnterpriseCheckSumOfEnterprise = new TreeSelcetDataEnterpriseCheckSumOfEnterprise();
-                treeSelcetDataEnterpriseCheckSumOfEnterprise.setTitle(postOfEnterprise.getPostBigName());
+                treeSelcetDataEnterpriseCheckSumOfEnterprise.setTitle(postOfEnterprise.getPostSmallName());
                 treeSelcetDataEnterpriseCheckSumOfEnterprise.setValue(String.valueOf(postOfEnterprise.getId()));
                 treeSelcetDataEnterpriseCheckSumOfEnterprise.setKey(String.valueOf(postOfEnterprise.getId()));
                 chilren.add(treeSelcetDataEnterpriseCheckSumOfEnterprise);
@@ -163,7 +185,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
 
                 for (PostDangerOfEnterprise postDangerOfEnterprise : list2) {
                     TreeSelcetDataEnterpriseCheckSumOfEnterprise treeSelcetDataEnterpriseCheckSumOfEnterprise2 = new TreeSelcetDataEnterpriseCheckSumOfEnterprise();
-                    treeSelcetDataEnterpriseCheckSumOfEnterprise2.setTitle(postDangerOfEnterprise.getDangerBigName());
+                    treeSelcetDataEnterpriseCheckSumOfEnterprise2.setTitle(postDangerOfEnterprise.getDangerSmallName());
                     treeSelcetDataEnterpriseCheckSumOfEnterprise2.setValue(String.valueOf(postDangerOfEnterprise.getId()));
                     treeSelcetDataEnterpriseCheckSumOfEnterprise2.setKey(String.valueOf(postDangerOfEnterprise.getId()));
                     chilren2.add(treeSelcetDataEnterpriseCheckSumOfEnterprise2);
@@ -172,5 +194,56 @@ public class EnterpriseCheckSumOfEnterpriseController {
             }
         }
         return treeSelcetDatalist;
+    }
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]= EnterpriseCheckSumOfEnterpriseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<EnterpriseCheckSumOfEnterprise> dataList = getDataList(modelList, type,httpSession);
+            flag = enterpriseCheckSumOfEnterpriseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+    private List<EnterpriseCheckSumOfEnterprise> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<EnterpriseCheckSumOfEnterprise> dataList = org.apache.commons.compress.utils.Lists.newArrayList();
+        for (Object object : modelList) {
+            EnterpriseCheckSumOfEnterpriseModel enterpriseCheckSumOfEnterpriseModel = (EnterpriseCheckSumOfEnterpriseModel) object;
+            //业务处理
+            EnterpriseCheckSumOfEnterprise enterpriseCheckSumOfEnterprise = new EnterpriseCheckSumOfEnterprise();
+            //enterpriseId
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+            queryWrapper1.eq("name",sysUser.getCompanyName());
+            List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list1) {
+                enterpriseCheckSumOfEnterprise.setEnterpriseId(enterprise.getId());
+            }
+            //workplaceId
+            QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper();
+            qww.eq("name",enterpriseCheckSumOfEnterpriseModel.getWorkplaceId()).eq("enterpriseId",enterpriseCheckSumOfEnterprise.getEnterpriseId());
+            WorkplaceOfEnterprise one1 = workplaceOfEnterpriseService.getOne(qww);
+            enterpriseCheckSumOfEnterprise.setWorkplaceId(one1.getId());
+            //postId
+            QueryWrapper<PostOfEnterprise> qwp=new QueryWrapper();
+            qwp.eq("postSmallName",enterpriseCheckSumOfEnterpriseModel.getPostId()).eq("enterpriseId",enterpriseCheckSumOfEnterprise.getEnterpriseId()).eq("workplaceId", enterpriseCheckSumOfEnterprise.getWorkplaceId());
+            PostOfEnterprise one = postOfEnterpriseService.getOne(qwp);
+            enterpriseCheckSumOfEnterprise.setPostId(one.getId());
+            //postDangerId
+            QueryWrapper<PostDangerOfEnterprise> qwD=new QueryWrapper();
+            qwD.eq("dangerSmallName",enterpriseCheckSumOfEnterpriseModel.getPostDangerId()).eq("enterpriseId",enterpriseCheckSumOfEnterprise.getEnterpriseId()).eq("workplaceId", enterpriseCheckSumOfEnterprise.getWorkplaceId()).eq("postId", enterpriseCheckSumOfEnterprise.getPostId());
+            PostDangerOfEnterprise one2 = postDangerOfEnterpriseService.getOne(qwD);
+            enterpriseCheckSumOfEnterprise.setPostDangerId(one2.getId());
+
+            BeanUtils.copyProperties(enterpriseCheckSumOfEnterpriseModel, enterpriseCheckSumOfEnterprise);
+            dataList.add(enterpriseCheckSumOfEnterprise);
+        }
+        return dataList;
     }
 }

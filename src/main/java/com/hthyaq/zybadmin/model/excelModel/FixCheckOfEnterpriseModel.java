@@ -32,5 +32,12 @@ public class FixCheckOfEnterpriseModel extends BaseRowModel {
 
 	@ExcelProperty(value = {"危害程度级别"},index=8)
 	private String dangerLevel;
+    @ExcelProperty(value = {"工作场所"},index=9)
+    private String workplaceId;
 
+    @ExcelProperty(value = {"岗位"},index=10)
+    private String postId;
+
+    @ExcelProperty(value = {"岗位危害信息"},index=11)
+    private String postDangerId;
 }

@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,7 +10,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.AccidentPersonOfEnterpriseModel;
+import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.TreeSelcetDataAccidentPersonOfEnterprise;
 import com.hthyaq.zybadmin.model.vo.AccidentPersonOfEnterpriseView;
 import com.hthyaq.zybadmin.model.vo.PostDangerOfEnterpriseView;
@@ -17,10 +21,12 @@ import com.hthyaq.zybadmin.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -43,6 +49,8 @@ public class AccidentPersonOfEnterpriseController {
     WorkplaceOfEnterpriseService workplaceOfEnterpriseService;
     @Autowired
     PostOfEnterpriseService postOfEnterpriseService;
+    @Autowired
+    SysUserService sysUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody AccidentPersonOfEnterpriseView accidentPersonOfEnterpriseView ,HttpSession httpSession) {
         boolean flag = false;
@@ -86,7 +94,7 @@ public class AccidentPersonOfEnterpriseController {
         BeanUtils.copyProperties(accidentPersonOfEnterprise, accidentPersonOfEnterpriseView);
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(accidentPersonOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(accidentPersonOfEnterprise.getWorkplaceId());
-        accidentPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostBigName()));
+        accidentPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()));
         return accidentPersonOfEnterpriseView;
     }
 
@@ -123,9 +131,20 @@ public class AccidentPersonOfEnterpriseController {
         return page;
     }
     @GetMapping("/TreeSelcetData")
-    public List<TreeSelcetDataAccidentPersonOfEnterprise> TreeSelcetData() {
+    public List<TreeSelcetDataAccidentPersonOfEnterprise> TreeSelcetData(HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SysUser> qws=new QueryWrapper<>();
+        qws.eq("loginName",sysUser.getLoginName());
+        SysUser one = sysUserService.getOne(qws);
+
+        QueryWrapper<Enterprise> qwe=new QueryWrapper<>();
+        qwe.eq("name",one.getCompanyName());
+        Enterprise one1 = enterpriseService.getOne(qwe);
+
         List<TreeSelcetDataAccidentPersonOfEnterprise> treeSelcetDatalist = new ArrayList();
-        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list();
+        QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper<>();
+        qww.eq("enterpriseId",one1.getId());
+        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list(qww);
         for (WorkplaceOfEnterprise workplaceOfEnterprise : list) {
             List<TreeSelcetDataAccidentPersonOfEnterprise> chilren = Lists.newArrayList();
             TreeSelcetDataAccidentPersonOfEnterprise treeSelcetDataAccidentPersonOfEnterprise1 = new TreeSelcetDataAccidentPersonOfEnterprise();
@@ -139,7 +158,7 @@ public class AccidentPersonOfEnterpriseController {
             List<PostOfEnterprise> list1 = postOfEnterpriseService.list(queryWrapper);
             for (PostOfEnterprise postOfEnterprise : list1) {
                 TreeSelcetDataAccidentPersonOfEnterprise treeSelcetDataAccidentPersonOfEnterprise = new TreeSelcetDataAccidentPersonOfEnterprise();
-                treeSelcetDataAccidentPersonOfEnterprise.setTitle(postOfEnterprise.getPostBigName());
+                treeSelcetDataAccidentPersonOfEnterprise.setTitle(postOfEnterprise.getPostSmallName());
                 treeSelcetDataAccidentPersonOfEnterprise.setValue(String.valueOf(postOfEnterprise.getId()));
                 treeSelcetDataAccidentPersonOfEnterprise.setKey(String.valueOf(postOfEnterprise.getId()));
                 chilren.add(treeSelcetDataAccidentPersonOfEnterprise);
@@ -147,5 +166,51 @@ public class AccidentPersonOfEnterpriseController {
 
         }
         return treeSelcetDatalist;
+    }
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files,HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]= AccidentPersonOfEnterpriseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<AccidentPersonOfEnterprise> dataList = getDataList(modelList, type,httpSession);
+            flag = accidentPersonOfEnterpriseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+    private List<AccidentPersonOfEnterprise> getDataList(List<Object> modelList, String type,HttpSession httpSession) {
+        List<AccidentPersonOfEnterprise> dataList = org.apache.commons.compress.utils.Lists.newArrayList();
+        for (Object object : modelList) {
+            AccidentPersonOfEnterpriseModel accidentPersonOfEnterpriseModel = (AccidentPersonOfEnterpriseModel) object;
+            //业务处理
+            AccidentPersonOfEnterprise accidentPersonOfEnterprise = new AccidentPersonOfEnterprise();
+            //enterpriseId
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+            queryWrapper1.eq("name",sysUser.getCompanyName());
+            List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list1) {
+                accidentPersonOfEnterprise.setEnterpriseId(enterprise.getId());
+            }
+            //关联-工作场所
+            QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper();
+            qww.eq("name",accidentPersonOfEnterpriseModel.getWorkplaceId()).eq("enterpriseId",accidentPersonOfEnterprise.getEnterpriseId());
+            WorkplaceOfEnterprise one1 = workplaceOfEnterpriseService.getOne(qww);
+            accidentPersonOfEnterprise.setWorkplaceId(one1.getId());
+
+            //岗位
+            QueryWrapper<PostOfEnterprise> qwp=new QueryWrapper();
+            qwp.eq("postSmallName",accidentPersonOfEnterpriseModel.getPostId()).eq("enterpriseId",accidentPersonOfEnterprise.getEnterpriseId()).eq("workplaceId", accidentPersonOfEnterprise.getWorkplaceId());
+            PostOfEnterprise one = postOfEnterpriseService.getOne(qwp);
+            accidentPersonOfEnterprise.setPostId(one.getId());
+            BeanUtils.copyProperties(accidentPersonOfEnterpriseModel, accidentPersonOfEnterprise);
+            dataList.add(accidentPersonOfEnterprise);
+        }
+        return dataList;
     }
 }

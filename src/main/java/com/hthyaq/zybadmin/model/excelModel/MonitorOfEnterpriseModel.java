@@ -20,5 +20,12 @@ public class MonitorOfEnterpriseModel extends BaseRowModel {
 
 	@ExcelProperty(value = {"判定结果"},index=4)
 	private String decideResult;
+    @ExcelProperty(value = {"工作场所"},index=10)
+    private String workplaceId;
 
+    @ExcelProperty(value = {"岗位"},index=11)
+    private String postId;
+
+    @ExcelProperty(value = {"岗位危害信息"},index=12)
+    private String postDangerId;
 }

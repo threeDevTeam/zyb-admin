@@ -270,6 +270,11 @@ public class JianceBasicOfServiceController {
             //业务处理
             JianceBasicOfService jianceBasicOfService = new JianceBasicOfService();
             BeanUtils.copyProperties(jianceBasicOfServiceModel, jianceBasicOfService);
+            if(jianceBasicOfServiceModel.getLevel().equals("甲级") ||jianceBasicOfServiceModel.getLevel().equals("乙级") ||jianceBasicOfServiceModel.getLevel().equals("丙级")){
+                jianceBasicOfService.setLevel(jianceBasicOfServiceModel.getLevel());
+            }else{
+                return null;
+            }
             dataList.add(jianceBasicOfService);
         }
         return dataList;

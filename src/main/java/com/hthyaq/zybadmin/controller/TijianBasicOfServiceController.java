@@ -263,6 +263,18 @@ public class TijianBasicOfServiceController {
             //业务处理
             TijianBasicOfService tijianBasicOfService = new TijianBasicOfService();
             BeanUtils.copyProperties(tijianBasicOfServiceModel, tijianBasicOfService);
+            if(tijianBasicOfServiceModel.getScope().equals("粉尘") ||tijianBasicOfServiceModel.getScope().equals("化学因素") ||tijianBasicOfServiceModel.getScope().equals("物理因素")
+                    ||tijianBasicOfServiceModel.getScope().equals("放射性因素")||tijianBasicOfServiceModel.getScope().equals("生物因素")){
+                tijianBasicOfService.setScope(tijianBasicOfServiceModel.getScope());
+            }else{
+                return null;
+            }
+            if(tijianBasicOfServiceModel.getHospitalLevel().equals("一级") ||tijianBasicOfServiceModel.getHospitalLevel().equals("二级") ||tijianBasicOfServiceModel.getHospitalLevel().equals("三级")){
+                tijianBasicOfService.setHospitalLevel(tijianBasicOfServiceModel.getHospitalLevel());
+            }else{
+                return null;
+            }
+
             dataList.add(tijianBasicOfService);
         }
         return dataList;

@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,7 +10,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
+import com.hthyaq.zybadmin.model.excelModel.TouchPersonOfEnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.TreeSelcetDataTouchPersonOfEnterprise;
 import com.hthyaq.zybadmin.model.vo.PersonOfEnterpriseView;
 import com.hthyaq.zybadmin.model.vo.TouchPersonOfEnterpriseView;
@@ -17,10 +21,12 @@ import com.hthyaq.zybadmin.service.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -45,7 +51,8 @@ public class TouchPersonOfEnterpriseController {
     PostOfEnterpriseService postOfEnterpriseService;
     @Autowired
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
-
+    @Autowired
+    SysUserService sysUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody TouchPersonOfEnterpriseView touchPersonOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -91,7 +98,7 @@ public class TouchPersonOfEnterpriseController {
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(touchPersonOfEnterprise.getPostDangerId());
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(touchPersonOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(touchPersonOfEnterprise.getWorkplaceId());
-        touchPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostBigName()+"--"+postDangerOfEnterprise.getDangerBigName()));
+        touchPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
 
         System.out.println(touchPersonOfEnterpriseView);
         //将demoCourse的数据设置到demoData
@@ -132,9 +139,22 @@ public class TouchPersonOfEnterpriseController {
     }
 
     @GetMapping("/TreeSelcetData")
-    public List<TreeSelcetDataTouchPersonOfEnterprise> TreeSelcetData() {
+    public List<TreeSelcetDataTouchPersonOfEnterprise> TreeSelcetData(HttpSession httpSession) {
+
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<SysUser> qws=new QueryWrapper<>();
+        qws.eq("loginName",sysUser.getLoginName());
+        SysUser one = sysUserService.getOne(qws);
+
+        QueryWrapper<Enterprise> qwe=new QueryWrapper<>();
+        qwe.eq("name",one.getCompanyName());
+        Enterprise one1 = enterpriseService.getOne(qwe);
+
+
         List<TreeSelcetDataTouchPersonOfEnterprise> treeSelcetDatalist = new ArrayList();
-        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list();
+        QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper<>();
+        qww.eq("enterpriseId",one1.getId());
+        List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list(qww);
         for (WorkplaceOfEnterprise workplaceOfEnterprise : list) {
             List<TreeSelcetDataTouchPersonOfEnterprise> chilren = Lists.newArrayList();
 
@@ -152,7 +172,7 @@ public class TouchPersonOfEnterpriseController {
             for (PostOfEnterprise postOfEnterprise : list1) {
 
                 TreeSelcetDataTouchPersonOfEnterprise treeSelcetDataTouchPersonOfEnterprise = new TreeSelcetDataTouchPersonOfEnterprise();
-                treeSelcetDataTouchPersonOfEnterprise.setTitle(postOfEnterprise.getPostBigName());
+                treeSelcetDataTouchPersonOfEnterprise.setTitle(postOfEnterprise.getPostSmallName());
                 treeSelcetDataTouchPersonOfEnterprise.setValue(String.valueOf(postOfEnterprise.getId()));
                 treeSelcetDataTouchPersonOfEnterprise.setKey(String.valueOf(postOfEnterprise.getId()));
                 chilren.add(treeSelcetDataTouchPersonOfEnterprise);
@@ -163,7 +183,7 @@ public class TouchPersonOfEnterpriseController {
 
                 for (PostDangerOfEnterprise postDangerOfEnterprise : list2) {
                     TreeSelcetDataTouchPersonOfEnterprise treeSelcetDataTouchPersonOfEnterprise2 = new TreeSelcetDataTouchPersonOfEnterprise();
-                    treeSelcetDataTouchPersonOfEnterprise2.setTitle(postDangerOfEnterprise.getDangerBigName());
+                    treeSelcetDataTouchPersonOfEnterprise2.setTitle(postDangerOfEnterprise.getDangerSmallName());
                     treeSelcetDataTouchPersonOfEnterprise2.setValue(String.valueOf(postDangerOfEnterprise.getId()));
                     treeSelcetDataTouchPersonOfEnterprise2.setKey(String.valueOf(postDangerOfEnterprise.getId()));
                     chilren2.add(treeSelcetDataTouchPersonOfEnterprise2);
@@ -173,4 +193,56 @@ public class TouchPersonOfEnterpriseController {
         }
         return treeSelcetDatalist;
     }
+    @PostMapping("/exceladd")
+    public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
+        boolean flag = true;
+        //excel->model
+        Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
+        modelClassArr[0]= TouchPersonOfEnterpriseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        //model->entity
+        for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
+            String type = entry.getKey();
+            List<Object> modelList = entry.getValue();
+            List<TouchPersonOfEnterprise> dataList = getDataList(modelList, type,httpSession);
+            flag = touchPersonOfEnterpriseService.saveBatch(dataList);
+        }
+        return flag;
+    }
+    private List<TouchPersonOfEnterprise> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
+        List<TouchPersonOfEnterprise> dataList = org.apache.commons.compress.utils.Lists.newArrayList();
+        for (Object object : modelList) {
+            TouchPersonOfEnterpriseModel touchPersonOfEnterpriseModel = (TouchPersonOfEnterpriseModel) object;
+            //业务处理
+            TouchPersonOfEnterprise touchPersonOfEnterprise = new TouchPersonOfEnterprise();
+            //enterpriseId
+            SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+            QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
+            queryWrapper1.eq("name",sysUser.getCompanyName());
+            List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list1) {
+                touchPersonOfEnterprise.setEnterpriseId(enterprise.getId());
+            }
+            //workplaceId
+            QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper();
+            qww.eq("name",touchPersonOfEnterpriseModel.getWorkplaceId()).eq("enterpriseId",touchPersonOfEnterprise.getEnterpriseId());
+            WorkplaceOfEnterprise one1 = workplaceOfEnterpriseService.getOne(qww);
+            touchPersonOfEnterprise.setWorkplaceId(one1.getId());
+            //postId
+            QueryWrapper<PostOfEnterprise> qwp=new QueryWrapper();
+            qwp.eq("postSmallName",touchPersonOfEnterpriseModel.getPostId()).eq("enterpriseId",touchPersonOfEnterprise.getEnterpriseId()).eq("workplaceId", touchPersonOfEnterprise.getWorkplaceId());
+            PostOfEnterprise one = postOfEnterpriseService.getOne(qwp);
+            touchPersonOfEnterprise.setPostId(one.getId());
+            //postDangerId
+            QueryWrapper<PostDangerOfEnterprise> qwD=new QueryWrapper();
+            qwD.eq("dangerSmallName",touchPersonOfEnterpriseModel.getPostDangerId()).eq("enterpriseId",touchPersonOfEnterprise.getEnterpriseId()).eq("workplaceId", touchPersonOfEnterprise.getWorkplaceId()).eq("postId", touchPersonOfEnterprise.getPostId());
+            PostDangerOfEnterprise one2 = postDangerOfEnterpriseService.getOne(qwD);
+            touchPersonOfEnterprise.setPostDangerId(one2.getId());
+
+            BeanUtils.copyProperties(touchPersonOfEnterpriseModel, touchPersonOfEnterprise);
+            dataList.add(touchPersonOfEnterprise);
+        }
+        return dataList;
+    }
+
 }

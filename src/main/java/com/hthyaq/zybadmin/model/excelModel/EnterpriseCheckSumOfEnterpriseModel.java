@@ -29,5 +29,12 @@ public class EnterpriseCheckSumOfEnterpriseModel extends BaseRowModel {
 
 	@ExcelProperty(value = {"是否包含存在的全部职业病危害因素"},index=7)
 	private String isInclude;
+    @ExcelProperty(value = {"工作场所"},index=8)
+    private String workplaceId;
 
+    @ExcelProperty(value = {"岗位"},index=9)
+    private String postId;
+
+    @ExcelProperty(value = {"岗位危害信息"},index=10)
+    private String postDangerId;
 }

@@ -18,4 +18,9 @@ public class PersonOfEnterpriseModel extends BaseRowModel {
 	@ExcelProperty(value = {"年龄"},index=3)
 	private Integer age;
 
+    @ExcelProperty(value = {"工作场所"},index=4)
+    private String workplaceId;
+
+    @ExcelProperty(value = {"岗位"},index=5)
+    private String postId;
 }

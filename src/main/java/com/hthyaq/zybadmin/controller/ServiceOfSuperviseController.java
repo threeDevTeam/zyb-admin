@@ -157,6 +157,11 @@ public class ServiceOfSuperviseController {
                 }
             }
             BeanUtils.copyProperties(serviceOfSuperviseModel, serviceOfSupervise);
+            if(serviceOfSuperviseModel.getJianceLevel().equals("甲级") || serviceOfSuperviseModel.getJianceLevel().equals("乙级") ||serviceOfSuperviseModel.getJianceLevel().equals("丙级")){
+                serviceOfSupervise.setJianceLevel(serviceOfSuperviseModel.getJianceLevel());
+            }else{
+                return null;
+            }
             dataList.add(serviceOfSupervise);
         }
         return dataList;

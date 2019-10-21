@@ -59,5 +59,12 @@ public class SickOfEnterpriseModel extends BaseRowModel {
 
 	@ExcelProperty(value = {"死亡月份"},index=17)
 	private Integer dieMonth;
+    @ExcelProperty(value = {"工作场所"},index=18)
+    private String workplaceId;
 
+    @ExcelProperty(value = {"岗位"},index=19)
+    private String postId;
+
+    @ExcelProperty(value = {"岗位危害信息"},index=20)
+    private String postDangerId;
 }
