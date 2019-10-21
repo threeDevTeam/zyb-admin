@@ -8,8 +8,10 @@ import com.hthyaq.zybadmin.controller.dataVisual.vo.NameValue;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.Scroll;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.StrList;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
+import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
+import com.hthyaq.zybadmin.service.BaseOfDicService;
 import com.hthyaq.zybadmin.service.IndustryOfDicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,8 @@ public class NationDangerVisual {
     AreaOfDicService areaOfDicService;
     @Autowired
     IndustryOfDicService industryOfDicService;
+    @Autowired
+    BaseOfDicService baseOfDicService;
 
     /*
         来源：表2-40 企业职业病危害风险分级及管控措施
@@ -181,6 +185,35 @@ public class NationDangerVisual {
         List<IndustryOfDic> list = industryOfDicService.list(new QueryWrapper<IndustryOfDic>().eq("topid", -1));
         list.forEach(tmp -> {
             flagList.add(tmp.getName());
+            data0List.add(RandomUtil.randomInt(1, 1000));
+            data1List.add(RandomUtil.randomInt(1, 1000));
+            data2List.add(RandomUtil.randomInt(1, 1000));
+            data3List.add(RandomUtil.randomInt(1, 1000));
+        });
+
+        strList.setFlagList(flagList);
+        strList.setZero(data0List);
+        strList.setOne(data1List);
+        strList.setTwo(data2List);
+        strList.setThree(data3List);
+        return strList;
+    }
+
+    /*
+来源：表2-41 企业职业病危害风险分布情况（按登记注册类型统计）
+*/
+    @GetMapping("/option5")
+    public StrList option5() {
+        StrList strList = new StrList();
+        List<String> flagList = Lists.newArrayList();
+        List<Integer> data0List = Lists.newArrayList();
+        List<Integer> data1List = Lists.newArrayList();
+        List<Integer> data2List = Lists.newArrayList();
+        List<Integer> data3List = Lists.newArrayList();
+        //模拟数据
+        List<BaseOfDic> list = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
+        list.forEach(tmp -> {
+            flagList.add(tmp.getBigName());
             data0List.add(RandomUtil.randomInt(1, 1000));
             data1List.add(RandomUtil.randomInt(1, 1000));
             data2List.add(RandomUtil.randomInt(1, 1000));
