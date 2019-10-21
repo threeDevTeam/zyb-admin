@@ -2,15 +2,10 @@ package com.hthyaq.zybadmin.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.hthyaq.zybadmin.model.entity.AccidentOfSupervise;
-import com.hthyaq.zybadmin.model.entity.AreaOfDic;
-import com.hthyaq.zybadmin.model.entity.EnterpriseOfRegister;
-import com.hthyaq.zybadmin.model.entity.SysUser;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.EnterpriseUserView;
-import com.hthyaq.zybadmin.service.AccidentOfSuperviseService;
-import com.hthyaq.zybadmin.service.AreaOfDicService;
-import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
-import com.hthyaq.zybadmin.service.SysUserService;
+import com.hthyaq.zybadmin.service.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -38,6 +33,8 @@ public class EnterpriseOfRegisterController {
     AreaOfDicService areaOfDicService;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody EnterpriseUserView enterpriseUserView) {
         System.out.println(enterpriseUserView);
@@ -94,8 +91,7 @@ public class EnterpriseOfRegisterController {
         enterpriseOfRegisterService.save(enterpriseOfRegister);
         SysUser sysUser = new SysUser();
         sysUser.setLoginName(enterpriseUserView.getLoginName());
-        sysUser.setLoginPassword(enterpriseUserView.getLoginPassword());
-
+        sysUser.setLoginPassword( DigestUtils.md5Hex(enterpriseUserView.getLoginPassword()));
 
         sysUser.setEmail(enterpriseUserView.getEmail());
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -116,6 +112,12 @@ public class EnterpriseOfRegisterController {
         sysUser.setCompanyId(enterpriseOfRegister.getId());
         sysUser.setCompanyName(enterpriseUserView.getCompanyName());
         sysUserService.save(sysUser);
+        SysRoleUser sysRoleUser=new SysRoleUser();
+        sysRoleUser.setRoleId(2);
+        sysRoleUser.setUserId(Integer.parseInt(String.valueOf(sysUser.getId())));
+        sysRoleUserService.save(sysRoleUser);
+
+
         return true;
     }
 }

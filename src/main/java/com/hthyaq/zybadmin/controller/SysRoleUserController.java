@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hthyaq.zybadmin.model.entity.SysRoleMenu;
 import com.hthyaq.zybadmin.model.entity.SysRoleUser;
 import com.hthyaq.zybadmin.model.vo.SysRoleMenuView;
@@ -10,11 +11,10 @@ import com.hthyaq.zybadmin.service.SysRoleMenuService;
 import com.hthyaq.zybadmin.service.SysRoleService;
 import com.hthyaq.zybadmin.service.SysRoleUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -45,5 +45,17 @@ public class SysRoleUserController {
             sysRoleUserService.save(sysRoleUser);
         }
         return true;
+    }
+    @GetMapping("/getById")
+    public List<SysRoleUser> getById(Integer id) {
+        //demo
+        List list1=new ArrayList();
+        QueryWrapper<SysRoleUser> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("roleId",id);
+        List<SysRoleUser> list = sysRoleUserService.list(queryWrapper);
+        for (SysRoleUser sysRoleUser : list) {
+            list1.add(sysRoleUser.getUserId());
+        }
+        return list1;
     }
 }

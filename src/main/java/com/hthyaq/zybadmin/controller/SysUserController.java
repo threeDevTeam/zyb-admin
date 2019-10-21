@@ -10,11 +10,10 @@ import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.bean.Child;
 import com.hthyaq.zybadmin.model.bean.GlobalResult;
-import com.hthyaq.zybadmin.model.entity.AccidentOfSupervise;
-import com.hthyaq.zybadmin.model.entity.Demo;
-import com.hthyaq.zybadmin.model.entity.DemoCourse;
-import com.hthyaq.zybadmin.model.entity.SysUser;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.DemoView;
+import com.hthyaq.zybadmin.model.vo.SysUserpassword;
+import com.hthyaq.zybadmin.service.SysRoleUserService;
 import com.hthyaq.zybadmin.service.SysUserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
@@ -37,7 +36,8 @@ import java.util.List;
 public class SysUserController {
     @Autowired
     SysUserService sysUserService;
-
+    @Autowired
+    SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody SysUser sysUser) {
         sysUser.setLoginPassword( DigestUtils.md5Hex(sysUser.getLoginPassword()));
@@ -83,6 +83,17 @@ public class SysUserController {
         IPage<SysUser> page = sysUserService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;
+    }
+    @PostMapping("/changePassword")
+    public boolean out( HttpSession httpSession, @RequestBody SysUserpassword sysUserpassword) {
+    System.out.println(sysUserpassword);
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        if(DigestUtils.md5Hex(sysUserpassword.getLoginPassword()).equals(sysUser.getLoginPassword())){
+            sysUser.setLoginPassword(DigestUtils.md5Hex(sysUserpassword.getNewPassword()));
+            sysUserService.updateById(sysUser);
+            return true;
+        }
+        return false;
     }
 }
 
