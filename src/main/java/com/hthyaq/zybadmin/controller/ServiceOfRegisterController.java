@@ -2,15 +2,10 @@ package com.hthyaq.zybadmin.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.hthyaq.zybadmin.model.entity.AreaOfDic;
-import com.hthyaq.zybadmin.model.entity.EnterpriseOfRegister;
-import com.hthyaq.zybadmin.model.entity.ServiceOfRegister;
-import com.hthyaq.zybadmin.model.entity.SysUser;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.ServiceOfUserView;
-import com.hthyaq.zybadmin.service.AreaOfDicService;
-import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
-import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
-import com.hthyaq.zybadmin.service.SysUserService;
+import com.hthyaq.zybadmin.service.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,6 +36,8 @@ public class ServiceOfRegisterController {
     AreaOfDicService areaOfDicService;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody ServiceOfUserView serviceOfUserView) {
         System.out.println(serviceOfUserView);
@@ -92,7 +89,8 @@ public class ServiceOfRegisterController {
         serviceOfRegisterService.save(serviceOfRegister);
         SysUser sysUser=new SysUser();
         sysUser.setLoginName(serviceOfUserView.getLoginName());
-        sysUser.setLoginPassword(serviceOfUserView.getLoginPassword());
+        sysUser.setLoginPassword( DigestUtils.md5Hex(serviceOfUserView.getLoginPassword()));
+
         sysUser.setEmail(serviceOfUserView.getEmail());
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -110,6 +108,24 @@ public class ServiceOfRegisterController {
         sysUser.setCompanyId(serviceOfRegister.getId());
         sysUser.setCompanyName(serviceOfUserView.getCompanyName());
         sysUserService.save(sysUser);
+        if(serviceOfUserView.getType2().equals("检测机构")){
+            SysRoleUser sysRoleUser=new SysRoleUser();
+            sysRoleUser.setRoleId(4);
+            sysRoleUser.setUserId(Integer.parseInt(String.valueOf(sysUser.getId())));
+            sysRoleUserService.save(sysRoleUser);
+        }
+        else if(serviceOfUserView.getType2().equals("体检机构")){
+            SysRoleUser sysRoleUser=new SysRoleUser();
+            sysRoleUser.setRoleId(5);
+            sysRoleUser.setUserId(Integer.parseInt(String.valueOf(sysUser.getId())));
+            sysRoleUserService.save(sysRoleUser);
+        }
+        else if(serviceOfUserView.getType2().equals("诊断机构")){
+            SysRoleUser sysRoleUser=new SysRoleUser();
+            sysRoleUser.setRoleId(6);
+            sysRoleUser.setUserId(Integer.parseInt(String.valueOf(sysUser.getId())));
+            sysRoleUserService.save(sysRoleUser);
+        }
         return true;
     }
 }
