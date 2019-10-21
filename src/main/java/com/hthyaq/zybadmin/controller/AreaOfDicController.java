@@ -8,6 +8,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
+import com.hthyaq.zybadmin.common.utils.treeSelect.TreeSelectUtil;
+import com.hthyaq.zybadmin.common.utils.treeSelect.TreeSelectView;
 import com.hthyaq.zybadmin.model.bean.GlobalResult;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.TreeSelcetData;
@@ -97,7 +99,6 @@ public class AreaOfDicController {
         return areaOfDicService.set();
     }
 
-
     @GetMapping("/TreeSelcetData2")
     public List<TreeSelcetData> TreeSelcetData2() {
         List<TreeSelcetData> treeSelcetDatalist = new ArrayList();
@@ -144,8 +145,11 @@ public class AreaOfDicController {
     public List<CascadeView> cascadeData() {
         List<AreaOfDic> list = areaOfDicService.list();
         return CascadeUtil.get(list);
-
     }
-
+    @GetMapping("/treeSelcetData")
+    public List<TreeSelectView> treeSelcetData() {
+        List<AreaOfDic> list = areaOfDicService.list();
+        return TreeSelectUtil.get(list);
+    }
 
 }

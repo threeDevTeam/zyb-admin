@@ -1,10 +1,11 @@
 package com.hthyaq.zybadmin;
 
+import cn.hutool.core.util.RandomUtil;
+
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 public class ZZTest {
     public static void main(String[] args) throws IOException {
-        System.out.println(LocalDateTime.now().getYear());
+        System.out.println(RandomUtil.randomInt(1,5));
     }
 }
