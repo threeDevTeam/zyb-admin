@@ -143,7 +143,7 @@ public class NationDangerVisual {
     @GetMapping("/option3")
     public StrList option3() {
         StrList strList = new StrList();
-        List<String> areaNameList = Lists.newArrayList();
+        List<String> flagList = Lists.newArrayList();
         List<Integer> data0List = Lists.newArrayList();
         List<Integer> data1List = Lists.newArrayList();
         List<Integer> data2List = Lists.newArrayList();
@@ -151,33 +151,14 @@ public class NationDangerVisual {
         //模拟数据
         List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
         areaList.forEach(tmp -> {
-            areaNameList.add(tmp.getName());
-            Integer i = RandomUtil.randomInt(0, 4);
-            if (i.equals(0)) {
-                data0List.add(RandomUtil.randomInt(1, 1000));
-                data1List.add(0);
-                data2List.add(0);
-                data3List.add(0);
-            } else if (i.equals(1)) {
-                data0List.add(0);
-                data1List.add(RandomUtil.randomInt(1, 1000));
-                data2List.add(0);
-                data3List.add(0);
-            } else if (i.equals(2)) {
-                data0List.add(0);
-                data1List.add(0);
-                data2List.add(RandomUtil.randomInt(1, 1000));
-                data3List.add(0);
-            } else if (i.equals(3)) {
-                data0List.add(0);
-                data1List.add(0);
-                data2List.add(0);
-                data3List.add(RandomUtil.randomInt(1, 1000));
-            }
-
+            flagList.add(tmp.getName());
+            data0List.add(RandomUtil.randomInt(1, 1000));
+            data1List.add(RandomUtil.randomInt(1, 1000));
+            data2List.add(RandomUtil.randomInt(1, 1000));
+            data3List.add(RandomUtil.randomInt(1, 1000));
         });
 
-        strList.setAreaNameList(areaNameList);
+        strList.setFlagList(flagList);
         strList.setZero(data0List);
         strList.setOne(data1List);
         strList.setTwo(data2List);
@@ -191,7 +172,7 @@ public class NationDangerVisual {
     @GetMapping("/option4")
     public StrList option4() {
         StrList strList = new StrList();
-        List<String> areaNameList = Lists.newArrayList();
+        List<String> flagList = Lists.newArrayList();
         List<Integer> data0List = Lists.newArrayList();
         List<Integer> data1List = Lists.newArrayList();
         List<Integer> data2List = Lists.newArrayList();
@@ -199,33 +180,14 @@ public class NationDangerVisual {
         //模拟数据
         List<IndustryOfDic> list = industryOfDicService.list(new QueryWrapper<IndustryOfDic>().eq("topid", -1));
         list.forEach(tmp -> {
-            areaNameList.add(tmp.getName());
-            Integer i = RandomUtil.randomInt(0, 4);
-            if (i.equals(0)) {
-                data0List.add(RandomUtil.randomInt(1, 1000));
-                data1List.add(0);
-                data2List.add(0);
-                data3List.add(0);
-            } else if (i.equals(1)) {
-                data0List.add(0);
-                data1List.add(RandomUtil.randomInt(1, 1000));
-                data2List.add(0);
-                data3List.add(0);
-            } else if (i.equals(2)) {
-                data0List.add(0);
-                data1List.add(0);
-                data2List.add(RandomUtil.randomInt(1, 1000));
-                data3List.add(0);
-            } else if (i.equals(3)) {
-                data0List.add(0);
-                data1List.add(0);
-                data2List.add(0);
-                data3List.add(RandomUtil.randomInt(1, 1000));
-            }
-
+            flagList.add(tmp.getName());
+            data0List.add(RandomUtil.randomInt(1, 1000));
+            data1List.add(RandomUtil.randomInt(1, 1000));
+            data2List.add(RandomUtil.randomInt(1, 1000));
+            data3List.add(RandomUtil.randomInt(1, 1000));
         });
 
-        strList.setAreaNameList(areaNameList);
+        strList.setFlagList(flagList);
         strList.setZero(data0List);
         strList.setOne(data1List);
         strList.setTwo(data2List);
