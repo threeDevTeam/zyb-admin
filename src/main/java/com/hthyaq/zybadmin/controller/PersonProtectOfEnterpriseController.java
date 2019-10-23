@@ -51,6 +51,8 @@ public class PersonProtectOfEnterpriseController {
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
     @Autowired
     SysUserService sysUserService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody PersonProtectOfEnterpriseView personProtectOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -118,22 +120,35 @@ public class PersonProtectOfEnterpriseController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
-        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Enterprise> list = enterpriseService.list(queryWrapper1);
-        for (Enterprise enterprise : list) {
-            list1.clear();
-            Long id = enterprise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<PersonProtectOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("enterpriseId",list1.get(0));
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
-        IPage<PersonProtectOfEnterprise> page = personProtectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<PersonProtectOfEnterprise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            IPage<PersonProtectOfEnterprise> page = personProtectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Enterprise> list = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list) {
+                list1.clear();
+                Long id = enterprise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<PersonProtectOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("enterpriseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            IPage<PersonProtectOfEnterprise> page = personProtectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
     @GetMapping("/TreeSelcetData")
     public List<TreeSelcetDataPersonProtectOfEnterprise> TreeSelcetData(HttpSession httpSession) {

@@ -46,7 +46,8 @@ public class AccidentSumOfEnterpriseController {
     EnterpriseService enterpriseService;
     @Autowired
     HazardousfactorsService hazardousfactorsService;
-
+    @Autowired
+    SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody AccidentSumOfEnterpriseView accidentSumOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -159,24 +160,37 @@ public class AccidentSumOfEnterpriseController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String accidentNum = jsonObject.getString("accidentNum");
-        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Enterprise> list = enterpriseService.list(queryWrapper1);
-        for (Enterprise enterprise : list) {
-            list1.clear();
-            Long id = enterprise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<AccidentSumOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("enterpriseId", list1.get(0));
-        if (!Strings.isNullOrEmpty(accidentNum)) {
-            queryWrapper.eq("accidentNum", accidentNum);
-        }
-        IPage<AccidentSumOfEnterprise> page = accidentSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<AccidentSumOfEnterprise> queryWrapper = new QueryWrapper<>();
 
-        return page;
+            if (!Strings.isNullOrEmpty(accidentNum)) {
+                queryWrapper.eq("accidentNum", accidentNum);
+            }
+            IPage<AccidentSumOfEnterprise> page = accidentSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        } else {
+            QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Enterprise> list = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list) {
+                list1.clear();
+                Long id = enterprise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<AccidentSumOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("enterpriseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(accidentNum)) {
+                queryWrapper.eq("accidentNum", accidentNum);
+            }
+            IPage<AccidentSumOfEnterprise> page = accidentSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

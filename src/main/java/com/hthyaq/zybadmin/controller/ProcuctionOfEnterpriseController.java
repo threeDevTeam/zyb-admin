@@ -13,10 +13,7 @@ import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.ProcuctionOfEnterpriseModel;
-import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
-import com.hthyaq.zybadmin.service.EnterpriseService;
-import com.hthyaq.zybadmin.service.PersonOfEnterpriseService;
-import com.hthyaq.zybadmin.service.ProcuctionOfEnterpriseService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +42,8 @@ public class ProcuctionOfEnterpriseController {
     EnterpriseOfRegisterService enterpriseOfRegisterService;
     @Autowired
     EnterpriseService enterpriseService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody ProcuctionOfEnterprise procuctionOfEnterprise, HttpSession httpSession) {
@@ -98,27 +97,42 @@ public class ProcuctionOfEnterpriseController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
         String productionType = jsonObject.getString("productionType");
-        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Enterprise> list = enterpriseService.list(queryWrapper1);
-        for (Enterprise enterprise : list) {
-            list1.clear();
-            Long id = enterprise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<ProcuctionOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("enterpriseId", list1.get(0));
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
-        if (!Strings.isNullOrEmpty(productionType)) {
-            queryWrapper.eq("productionType", productionType);
-        }
-        IPage<ProcuctionOfEnterprise> page = procuctionOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<ProcuctionOfEnterprise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            if (!Strings.isNullOrEmpty(productionType)) {
+                queryWrapper.eq("productionType", productionType);
+            }
+            IPage<ProcuctionOfEnterprise> page = procuctionOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Enterprise> list = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list) {
+                list1.clear();
+                Long id = enterprise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<ProcuctionOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("enterpriseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            if (!Strings.isNullOrEmpty(productionType)) {
+                queryWrapper.eq("productionType", productionType);
+            }
+            IPage<ProcuctionOfEnterprise> page = procuctionOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

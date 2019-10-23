@@ -57,6 +57,8 @@ public class FixCheckOfEnterpriseController {
     SysUserService sysUserService;
     @Autowired
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody FixCheckOfView fixCheckOfView, HttpSession httpSession) {
@@ -108,26 +110,39 @@ public class FixCheckOfEnterpriseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String decideResult = jsonObject.getString("decideResult");
-        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Enterprise> list = enterpriseService.list(queryWrapper1);
-        for (Enterprise enterprise : list) {
-            list1.clear();
-            Long id = enterprise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<FixCheckOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("enterpriseId", list1.get(0));
-        if (!Strings.isNullOrEmpty(decideResult)) {
-            queryWrapper.eq("decideResult", decideResult);
-        }
+        String org = jsonObject.getString("org");
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<FixCheckOfEnterprise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(org)) {
+                queryWrapper.eq("org", org);
+            }
 
-        IPage<FixCheckOfEnterprise> page = fixCheckOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<FixCheckOfEnterprise> page = fixCheckOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Enterprise> list = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list) {
+                list1.clear();
+                Long id = enterprise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<FixCheckOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("enterpriseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(org)) {
+                queryWrapper.eq("org", org);
+            }
+
+            IPage<FixCheckOfEnterprise> page = fixCheckOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
-
     @GetMapping("/TreeSelcetData")
     public List<TreeSelcetDataFixCheckOfEnterprise> TreeSelcetData(HttpSession httpSession) {
 

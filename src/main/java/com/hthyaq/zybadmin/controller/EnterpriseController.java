@@ -51,6 +51,9 @@ public class EnterpriseController {
     TypesofregistrationService typesofregistrationService;
     @Autowired
     IndustryOfDicService industryOfDicService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody  EnterpriseView enterpriseView, HttpSession httpSession) {
         boolean flag=false;
@@ -301,14 +304,27 @@ public class EnterpriseController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
-        QueryWrapper<Enterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", sysUser.getCompanyName());
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
-        IPage<Enterprise> page = enterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<Enterprise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            IPage<Enterprise> page = enterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Enterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("name", sysUser.getCompanyName());
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            IPage<Enterprise> page = enterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files) {

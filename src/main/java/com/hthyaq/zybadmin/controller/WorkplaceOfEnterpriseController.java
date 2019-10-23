@@ -13,10 +13,7 @@ import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.WorkplaceOfEnterpriseModel;
-import com.hthyaq.zybadmin.service.EnterpriseOfRegisterService;
-import com.hthyaq.zybadmin.service.EnterpriseService;
-import com.hthyaq.zybadmin.service.ProcuctionOfEnterpriseService;
-import com.hthyaq.zybadmin.service.WorkplaceOfEnterpriseService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +42,8 @@ public class WorkplaceOfEnterpriseController {
     EnterpriseOfRegisterService enterpriseOfRegisterService;
     @Autowired
     EnterpriseService enterpriseService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody WorkplaceOfEnterprise workplaceOfEnterprise, HttpSession httpSession) {
         boolean flag=false;
@@ -88,22 +87,35 @@ public class WorkplaceOfEnterpriseController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String username = jsonObject.getString("username");
-        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Enterprise> list = enterpriseService.list(queryWrapper1);
-        for (Enterprise enterprise : list) {
-            list1.clear();
-            Long id = enterprise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<WorkplaceOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("enterpriseId",list1.get(0));
-        if (!Strings.isNullOrEmpty(username)) {
-            queryWrapper.eq("username", username);
-        }
-        IPage<WorkplaceOfEnterprise> page = workplaceOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<WorkplaceOfEnterprise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(username)) {
+                queryWrapper.eq("username", username);
+            }
+            IPage<WorkplaceOfEnterprise> page = workplaceOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Enterprise> list = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list) {
+                list1.clear();
+                Long id = enterprise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<WorkplaceOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("enterpriseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(username)) {
+                queryWrapper.eq("username", username);
+            }
+            IPage<WorkplaceOfEnterprise> page = workplaceOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {

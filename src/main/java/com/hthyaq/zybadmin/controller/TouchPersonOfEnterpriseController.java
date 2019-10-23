@@ -53,6 +53,9 @@ public class TouchPersonOfEnterpriseController {
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
     @Autowired
     SysUserService sysUserService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody TouchPersonOfEnterpriseView touchPersonOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -64,8 +67,8 @@ public class TouchPersonOfEnterpriseController {
 
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-        QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
-        queryWrapper1.eq("name",sysUser.getCompanyName());
+        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper();
+        queryWrapper1.eq("name", sysUser.getCompanyName());
         List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
         for (Enterprise enterprise : list1) {
             touchPersonOfEnterprise.setEnterpriseId(enterprise.getId());
@@ -75,7 +78,7 @@ public class TouchPersonOfEnterpriseController {
         touchPersonOfEnterprise.setPostDangerId(Long.parseLong(touchPersonOfEnterpriseView.getTreeSelect()));
 
         //通过postDangerId查询出workplaceId,postId
-       PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(touchPersonOfEnterpriseView.getTreeSelect());
+        PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(touchPersonOfEnterpriseView.getTreeSelect());
         touchPersonOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         touchPersonOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
@@ -92,13 +95,13 @@ public class TouchPersonOfEnterpriseController {
 
     @GetMapping("/getById")
     public TouchPersonOfEnterprise getById(Integer id) {
-        TouchPersonOfEnterpriseView touchPersonOfEnterpriseView=new TouchPersonOfEnterpriseView();
+        TouchPersonOfEnterpriseView touchPersonOfEnterpriseView = new TouchPersonOfEnterpriseView();
         TouchPersonOfEnterprise touchPersonOfEnterprise = touchPersonOfEnterpriseService.getById(id);
-        BeanUtils.copyProperties(touchPersonOfEnterprise,touchPersonOfEnterpriseView);
+        BeanUtils.copyProperties(touchPersonOfEnterprise, touchPersonOfEnterpriseView);
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(touchPersonOfEnterprise.getPostDangerId());
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(touchPersonOfEnterprise.getPostId());
-        WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(touchPersonOfEnterprise.getWorkplaceId());
-        touchPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
+        WorkplaceOfEnterprise workplaceOfEnterprise = workplaceOfEnterpriseService.getById(touchPersonOfEnterprise.getWorkplaceId());
+        touchPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName() + "--" + postOfEnterprise.getPostSmallName() + "--" + postDangerOfEnterprise.getDangerSmallName()));
 
         System.out.println(touchPersonOfEnterpriseView);
         //将demoCourse的数据设置到demoData
@@ -120,40 +123,53 @@ public class TouchPersonOfEnterpriseController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String upDate = jsonObject.getString("upDate");
-        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Enterprise> list = enterpriseService.list(queryWrapper1);
-        for (Enterprise enterprise : list) {
-            list1.clear();
-            Long id = enterprise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<TouchPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("enterpriseId",list1.get(0));
-        if (!Strings.isNullOrEmpty(upDate)) {
-            queryWrapper.eq("upDate", upDate);
-        }
-        IPage<TouchPersonOfEnterprise> page = touchPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<TouchPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(upDate)) {
+                queryWrapper.eq("upDate", upDate);
+            }
+            IPage<TouchPersonOfEnterprise> page = touchPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Enterprise> list = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list) {
+                list1.clear();
+                Long id = enterprise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<TouchPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("enterpriseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(upDate)) {
+                queryWrapper.eq("upDate", upDate);
+            }
+            IPage<TouchPersonOfEnterprise> page = touchPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
 
     @GetMapping("/TreeSelcetData")
     public List<TreeSelcetDataTouchPersonOfEnterprise> TreeSelcetData(HttpSession httpSession) {
 
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-        QueryWrapper<SysUser> qws=new QueryWrapper<>();
-        qws.eq("loginName",sysUser.getLoginName());
+        QueryWrapper<SysUser> qws = new QueryWrapper<>();
+        qws.eq("loginName", sysUser.getLoginName());
         SysUser one = sysUserService.getOne(qws);
 
-        QueryWrapper<Enterprise> qwe=new QueryWrapper<>();
-        qwe.eq("name",one.getCompanyName());
+        QueryWrapper<Enterprise> qwe = new QueryWrapper<>();
+        qwe.eq("name", one.getCompanyName());
         Enterprise one1 = enterpriseService.getOne(qwe);
 
 
         List<TreeSelcetDataTouchPersonOfEnterprise> treeSelcetDatalist = new ArrayList();
-        QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper<>();
-        qww.eq("enterpriseId",one1.getId());
+        QueryWrapper<WorkplaceOfEnterprise> qww = new QueryWrapper<>();
+        qww.eq("enterpriseId", one1.getId());
         List<WorkplaceOfEnterprise> list = workplaceOfEnterpriseService.list(qww);
         for (WorkplaceOfEnterprise workplaceOfEnterprise : list) {
             List<TreeSelcetDataTouchPersonOfEnterprise> chilren = Lists.newArrayList();
@@ -193,22 +209,24 @@ public class TouchPersonOfEnterpriseController {
         }
         return treeSelcetDatalist;
     }
+
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;
         //excel->model
         Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
-        modelClassArr[0]= TouchPersonOfEnterpriseModel.class;
-        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        modelClassArr[0] = TouchPersonOfEnterpriseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
         //model->entity
         for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
             String type = entry.getKey();
             List<Object> modelList = entry.getValue();
-            List<TouchPersonOfEnterprise> dataList = getDataList(modelList, type,httpSession);
+            List<TouchPersonOfEnterprise> dataList = getDataList(modelList, type, httpSession);
             flag = touchPersonOfEnterpriseService.saveBatch(dataList);
         }
         return flag;
     }
+
     private List<TouchPersonOfEnterprise> getDataList(List<Object> modelList, String type, HttpSession httpSession) {
         List<TouchPersonOfEnterprise> dataList = org.apache.commons.compress.utils.Lists.newArrayList();
         for (Object object : modelList) {
@@ -217,25 +235,25 @@ public class TouchPersonOfEnterpriseController {
             TouchPersonOfEnterprise touchPersonOfEnterprise = new TouchPersonOfEnterprise();
             //enterpriseId
             SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-            QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
-            queryWrapper1.eq("name",sysUser.getCompanyName());
+            QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
             List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
             for (Enterprise enterprise : list1) {
                 touchPersonOfEnterprise.setEnterpriseId(enterprise.getId());
             }
             //workplaceId
-            QueryWrapper<WorkplaceOfEnterprise> qww=new QueryWrapper();
-            qww.eq("name",touchPersonOfEnterpriseModel.getWorkplaceId()).eq("enterpriseId",touchPersonOfEnterprise.getEnterpriseId());
+            QueryWrapper<WorkplaceOfEnterprise> qww = new QueryWrapper();
+            qww.eq("name", touchPersonOfEnterpriseModel.getWorkplaceId()).eq("enterpriseId", touchPersonOfEnterprise.getEnterpriseId());
             WorkplaceOfEnterprise one1 = workplaceOfEnterpriseService.getOne(qww);
             touchPersonOfEnterprise.setWorkplaceId(one1.getId());
             //postId
-            QueryWrapper<PostOfEnterprise> qwp=new QueryWrapper();
-            qwp.eq("postSmallName",touchPersonOfEnterpriseModel.getPostId()).eq("enterpriseId",touchPersonOfEnterprise.getEnterpriseId()).eq("workplaceId", touchPersonOfEnterprise.getWorkplaceId());
+            QueryWrapper<PostOfEnterprise> qwp = new QueryWrapper();
+            qwp.eq("postSmallName", touchPersonOfEnterpriseModel.getPostId()).eq("enterpriseId", touchPersonOfEnterprise.getEnterpriseId()).eq("workplaceId", touchPersonOfEnterprise.getWorkplaceId());
             PostOfEnterprise one = postOfEnterpriseService.getOne(qwp);
             touchPersonOfEnterprise.setPostId(one.getId());
             //postDangerId
-            QueryWrapper<PostDangerOfEnterprise> qwD=new QueryWrapper();
-            qwD.eq("dangerSmallName",touchPersonOfEnterpriseModel.getPostDangerId()).eq("enterpriseId",touchPersonOfEnterprise.getEnterpriseId()).eq("workplaceId", touchPersonOfEnterprise.getWorkplaceId()).eq("postId", touchPersonOfEnterprise.getPostId());
+            QueryWrapper<PostDangerOfEnterprise> qwD = new QueryWrapper();
+            qwD.eq("dangerSmallName", touchPersonOfEnterpriseModel.getPostDangerId()).eq("enterpriseId", touchPersonOfEnterprise.getEnterpriseId()).eq("workplaceId", touchPersonOfEnterprise.getWorkplaceId()).eq("postId", touchPersonOfEnterprise.getPostId());
             PostDangerOfEnterprise one2 = postDangerOfEnterpriseService.getOne(qwD);
             touchPersonOfEnterprise.setPostDangerId(one2.getId());
 

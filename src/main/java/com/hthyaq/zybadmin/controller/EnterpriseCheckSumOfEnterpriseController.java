@@ -54,6 +54,9 @@ public class EnterpriseCheckSumOfEnterpriseController {
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
     @Autowired
     SysUserService sysUserService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody EnterpriseCheckSumOfEnterpriseView enterpriseCheckSumOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
@@ -121,22 +124,35 @@ public class EnterpriseCheckSumOfEnterpriseController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String upDate = jsonObject.getString("upDate");
-        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Enterprise> list = enterpriseService.list(queryWrapper1);
-        for (Enterprise enterprise : list) {
-            list1.clear();
-            Long id = enterprise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<EnterpriseCheckSumOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("enterpriseId",list1.get(0));
-        if (!Strings.isNullOrEmpty(upDate)) {
-            queryWrapper.eq("upDate", upDate);
-        }
-        IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<EnterpriseCheckSumOfEnterprise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(upDate)) {
+                queryWrapper.eq("upDate", upDate);
+            }
+            IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Enterprise> list = enterpriseService.list(queryWrapper1);
+            for (Enterprise enterprise : list) {
+                list1.clear();
+                Long id = enterprise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<EnterpriseCheckSumOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("enterpriseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(upDate)) {
+                queryWrapper.eq("upDate", upDate);
+            }
+            IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
     @GetMapping("/TreeSelcetData")
     public List<TreeSelcetDataEnterpriseCheckSumOfEnterprise> TreeSelcetData(HttpSession httpSession) {
