@@ -119,8 +119,19 @@ public class EnterpriseController {
             enterprise.setRegisterDate(Integer.parseInt(enterpriseOfRegister.getRegisterDate()));
             enterprise.setStartDate(Integer.parseInt(enterpriseOfRegister.getStartDate()));
             enterprise.setPropertyMoney(Double.parseDouble(enterpriseOfRegister.getPropertyMoney()));
+            if(enterpriseView.getWomenWorkerNumber()>= 1000&&enterpriseView.getSaleMoney()>=40000){
+                enterprise.setSize("大型");
+            }else if(enterpriseView.getWomenWorkerNumber()>=300&&enterpriseView.getWomenWorkerNumber()<1000&&enterpriseView.getSaleMoney()>=2000&&enterpriseView.getSaleMoney()<40000){
+                enterprise.setSize("中型");
+            }else if(enterpriseView.getWomenWorkerNumber()>=20&&enterpriseView.getWomenWorkerNumber()<300&&enterpriseView.getSaleMoney()>= 300&&enterpriseView.getSaleMoney()<2000) {
+                enterprise.setSize("小型");
+            }else if(enterpriseView.getWomenWorkerNumber()<20&&enterpriseView.getSaleMoney()<300) {
+                enterprise.setSize("微型");
+            }else {
+                enterprise.setSize("无");
+            }
 
-            flag=enterpriseService.save(enterprise);
+                flag=enterpriseService.save(enterprise);
         }
         return flag;
     }

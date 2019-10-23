@@ -20,6 +20,7 @@ import com.hthyaq.zybadmin.model.vo.SuperviseView;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
+import com.hthyaq.zybadmin.service.SysRoleUserService;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,9 @@ public class SuperviseController {
     AreaOfDicService areaOfDicService;
     @Autowired
     SuperviseOfRegisterService superviseOfRegisterService;
+
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody Supervise supervise, HttpSession httpSession) {
@@ -171,18 +175,35 @@ public class SuperviseController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
         String name = jsonObject.getString("name");
-        QueryWrapper<Supervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name", sysUser.getCompanyName());
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<Supervise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
 
-        IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Supervise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("name", sysUser.getCompanyName());
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+
+            IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
 
     @PostMapping("/exceladd")
@@ -190,8 +211,8 @@ public class SuperviseController {
         boolean flag = true;
         //excel->model
         Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
-        modelClassArr[0]= SuperviseModel.class;
-        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        modelClassArr[0] = SuperviseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
         //model->entity
         for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
             String type = entry.getKey();
@@ -201,6 +222,7 @@ public class SuperviseController {
         }
         return flag;
     }
+
     private List<Supervise> getDataList(List<Object> modelList, String type) {
         List<Supervise> dataList = Lists.newArrayList();
         for (Object object : modelList) {

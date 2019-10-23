@@ -217,7 +217,7 @@ public class JianceBasicOfServiceController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
-        String code = jsonObject.getString("code");
+        String year = jsonObject.getString("year");
         QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
         queryWrapper1.eq("name",sysUser.getCompanyName());
         List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
@@ -232,8 +232,8 @@ public class JianceBasicOfServiceController {
         if (!Strings.isNullOrEmpty(name)) {
             queryWrapper.eq("name", name);
         }
-        if (!Strings.isNullOrEmpty(code)) {
-            queryWrapper.eq("code", code);
+        if (!Strings.isNullOrEmpty(year)) {
+            queryWrapper.eq("year", year);
         }
 
         IPage<JianceBasicOfService> page = jianceBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);

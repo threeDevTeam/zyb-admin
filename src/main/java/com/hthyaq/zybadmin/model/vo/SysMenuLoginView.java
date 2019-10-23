@@ -11,5 +11,6 @@ import java.util.ArrayList;
 @Data
 @Accessors(chain = true)
 public class SysMenuLoginView  extends SysMenu {
+    private int key;
     private ArrayList children;
 }

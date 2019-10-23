@@ -134,40 +134,57 @@ public class SysMenuController {
     @GetMapping("/sysMenulogin")
     public List<SysMenuLoginView> sysMenulogin(String loginName) {
         System.out.println(loginName);
-        List list1=new ArrayList();
-        List<SysMenu> list=new ArrayList<>();
-        SysMenuLoginView sysMenuLoginView=new SysMenuLoginView();
+        List list1 = new ArrayList();
+        List<SysMenu> list = new ArrayList<>();
+
         //sysuserid
-        QueryWrapper<SysUser> queryWrapper1=new QueryWrapper<>();
-        queryWrapper1.eq("loginName",loginName);
+        QueryWrapper<SysUser> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("loginName", loginName);
         SysUser sysUser = sysUserService.getOne(queryWrapper1);
 
         //sysRoleUserid
-        QueryWrapper<SysRoleUser> queryWrapper2=new QueryWrapper<>();
-        queryWrapper2.eq("userId",sysUser.getId());
-        SysRoleUser sysRoleUser= sysRoleUserService.getOne(queryWrapper2);
-
-        //sysRoleMenuid
-        QueryWrapper<SysRoleMenu> queryWrapper3=new QueryWrapper<>();
-        queryWrapper3.eq("roleId",sysRoleUser.getRoleId());
-        List<SysRoleMenu> list2 = sysRoleMenuService.list(queryWrapper3);
-        for (SysRoleMenu sysRoleMenu : list2) {
-            //sysMenuid
-            QueryWrapper<SysMenu> queryWrapper4=new QueryWrapper<>();
-            queryWrapper4.eq("id",sysRoleMenu.getMenuId());
-            List<SysMenu> list3 = sysMenuService.list(queryWrapper4);
-            for (SysMenu sysMenu : list3) {
-                list.add(sysMenu);
-                //pid
-                QueryWrapper<SysMenu> queryWrapper5=new QueryWrapper<>();
-                queryWrapper5.eq("id",sysMenu.getPid());
-                SysMenu sysMenuf = sysMenuService.getOne(queryWrapper5);
-                BeanUtils.copyProperties(sysMenuf, sysMenuLoginView);
+        QueryWrapper<SysRoleUser> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(queryWrapper2);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<SysMenu> qw1 = new QueryWrapper<>();
+            qw1.eq("pid", -1);
+            List<SysMenu> list2 = sysMenuService.list(qw1);
+            for (SysMenu sysMenu : list2) {
+                SysMenuLoginView sysMenuLoginView = new SysMenuLoginView();
+                BeanUtils.copyProperties(sysMenu, sysMenuLoginView);
+                QueryWrapper<SysMenu> qw2 = new QueryWrapper<>();
+                qw2.eq("pid",sysMenu.getId());
+                List<SysMenu> list3 = sysMenuService.list(qw2);
+                sysMenuLoginView.setChildren((ArrayList) list3);
+                sysMenuLoginView.setKey(sysMenu.getId());
+                list1.add(sysMenuLoginView);
             }
-        }
-        sysMenuLoginView.setChildren((ArrayList) list);
-        list1.add(sysMenuLoginView);
         return list1;
-    }
+        } else {
+            SysMenuLoginView sysMenuLoginView=new SysMenuLoginView();
+            //sysRoleMenuid
+            QueryWrapper<SysRoleMenu> queryWrapper3 = new QueryWrapper<>();
+            queryWrapper3.eq("roleId", sysRoleUser.getRoleId());
+            List<SysRoleMenu> list2 = sysRoleMenuService.list(queryWrapper3);
+            for (SysRoleMenu sysRoleMenu : list2) {
+                //sysMenuid
+                QueryWrapper<SysMenu> queryWrapper4 = new QueryWrapper<>();
+                queryWrapper4.eq("id", sysRoleMenu.getMenuId());
+                List<SysMenu> list3 = sysMenuService.list(queryWrapper4);
+                for (SysMenu sysMenu : list3) {
+                    list.add(sysMenu);
+                    //pid
+                    QueryWrapper<SysMenu> queryWrapper5 = new QueryWrapper<>();
+                    queryWrapper5.eq("id", sysMenu.getPid());
+                    SysMenu sysMenuf = sysMenuService.getOne(queryWrapper5);
+                    BeanUtils.copyProperties(sysMenuf, sysMenuLoginView);
+                }
+            }
+            sysMenuLoginView.setChildren((ArrayList) list);
+            list1.add(sysMenuLoginView);
 
+            return list1;
+        }
+    }
 }

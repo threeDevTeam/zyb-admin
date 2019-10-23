@@ -14,10 +14,7 @@ import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.ExecuteLawOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.LawOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
-import com.hthyaq.zybadmin.service.LawOfSuperviseService;
-import com.hthyaq.zybadmin.service.PersonOfSuperviseService;
-import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
-import com.hthyaq.zybadmin.service.SuperviseService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +43,8 @@ public class LawOfSuperviseController {
     SuperviseService superviseService;
     @Autowired
     LawOfSuperviseService lawOfSuperviseService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody LawOfSupervise lawOfSupervise, HttpSession httpSession) {
@@ -97,25 +96,37 @@ public class LawOfSuperviseController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
-        QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Supervise> list = superviseService.list(queryWrapper1);
-        for (Supervise supervise : list) {
-            list1.clear();
-            Long id = supervise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<LawOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superviseId", list1.get(0));
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<LawOfSupervise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            IPage<LawOfSupervise> page = lawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        IPage<LawOfSupervise> page = lawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            return page;
+        } else {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Supervise> list = superviseService.list(queryWrapper1);
+            for (Supervise supervise : list) {
+                list1.clear();
+                Long id = supervise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<LawOfSupervise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("superviseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
 
-        return page;
+            IPage<LawOfSupervise> page = lawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

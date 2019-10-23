@@ -10,16 +10,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
-import com.hthyaq.zybadmin.model.entity.PersonOfSupervise;
-import com.hthyaq.zybadmin.model.entity.Supervise;
-import com.hthyaq.zybadmin.model.entity.SuperviseOfRegister;
-import com.hthyaq.zybadmin.model.entity.SysUser;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.LawOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.PersonOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
 import com.hthyaq.zybadmin.service.PersonOfSuperviseService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
+import com.hthyaq.zybadmin.service.SysRoleUserService;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +55,8 @@ public class PersonOfSuperviseController {
     PersonOfSuperviseService personOfSuperviseService;
     @Autowired
     SuperviseService superviseService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody PersonOfSupervise personOfSupervise, HttpSession httpSession) {
@@ -110,28 +110,44 @@ public class PersonOfSuperviseController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
         String idNum = jsonObject.getString("idNum");
-        QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Supervise> list = superviseService.list(queryWrapper1);
-        for (Supervise supervise : list) {
-            list1.clear();
-            Long id = supervise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<PersonOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superviseId", list1.get(0));
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
-        if (!Strings.isNullOrEmpty(idNum)) {
-            queryWrapper.eq("idNum", idNum);
-        }
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<PersonOfSupervise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            if (!Strings.isNullOrEmpty(idNum)) {
+                queryWrapper.eq("idNum", idNum);
+            }
 
-        IPage<PersonOfSupervise> page = personOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<PersonOfSupervise> page = personOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Supervise> list = superviseService.list(queryWrapper1);
+            for (Supervise supervise : list) {
+                list1.clear();
+                Long id = supervise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<PersonOfSupervise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("superviseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            if (!Strings.isNullOrEmpty(idNum)) {
+                queryWrapper.eq("idNum", idNum);
+            }
+
+            IPage<PersonOfSupervise> page = personOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

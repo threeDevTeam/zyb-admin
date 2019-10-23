@@ -44,6 +44,8 @@ public class ExecuteLawOfSuperviseController {
 
     @Autowired
     ExecuteLawOfSuperviseService ExecuteLawOfSuperviseService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody ExecuteLawOfSupervise executeLawOfSupervise, HttpSession httpSession) {
@@ -95,25 +97,38 @@ public class ExecuteLawOfSuperviseController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
-        QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Supervise> list = superviseService.list(queryWrapper1);
-        for (Supervise supervise : list) {
-            list1.clear();
-            Long id = supervise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<ExecuteLawOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superviseId", list1.get(0));
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<ExecuteLawOfSupervise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
 
-        IPage<ExecuteLawOfSupervise> page = ExecuteLawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<ExecuteLawOfSupervise> page = ExecuteLawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Supervise> list = superviseService.list(queryWrapper1);
+            for (Supervise supervise : list) {
+                list1.clear();
+                Long id = supervise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<ExecuteLawOfSupervise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("superviseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+
+            IPage<ExecuteLawOfSupervise> page = ExecuteLawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

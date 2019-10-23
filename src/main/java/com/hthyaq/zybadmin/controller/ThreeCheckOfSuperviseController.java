@@ -42,6 +42,8 @@ public class ThreeCheckOfSuperviseController {
     SuperviseService superviseService;
     @Autowired
     ThreeCheckOfSuperviseService threeCheckOfSuperviseService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody ThreeCheckOfSupervise threeCheckOfSupervise, HttpSession httpSession) {
@@ -94,29 +96,48 @@ public class ThreeCheckOfSuperviseController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
         String pulishMoney = jsonObject.getString("pulishMoney");
-        QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Supervise> list = superviseService.list(queryWrapper1);
-        for (Supervise supervise : list) {
-            list1.clear();
-            Long id = supervise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<ThreeCheckOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superviseId", list1.get(0));
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
-        if (!Strings.isNullOrEmpty(pulishMoney)) {
-            queryWrapper.eq("pulishMoney", pulishMoney);
-        }
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            QueryWrapper<ThreeCheckOfSupervise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            if (!Strings.isNullOrEmpty(pulishMoney)) {
+                queryWrapper.eq("pulishMoney", pulishMoney);
+            }
 
 
-        IPage<ThreeCheckOfSupervise> page = threeCheckOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<ThreeCheckOfSupervise> page = threeCheckOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Supervise> list = superviseService.list(queryWrapper1);
+            for (Supervise supervise : list) {
+                list1.clear();
+                Long id = supervise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<ThreeCheckOfSupervise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("superviseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            if (!Strings.isNullOrEmpty(pulishMoney)) {
+                queryWrapper.eq("pulishMoney", pulishMoney);
+            }
+
+
+            IPage<ThreeCheckOfSupervise> page = threeCheckOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

@@ -15,10 +15,7 @@ import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.AccidentOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.JianceDetailOfServiceModel;
 import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
-import com.hthyaq.zybadmin.service.AccidentOfSuperviseService;
-import com.hthyaq.zybadmin.service.ServiceSuperviseOfSuperviseService;
-import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
-import com.hthyaq.zybadmin.service.SuperviseService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
@@ -48,6 +45,8 @@ public class AccidentOfSuperviseController {
     SuperviseService superviseService;
     @Autowired
     AccidentOfSuperviseService accidentOfSuperviseService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody AccidentOfSupervise accidentOfSupervise, HttpSession httpSession) {
@@ -101,28 +100,44 @@ public class AccidentOfSuperviseController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
         String loseMoney = jsonObject.getString("loseMoney");
-        QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<Supervise> list = superviseService.list(queryWrapper1);
-        for (Supervise supervise : list) {
-            list1.clear();
-            Long id = supervise.getId();
-            list1.add(id);
-        }
-        QueryWrapper<AccidentOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("superviseId", list1.get(0));
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
-        if (!Strings.isNullOrEmpty(loseMoney)) {
-            queryWrapper.eq("loseMoney", loseMoney);
-        }
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<AccidentOfSupervise> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            if (!Strings.isNullOrEmpty(loseMoney)) {
+                queryWrapper.eq("loseMoney", loseMoney);
+            }
 
-        IPage<AccidentOfSupervise> page = accidentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<AccidentOfSupervise> page = accidentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<Supervise> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<Supervise> list = superviseService.list(queryWrapper1);
+            for (Supervise supervise : list) {
+                list1.clear();
+                Long id = supervise.getId();
+                list1.add(id);
+            }
+            QueryWrapper<AccidentOfSupervise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("superviseId", list1.get(0));
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            if (!Strings.isNullOrEmpty(loseMoney)) {
+                queryWrapper.eq("loseMoney", loseMoney);
+            }
+
+            IPage<AccidentOfSupervise> page = accidentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

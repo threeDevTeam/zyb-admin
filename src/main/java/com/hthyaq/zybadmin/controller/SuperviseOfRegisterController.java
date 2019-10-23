@@ -85,7 +85,7 @@ public class SuperviseOfRegisterController {
         superviseOfRegister.setName(superviseOfUserView.getCompanyName());
         superviseOfRegister.setEmail(superviseOfUserView.getEmail());
         superviseOfRegister.setMobile(superviseOfUserView.getMobile());
-        //superviseOfRegisterService.save(superviseOfRegister);
+        superviseOfRegisterService.save(superviseOfRegister);
         SysUser sysUser=new SysUser();
         sysUser.setLoginName(superviseOfUserView.getLoginName());
         sysUser.setLoginPassword( DigestUtils.md5Hex(superviseOfUserView.getLoginPassword()));
