@@ -85,6 +85,8 @@ public class JianceDetailOfServiceController {
     IndustryOfDicService industryOfDicService;
     @Autowired
     HazardousfactorsService hazardousfactorsService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody JianceDetailOfServiceView jianceDetailOfServiceView, HttpSession httpSession) {
@@ -222,35 +224,51 @@ public class JianceDetailOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String enterpriseName = jsonObject.getString("enterpriseName");
         String decideResult = jsonObject.getString("decideResult");
-        QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if (serviceOfRegister.getType().equals("检测机构")) {
-                QueryWrapper<JianceBasicOfService> queryWrapper2 = new QueryWrapper();
-                queryWrapper2.eq("name", serviceOfRegister.getName());
-                List<JianceBasicOfService> list2 = jianceBasicOfServiceService.list(queryWrapper2);
-                for (JianceBasicOfService jianceBasicOfService : list2) {
-                    list1.clear();
-                    list1.add(jianceBasicOfService.getId());
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(enterpriseName)) {
+                queryWrapper.eq("enterpriseName", enterpriseName);
+            }
+            if (!Strings.isNullOrEmpty(decideResult)) {
+                queryWrapper.eq("decideResult", decideResult);
+            }
+
+            IPage<JianceDetailOfService> page = jianceDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        } else {
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("检测机构")) {
+                    QueryWrapper<JianceBasicOfService> queryWrapper2 = new QueryWrapper();
+                    queryWrapper2.eq("name", serviceOfRegister.getName());
+                    List<JianceBasicOfService> list2 = jianceBasicOfServiceService.list(queryWrapper2);
+                    for (JianceBasicOfService jianceBasicOfService : list2) {
+                        list1.clear();
+                        list1.add(jianceBasicOfService.getId());
+                    }
                 }
             }
-        }
 
-        QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("jianceBasicId", list1.get(0));
-        if (!Strings.isNullOrEmpty(enterpriseName)) {
-            queryWrapper.eq("enterpriseName", enterpriseName);
-        }
-        if (!Strings.isNullOrEmpty(decideResult)) {
-            queryWrapper.eq("decideResult", decideResult);
-        }
+            QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("jianceBasicId", list1.get(0));
+            if (!Strings.isNullOrEmpty(enterpriseName)) {
+                queryWrapper.eq("enterpriseName", enterpriseName);
+            }
+            if (!Strings.isNullOrEmpty(decideResult)) {
+                queryWrapper.eq("decideResult", decideResult);
+            }
 
-        IPage<JianceDetailOfService> page = jianceDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<JianceDetailOfService> page = jianceDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        }
     }
-
     @GetMapping("/cascadeData1")
     public List cascadeData() {
         List list1 = new ArrayList();

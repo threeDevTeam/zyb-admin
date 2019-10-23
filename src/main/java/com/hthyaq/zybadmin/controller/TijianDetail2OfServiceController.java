@@ -58,6 +58,8 @@ public class TijianDetail2OfServiceController {
     HazardousfactorsService hazardousfactorsService;
     @Autowired
     ZybnameService zybnameService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody TijianDetail2OfServiceView tijianDetail2OfServiceView, HttpSession httpSession) {
@@ -479,35 +481,51 @@ public class TijianDetail2OfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String enterpriseName = jsonObject.getString("enterpriseName");
         String name = jsonObject.getString("name");
-        QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if (serviceOfRegister.getType().equals("体检机构")) {
-                QueryWrapper<TijianBasicOfService> queryWrapper2 = new QueryWrapper();
-                queryWrapper2.eq("name", serviceOfRegister.getName());
-                List<TijianBasicOfService> list2 = tijianBasicOfServiceService.list(queryWrapper2);
-                for (TijianBasicOfService tijianBasicOfService : list2) {
-                    list1.clear();
-                    list1.add(tijianBasicOfService.getId());
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<TijianDetail2OfService> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(enterpriseName)) {
+                queryWrapper.eq("enterpriseName", enterpriseName);
+            }
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+
+            IPage<TijianDetail2OfService> page = tijianDetail2OfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        } else {
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("体检机构")) {
+                    QueryWrapper<TijianBasicOfService> queryWrapper2 = new QueryWrapper();
+                    queryWrapper2.eq("name", serviceOfRegister.getName());
+                    List<TijianBasicOfService> list2 = tijianBasicOfServiceService.list(queryWrapper2);
+                    for (TijianBasicOfService tijianBasicOfService : list2) {
+                        list1.clear();
+                        list1.add(tijianBasicOfService.getId());
+                    }
                 }
             }
-        }
 
-        QueryWrapper<TijianDetail2OfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("tijianBasicId", list1.get(0));
-        if (!Strings.isNullOrEmpty(enterpriseName)) {
-            queryWrapper.eq("enterpriseName", enterpriseName);
-        }
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
+            QueryWrapper<TijianDetail2OfService> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("tijianBasicId", list1.get(0));
+            if (!Strings.isNullOrEmpty(enterpriseName)) {
+                queryWrapper.eq("enterpriseName", enterpriseName);
+            }
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
 
-        IPage<TijianDetail2OfService> page = tijianDetail2OfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<TijianDetail2OfService> page = tijianDetail2OfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

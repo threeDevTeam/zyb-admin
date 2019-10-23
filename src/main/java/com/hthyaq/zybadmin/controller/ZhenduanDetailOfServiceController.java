@@ -59,6 +59,8 @@ public class ZhenduanDetailOfServiceController {
     GangweiService gangweiService;
     @Autowired
     HazardousfactorsService hazardousfactorsService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody ZhenduanDetailOfServiceView zhenduanDetailOfServiceView, HttpSession httpSession) {
@@ -480,35 +482,51 @@ public class ZhenduanDetailOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String enterpriseName = jsonObject.getString("enterpriseName");
         String name = jsonObject.getString("name");
-        QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if (serviceOfRegister.getType().equals("诊断机构")) {
-                QueryWrapper<ZhenduanBasicOfService> queryWrapper2 = new QueryWrapper();
-                queryWrapper2.eq("name", serviceOfRegister.getName());
-                List<ZhenduanBasicOfService> list2 = zhenduanBasicOfServiceService.list(queryWrapper2);
-                for (ZhenduanBasicOfService zhenduanBasicOfService : list2) {
-                    list1.clear();
-                    list1.add(zhenduanBasicOfService.getId());
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<ZhenduanDetailOfService> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(enterpriseName)) {
+                queryWrapper.eq("enterpriseName", enterpriseName);
+            }
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+
+            IPage<ZhenduanDetailOfService> page = zhenduanDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        } else {
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("诊断机构")) {
+                    QueryWrapper<ZhenduanBasicOfService> queryWrapper2 = new QueryWrapper();
+                    queryWrapper2.eq("name", serviceOfRegister.getName());
+                    List<ZhenduanBasicOfService> list2 = zhenduanBasicOfServiceService.list(queryWrapper2);
+                    for (ZhenduanBasicOfService zhenduanBasicOfService : list2) {
+                        list1.clear();
+                        list1.add(zhenduanBasicOfService.getId());
+                    }
                 }
             }
-        }
 
-        QueryWrapper<ZhenduanDetailOfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("zhenduanBasicId", list1.get(0));
-        if (!Strings.isNullOrEmpty(enterpriseName)) {
-            queryWrapper.eq("enterpriseName", enterpriseName);
-        }
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
+            QueryWrapper<ZhenduanDetailOfService> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("zhenduanBasicId", list1.get(0));
+            if (!Strings.isNullOrEmpty(enterpriseName)) {
+                queryWrapper.eq("enterpriseName", enterpriseName);
+            }
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
 
-        IPage<ZhenduanDetailOfService> page = zhenduanDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<ZhenduanDetailOfService> page = zhenduanDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        }
     }
-
     @GetMapping("/cascadeData5")
     public List<CascadeView> cascadeData() {
         List<Zybname> list = zybnameService.list();

@@ -10,15 +10,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
-import com.hthyaq.zybadmin.model.entity.JianceBasicOfService;
-import com.hthyaq.zybadmin.model.entity.JianceTotalOfService;
-import com.hthyaq.zybadmin.model.entity.ServiceOfRegister;
-import com.hthyaq.zybadmin.model.entity.SysUser;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.JianceBasicOfServiceModel;
 import com.hthyaq.zybadmin.model.excelModel.JianceTotalOfServiceModel;
 import com.hthyaq.zybadmin.service.JianceBasicOfServiceService;
 import com.hthyaq.zybadmin.service.JianceTotalOfServiceService;
 import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
+import com.hthyaq.zybadmin.service.SysRoleUserService;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +45,8 @@ public class JianceTotalOfServiceController {
     ServiceOfRegisterService serviceOfRegisterService;
     @Autowired
     JianceBasicOfServiceService jianceBasicOfServiceService;
-
+    @Autowired
+    SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody JianceTotalOfService jianceTotalOfService, HttpSession httpSession) {
         boolean flag = false;
@@ -102,30 +101,42 @@ public class JianceTotalOfServiceController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
-        QueryWrapper<JianceTotalOfService> queryWrapper = new QueryWrapper();
-        QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if (serviceOfRegister.getType().equals("检测机构")) {
-                QueryWrapper<JianceBasicOfService> queryWrapper2 = new QueryWrapper();
-                queryWrapper2.eq("name", serviceOfRegister.getName());
-                List<JianceBasicOfService> list2 = jianceBasicOfServiceService.list(queryWrapper2);
-                for (JianceBasicOfService jianceBasicOfService : list2) {
-                    list1.clear();
-                    list1.add(jianceBasicOfService.getId());
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<JianceTotalOfService> queryWrapper = new QueryWrapper();
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            IPage<JianceTotalOfService> page = jianceTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        } else {
+            QueryWrapper<JianceTotalOfService> queryWrapper = new QueryWrapper();
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("检测机构")) {
+                    QueryWrapper<JianceBasicOfService> queryWrapper2 = new QueryWrapper();
+                    queryWrapper2.eq("name", serviceOfRegister.getName());
+                    List<JianceBasicOfService> list2 = jianceBasicOfServiceService.list(queryWrapper2);
+                    for (JianceBasicOfService jianceBasicOfService : list2) {
+                        list1.clear();
+                        list1.add(jianceBasicOfService.getId());
+                    }
                 }
             }
-        }
-        queryWrapper.eq("jianceBasicId", list1.get(0));
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
-        IPage<JianceTotalOfService> page = jianceTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            queryWrapper.eq("jianceBasicId", list1.get(0));
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            IPage<JianceTotalOfService> page = jianceTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

@@ -14,10 +14,7 @@ import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.ServiceOfRegisterModel;
 import com.hthyaq.zybadmin.model.excelModel.ZhenduanBasicOfServiceModel;
 import com.hthyaq.zybadmin.model.excelModel.ZhenduanTotalOfServiceModel;
-import com.hthyaq.zybadmin.service.ExecuteLawOfSuperviseService;
-import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
-import com.hthyaq.zybadmin.service.ZhenduanBasicOfServiceService;
-import com.hthyaq.zybadmin.service.ZhenduanTotalOfServiceService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +43,8 @@ public class ZhenduanTotalOfServiceController {
     ServiceOfRegisterService serviceOfRegisterService;
     @Autowired
     ZhenduanBasicOfServiceService zhenduanBasicOfServiceService;
-
+    @Autowired
+    SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody ZhenduanTotalOfService zhenduanTotalOfService, HttpSession httpSession) {
         boolean flag = false;
@@ -100,32 +98,45 @@ public class ZhenduanTotalOfServiceController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
-        QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if (serviceOfRegister.getType().equals("诊断机构")) {
-                QueryWrapper<ZhenduanBasicOfService> queryWrapper2 = new QueryWrapper();
-                queryWrapper2.eq("name", serviceOfRegister.getName());
-                List<ZhenduanBasicOfService> list2 = zhenduanBasicOfServiceService.list(queryWrapper2);
-                for (ZhenduanBasicOfService zhenduanBasicOfService : list2) {
-                    list1.clear();
-                    list1.add(zhenduanBasicOfService.getId());
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<ZhenduanTotalOfService> queryWrapper = new QueryWrapper<>();
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+
+            IPage<ZhenduanTotalOfService> page = zhenduanTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        } else {
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("诊断机构")) {
+                    QueryWrapper<ZhenduanBasicOfService> queryWrapper2 = new QueryWrapper();
+                    queryWrapper2.eq("name", serviceOfRegister.getName());
+                    List<ZhenduanBasicOfService> list2 = zhenduanBasicOfServiceService.list(queryWrapper2);
+                    for (ZhenduanBasicOfService zhenduanBasicOfService : list2) {
+                        list1.clear();
+                        list1.add(zhenduanBasicOfService.getId());
+                    }
                 }
             }
+
+            QueryWrapper<ZhenduanTotalOfService> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("zhenduanBasicId", list1.get(0));
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+
+            IPage<ZhenduanTotalOfService> page = zhenduanTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
         }
-
-        QueryWrapper<ZhenduanTotalOfService> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("zhenduanBasicId", list1.get(0));
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
-
-        IPage<ZhenduanTotalOfService> page = zhenduanTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
-
-        return page;
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

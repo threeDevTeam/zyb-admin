@@ -50,6 +50,9 @@ public class ZhenduanBasicOfServiceController {
     AreaOfDicService areaOfDicService;
     @Autowired
     TypesofregistrationService typesofregistrationService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody ZhenduanBasicOfServiceView zhenduanBasicOfServiceView ,HttpSession httpSession) {
         boolean flag = false;
@@ -220,26 +223,39 @@ public class ZhenduanBasicOfServiceController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
 
-        QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
-        queryWrapper1.eq("name",sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if(serviceOfRegister.getType().equals("诊断机构")){
-                list1.clear();
-                list1.add(serviceOfRegister.getName());
+            QueryWrapper<ZhenduanBasicOfService> queryWrapper = new QueryWrapper();
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
             }
+            IPage<ZhenduanBasicOfService> page = zhenduanBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        } else {
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("诊断机构")) {
+                    list1.clear();
+                    list1.add(serviceOfRegister.getName());
+                }
+            }
+            QueryWrapper<ZhenduanBasicOfService> queryWrapper = new QueryWrapper();
+            queryWrapper.eq("name", list1.get(0));
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+
+
+            IPage<ZhenduanBasicOfService> page = zhenduanBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
         }
-        QueryWrapper<ZhenduanBasicOfService> queryWrapper=new QueryWrapper();
-        queryWrapper.eq("name", list1.get(0));
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
-
-
-        IPage<ZhenduanBasicOfService> page = zhenduanBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
-
-        return page;
     }
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files) {

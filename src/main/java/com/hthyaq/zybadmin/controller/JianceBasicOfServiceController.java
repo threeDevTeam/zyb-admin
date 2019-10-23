@@ -17,10 +17,7 @@ import com.hthyaq.zybadmin.model.excelModel.ExecuteLawOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.JianceBasicOfServiceModel;
 import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
 import com.hthyaq.zybadmin.model.vo.JianceBasicOfView;
-import com.hthyaq.zybadmin.service.AreaOfDicService;
-import com.hthyaq.zybadmin.service.JianceBasicOfServiceService;
-import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
-import com.hthyaq.zybadmin.service.TypesofregistrationService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +48,9 @@ public class JianceBasicOfServiceController {
     AreaOfDicService areaOfDicService;
     @Autowired
     TypesofregistrationService typesofregistrationService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody JianceBasicOfView jianceBasicOfView, HttpSession httpSession) {
         boolean flag=false;
@@ -218,27 +218,44 @@ public class JianceBasicOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
         String year = jsonObject.getString("year");
-        QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
-        queryWrapper1.eq("name",sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if(serviceOfRegister.getType().equals("检测机构")){
-                list1.clear();
-                list1.add(serviceOfRegister.getName());
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<JianceBasicOfService> queryWrapper = new QueryWrapper();
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
             }
-        }
-        QueryWrapper<JianceBasicOfService> queryWrapper=new QueryWrapper();
-        queryWrapper.eq("name", list1.get(0));
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
 
-        IPage<JianceBasicOfService> page = jianceBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            IPage<JianceBasicOfService> page = jianceBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("检测机构")) {
+                    list1.clear();
+                    list1.add(serviceOfRegister.getName());
+                }
+            }
+            QueryWrapper<JianceBasicOfService> queryWrapper = new QueryWrapper();
+            queryWrapper.eq("name", list1.get(0));
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+
+            IPage<JianceBasicOfService> page = jianceBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
     @GetMapping("/cascadeData")
     public List<CascadeView> cascadeData() {

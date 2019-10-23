@@ -17,10 +17,7 @@ import com.hthyaq.zybadmin.model.excelModel.JianceBasicOfServiceModel;
 import com.hthyaq.zybadmin.model.excelModel.TijianBasicOfServiceModel;
 import com.hthyaq.zybadmin.model.vo.JianceBasicOfView;
 import com.hthyaq.zybadmin.model.vo.TijianBasicOfServiceView;
-import com.hthyaq.zybadmin.service.AreaOfDicService;
-import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
-import com.hthyaq.zybadmin.service.TijianBasicOfServiceService;
-import com.hthyaq.zybadmin.service.TypesofregistrationService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +48,9 @@ public class TijianBasicOfServiceController {
     AreaOfDicService areaOfDicService;
     @Autowired
     TypesofregistrationService typesofregistrationService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody TijianBasicOfServiceView tijianBasicOfServiceView, HttpSession httpSession) {
         boolean flag=false;
@@ -219,26 +219,42 @@ public class TijianBasicOfServiceController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         String name = jsonObject.getString("name");
         String hospitalLevel = jsonObject.getString("hospitalLevel");
-        QueryWrapper<ServiceOfRegister> queryWrapper1=new QueryWrapper();
-        queryWrapper1.eq("name",sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if(serviceOfRegister.getType().equals("体检机构")){
-                list1.clear();
-                list1.add(serviceOfRegister.getName());
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<TijianBasicOfService> queryWrapper = new QueryWrapper();
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
             }
-        }
-        QueryWrapper<TijianBasicOfService> queryWrapper=new QueryWrapper();
-        queryWrapper.eq("name", list1.get(0));
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
-        }
-        if (!Strings.isNullOrEmpty(hospitalLevel)) {
-            queryWrapper.eq("hospitalLevel", hospitalLevel);
-        }
-        IPage<TijianBasicOfService> page = tijianBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            if (!Strings.isNullOrEmpty(hospitalLevel)) {
+                queryWrapper.eq("hospitalLevel", hospitalLevel);
+            }
+            IPage<TijianBasicOfService> page = tijianBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        } else {
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("体检机构")) {
+                    list1.clear();
+                    list1.add(serviceOfRegister.getName());
+                }
+            }
+            QueryWrapper<TijianBasicOfService> queryWrapper = new QueryWrapper();
+            queryWrapper.eq("name", list1.get(0));
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.eq("name", name);
+            }
+            if (!Strings.isNullOrEmpty(hospitalLevel)) {
+                queryWrapper.eq("hospitalLevel", hospitalLevel);
+            }
+            IPage<TijianBasicOfService> page = tijianBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        }
     }
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files) {

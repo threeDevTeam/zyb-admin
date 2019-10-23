@@ -14,6 +14,7 @@ import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.TijianBasicOfServiceModel;
 import com.hthyaq.zybadmin.model.excelModel.TijianTotalOfServiceModel;
 import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
+import com.hthyaq.zybadmin.service.SysRoleUserService;
 import com.hthyaq.zybadmin.service.TijianBasicOfServiceService;
 import com.hthyaq.zybadmin.service.TijianTotalOfServiceService;
 import org.apache.commons.compress.utils.Lists;
@@ -44,6 +45,8 @@ public class TijianTotalOfServiceController {
     TijianBasicOfServiceService tijianBasicOfServiceService;
     @Autowired
     ServiceOfRegisterService serviceOfRegisterService;
+    @Autowired
+    SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
     public boolean add(@RequestBody TijianTotalOfService tijianTotalOfService, HttpSession httpSession) {
@@ -98,30 +101,42 @@ public class TijianTotalOfServiceController {
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
         String year = jsonObject.getString("year");
-        QueryWrapper<TijianTotalOfService> queryWrapper = new QueryWrapper();
-        QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
-        queryWrapper1.eq("name", sysUser.getCompanyName());
-        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
-        for (ServiceOfRegister serviceOfRegister : list) {
-            if (serviceOfRegister.getType().equals("体检机构")) {
-                QueryWrapper<TijianBasicOfService> queryWrapper2 = new QueryWrapper();
-                queryWrapper2.eq("name", serviceOfRegister.getName());
-                List<TijianBasicOfService> list2 = tijianBasicOfServiceService.list(queryWrapper2);
-                for (TijianBasicOfService tijianBasicOfService : list2) {
-                    list1.clear();
-                    list1.add(tijianBasicOfService.getId());
+        QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
+        qw.eq("userId", sysUser.getId());
+        SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
+        if (sysRoleUser.getRoleId() == 1) {
+            QueryWrapper<TijianTotalOfService> queryWrapper = new QueryWrapper();
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            IPage<TijianTotalOfService> page = tijianTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+
+            return page;
+        } else {
+            QueryWrapper<TijianTotalOfService> queryWrapper = new QueryWrapper();
+            QueryWrapper<ServiceOfRegister> queryWrapper1 = new QueryWrapper();
+            queryWrapper1.eq("name", sysUser.getCompanyName());
+            List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper1);
+            for (ServiceOfRegister serviceOfRegister : list) {
+                if (serviceOfRegister.getType().equals("体检机构")) {
+                    QueryWrapper<TijianBasicOfService> queryWrapper2 = new QueryWrapper();
+                    queryWrapper2.eq("name", serviceOfRegister.getName());
+                    List<TijianBasicOfService> list2 = tijianBasicOfServiceService.list(queryWrapper2);
+                    for (TijianBasicOfService tijianBasicOfService : list2) {
+                        list1.clear();
+                        list1.add(tijianBasicOfService.getId());
+                    }
                 }
             }
-        }
-        queryWrapper.eq("tijianBasicId", list1.get(0));
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
-        }
-        IPage<TijianTotalOfService> page = tijianTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
+            queryWrapper.eq("tijianBasicId", list1.get(0));
+            if (!Strings.isNullOrEmpty(year)) {
+                queryWrapper.eq("year", year);
+            }
+            IPage<TijianTotalOfService> page = tijianTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
-        return page;
+            return page;
+        }
     }
-
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;
