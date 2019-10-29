@@ -131,6 +131,7 @@ public class TouchPersonOfEnterpriseController {
             if (!Strings.isNullOrEmpty(upDate)) {
                 queryWrapper.eq("upDate", upDate);
             }
+            queryWrapper.orderByDesc("id");
             IPage<TouchPersonOfEnterprise> page = touchPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -148,6 +149,7 @@ public class TouchPersonOfEnterpriseController {
             if (!Strings.isNullOrEmpty(upDate)) {
                 queryWrapper.eq("upDate", upDate);
             }
+            queryWrapper.orderByDesc("id");
             IPage<TouchPersonOfEnterprise> page = touchPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

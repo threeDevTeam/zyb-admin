@@ -492,7 +492,7 @@ public class TijianDetail2OfServiceController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<TijianDetail2OfService> page = tijianDetail2OfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -520,7 +520,7 @@ public class TijianDetail2OfServiceController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<TijianDetail2OfService> page = tijianDetail2OfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

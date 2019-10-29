@@ -119,7 +119,7 @@ public class FixCheckOfEnterpriseController {
             if (!Strings.isNullOrEmpty(org)) {
                 queryWrapper.eq("org", org);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<FixCheckOfEnterprise> page = fixCheckOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -137,7 +137,7 @@ public class FixCheckOfEnterpriseController {
             if (!Strings.isNullOrEmpty(org)) {
                 queryWrapper.eq("org", org);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<FixCheckOfEnterprise> page = fixCheckOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

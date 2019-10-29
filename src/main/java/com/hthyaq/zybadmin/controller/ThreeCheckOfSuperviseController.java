@@ -110,7 +110,7 @@ public class ThreeCheckOfSuperviseController {
                 queryWrapper.eq("pulishMoney", pulishMoney);
             }
 
-
+            queryWrapper.orderByDesc("id");
             IPage<ThreeCheckOfSupervise> page = threeCheckOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -132,7 +132,7 @@ public class ThreeCheckOfSuperviseController {
                 queryWrapper.eq("pulishMoney", pulishMoney);
             }
 
-
+            queryWrapper.orderByDesc("id");
             IPage<ThreeCheckOfSupervise> page = threeCheckOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

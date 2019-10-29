@@ -131,6 +131,7 @@ public class AlikeSickOfEnterpriseController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
+            queryWrapper.orderByDesc("id");
             IPage<AlikeSickOfEnterprise> page = alikeSickOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -148,6 +149,7 @@ public class AlikeSickOfEnterpriseController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
+            queryWrapper.orderByDesc("id");
             IPage<AlikeSickOfEnterprise> page = alikeSickOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

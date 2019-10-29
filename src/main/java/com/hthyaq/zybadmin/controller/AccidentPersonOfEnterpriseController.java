@@ -124,6 +124,7 @@ public class AccidentPersonOfEnterpriseController {
             if (!Strings.isNullOrEmpty(org)) {
                 queryWrapper.eq("org", org);
             }
+            queryWrapper.orderByDesc("id");
             IPage<AccidentPersonOfEnterprise> page = accidentPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -141,6 +142,7 @@ public class AccidentPersonOfEnterpriseController {
             if (!Strings.isNullOrEmpty(org)) {
                 queryWrapper.eq("org", org);
             }
+            queryWrapper.orderByDesc("id");
             IPage<AccidentPersonOfEnterprise> page = accidentPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

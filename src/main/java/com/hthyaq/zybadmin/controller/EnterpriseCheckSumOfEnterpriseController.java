@@ -132,6 +132,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
             if (!Strings.isNullOrEmpty(upDate)) {
                 queryWrapper.eq("upDate", upDate);
             }
+            queryWrapper.orderByDesc("id");
             IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -149,6 +150,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
             if (!Strings.isNullOrEmpty(upDate)) {
                 queryWrapper.eq("upDate", upDate);
             }
+            queryWrapper.orderByDesc("id");
             IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

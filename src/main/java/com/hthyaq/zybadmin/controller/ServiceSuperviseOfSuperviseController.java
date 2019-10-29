@@ -108,7 +108,7 @@ public class ServiceSuperviseOfSuperviseController {
             if (!Strings.isNullOrEmpty(jianceMoney)) {
                 queryWrapper.eq("jianceMoney", jianceMoney);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<ServiceSuperviseOfSupervise> page = serviceSuperviseOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -129,7 +129,7 @@ public class ServiceSuperviseOfSuperviseController {
             if (!Strings.isNullOrEmpty(jianceMoney)) {
                 queryWrapper.eq("jianceMoney", jianceMoney);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<ServiceSuperviseOfSupervise> page = serviceSuperviseOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

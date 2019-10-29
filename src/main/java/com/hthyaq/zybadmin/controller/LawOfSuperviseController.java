@@ -104,6 +104,7 @@ public class LawOfSuperviseController {
             if (!Strings.isNullOrEmpty(year)) {
                 queryWrapper.eq("year", year);
             }
+            queryWrapper.orderByDesc("id");
             IPage<LawOfSupervise> page = lawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -121,7 +122,7 @@ public class LawOfSuperviseController {
             if (!Strings.isNullOrEmpty(year)) {
                 queryWrapper.eq("year", year);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<LawOfSupervise> page = lawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

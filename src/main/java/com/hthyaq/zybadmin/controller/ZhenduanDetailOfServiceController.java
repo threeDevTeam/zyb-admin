@@ -493,7 +493,7 @@ public class ZhenduanDetailOfServiceController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<ZhenduanDetailOfService> page = zhenduanDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -521,7 +521,7 @@ public class ZhenduanDetailOfServiceController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<ZhenduanDetailOfService> page = zhenduanDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

@@ -108,7 +108,7 @@ public class PropagateOfSuperviseController {
             if (!Strings.isNullOrEmpty(acceptCount)) {
                 queryWrapper.eq("acceptCount", acceptCount);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<PropagateOfSupervise> page = propagateOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -129,7 +129,7 @@ public class PropagateOfSuperviseController {
             if (!Strings.isNullOrEmpty(acceptCount)) {
                 queryWrapper.eq("acceptCount", acceptCount);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<PropagateOfSupervise> page = propagateOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

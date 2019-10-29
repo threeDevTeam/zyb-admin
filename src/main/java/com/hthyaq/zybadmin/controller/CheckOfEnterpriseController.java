@@ -103,6 +103,7 @@ public class CheckOfEnterpriseController {
             if (!Strings.isNullOrEmpty(org)) {
                 queryWrapper.eq("org", org);
             }
+            queryWrapper.orderByDesc("id");
             IPage<CheckOfEnterprise> page = checkOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -120,6 +121,7 @@ public class CheckOfEnterpriseController {
             if (!Strings.isNullOrEmpty(org)) {
                 queryWrapper.eq("org", org);
             }
+            queryWrapper.orderByDesc("id");
             IPage<CheckOfEnterprise> page = checkOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

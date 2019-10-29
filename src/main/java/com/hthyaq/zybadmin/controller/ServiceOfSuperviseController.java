@@ -109,7 +109,7 @@ public class ServiceOfSuperviseController {
             if (!Strings.isNullOrEmpty(jianceLevel)) {
                 queryWrapper.eq("jianceLevel", jianceLevel);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<ServiceOfSupervise> page = serviceOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -130,7 +130,7 @@ public class ServiceOfSuperviseController {
             if (!Strings.isNullOrEmpty(jianceLevel)) {
                 queryWrapper.eq("jianceLevel", jianceLevel);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<ServiceOfSupervise> page = serviceOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

@@ -186,7 +186,7 @@ public class SuperviseController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -199,7 +199,7 @@ public class SuperviseController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

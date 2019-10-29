@@ -106,7 +106,7 @@ public class ZhenduanTotalOfServiceController {
             if (!Strings.isNullOrEmpty(year)) {
                 queryWrapper.eq("year", year);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<ZhenduanTotalOfService> page = zhenduanTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -131,7 +131,7 @@ public class ZhenduanTotalOfServiceController {
             if (!Strings.isNullOrEmpty(year)) {
                 queryWrapper.eq("year", year);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<ZhenduanTotalOfService> page = zhenduanTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

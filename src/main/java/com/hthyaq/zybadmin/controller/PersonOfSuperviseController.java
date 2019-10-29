@@ -121,7 +121,7 @@ public class PersonOfSuperviseController {
             if (!Strings.isNullOrEmpty(idNum)) {
                 queryWrapper.eq("idNum", idNum);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<PersonOfSupervise> page = personOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -142,7 +142,7 @@ public class PersonOfSuperviseController {
             if (!Strings.isNullOrEmpty(idNum)) {
                 queryWrapper.eq("idNum", idNum);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<PersonOfSupervise> page = personOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

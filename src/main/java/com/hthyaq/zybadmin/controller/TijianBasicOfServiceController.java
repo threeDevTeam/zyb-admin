@@ -230,6 +230,7 @@ public class TijianBasicOfServiceController {
             if (!Strings.isNullOrEmpty(hospitalLevel)) {
                 queryWrapper.eq("hospitalLevel", hospitalLevel);
             }
+            queryWrapper.orderByDesc("id");
             IPage<TijianBasicOfService> page = tijianBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -251,6 +252,7 @@ public class TijianBasicOfServiceController {
             if (!Strings.isNullOrEmpty(hospitalLevel)) {
                 queryWrapper.eq("hospitalLevel", hospitalLevel);
             }
+            queryWrapper.orderByDesc("id");
             IPage<TijianBasicOfService> page = tijianBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

@@ -108,6 +108,7 @@ public class ProcuctionOfEnterpriseController {
             if (!Strings.isNullOrEmpty(productionType)) {
                 queryWrapper.eq("productionType", productionType);
             }
+            queryWrapper.orderByDesc("id");
             IPage<ProcuctionOfEnterprise> page = procuctionOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -128,6 +129,7 @@ public class ProcuctionOfEnterpriseController {
             if (!Strings.isNullOrEmpty(productionType)) {
                 queryWrapper.eq("productionType", productionType);
             }
+            queryWrapper.orderByDesc("id");
             IPage<ProcuctionOfEnterprise> page = procuctionOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

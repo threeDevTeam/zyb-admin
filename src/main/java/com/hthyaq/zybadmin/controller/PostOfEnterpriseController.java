@@ -176,6 +176,7 @@ public class PostOfEnterpriseController {
             if (!Strings.isNullOrEmpty(postSmallName)) {
                 queryWrapper.eq("name", postSmallName);
             }
+            queryWrapper.orderByDesc("id");
             IPage<PostOfEnterprise> page = postOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -193,6 +194,7 @@ public class PostOfEnterpriseController {
             if (!Strings.isNullOrEmpty(postSmallName)) {
                 queryWrapper.eq("name", postSmallName);
             }
+            queryWrapper.orderByDesc("id");
             IPage<PostOfEnterprise> page = postOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

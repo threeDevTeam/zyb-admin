@@ -112,6 +112,7 @@ public class EquipmentOfSuperviseController {
             if (!Strings.isNullOrEmpty(num)) {
                 queryWrapper.eq("num", num);
             }
+            queryWrapper.orderByDesc("id");
             IPage<EquipmentOfSupervise> page = equipmentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
             return page;
         } else {
@@ -132,7 +133,7 @@ public class EquipmentOfSuperviseController {
             if (!Strings.isNullOrEmpty(num)) {
                 queryWrapper.eq("num", num);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<EquipmentOfSupervise> page = equipmentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

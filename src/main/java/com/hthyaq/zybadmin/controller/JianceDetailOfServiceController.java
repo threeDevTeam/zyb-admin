@@ -235,7 +235,7 @@ public class JianceDetailOfServiceController {
             if (!Strings.isNullOrEmpty(decideResult)) {
                 queryWrapper.eq("decideResult", decideResult);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<JianceDetailOfService> page = jianceDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -263,7 +263,7 @@ public class JianceDetailOfServiceController {
             if (!Strings.isNullOrEmpty(decideResult)) {
                 queryWrapper.eq("decideResult", decideResult);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<JianceDetailOfService> page = jianceDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

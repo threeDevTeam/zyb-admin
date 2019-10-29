@@ -110,7 +110,7 @@ public class EducationOfSuperviseController {
             if (!Strings.isNullOrEmpty(personCount)) {
                 queryWrapper.eq("personCount", personCount);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<EducationOfSupervise> page = educationOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -131,7 +131,7 @@ public class EducationOfSuperviseController {
             if (!Strings.isNullOrEmpty(personCount)) {
                 queryWrapper.eq("personCount", personCount);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<EducationOfSupervise> page = educationOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

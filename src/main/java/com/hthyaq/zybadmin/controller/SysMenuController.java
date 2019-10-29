@@ -89,7 +89,7 @@ public class SysMenuController {
         if (!Strings.isNullOrEmpty(username)) {
             queryWrapper.eq("username", username);
         }
-
+        queryWrapper.orderByDesc("id");
         IPage<SysMenu> page = sysMenuService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;

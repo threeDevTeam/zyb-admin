@@ -231,6 +231,7 @@ public class PostDangerOfEnterpriseController {
             if (!Strings.isNullOrEmpty(upDate)) {
                 queryWrapper.eq("upDate", upDate);
             }
+            queryWrapper.orderByDesc("id");
             IPage<PostDangerOfEnterprise> page = postDangerOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -248,6 +249,7 @@ public class PostDangerOfEnterpriseController {
             if (!Strings.isNullOrEmpty(upDate)) {
                 queryWrapper.eq("upDate", upDate);
             }
+            queryWrapper.orderByDesc("id");
             IPage<PostDangerOfEnterprise> page = postDangerOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

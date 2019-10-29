@@ -126,6 +126,7 @@ public class PersonOfEnterpriseController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
+            queryWrapper.orderByDesc("id");
             IPage<PersonOfEnterprise> page = personOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -143,6 +144,7 @@ public class PersonOfEnterpriseController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
+            queryWrapper.orderByDesc("id");
             IPage<PersonOfEnterprise> page = personOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

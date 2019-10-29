@@ -103,6 +103,7 @@ public class HealthOfEnterpriseController {
             if (!Strings.isNullOrEmpty(isA)) {
                 queryWrapper.eq("isA", isA);
             }
+            queryWrapper.orderByDesc("id");
             IPage<HealthOfEnterprise> page = healthOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -120,6 +121,7 @@ public class HealthOfEnterpriseController {
             if (!Strings.isNullOrEmpty(isA)) {
                 queryWrapper.eq("isA", isA);
             }
+            queryWrapper.orderByDesc("id");
             IPage<HealthOfEnterprise> page = healthOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

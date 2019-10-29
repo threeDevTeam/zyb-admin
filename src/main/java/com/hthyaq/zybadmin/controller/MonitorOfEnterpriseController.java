@@ -132,6 +132,7 @@ public class MonitorOfEnterpriseController {
             if (!Strings.isNullOrEmpty(monitorTime)) {
                 queryWrapper.eq("monitorTime", monitorTime);
             }
+            queryWrapper.orderByDesc("id");
             IPage<MonitorOfEnterprise> page = monitorOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -149,6 +150,7 @@ public class MonitorOfEnterpriseController {
             if (!Strings.isNullOrEmpty(monitorTime)) {
                 queryWrapper.eq("monitorTime", monitorTime);
             }
+            queryWrapper.orderByDesc("id");
             IPage<MonitorOfEnterprise> page = monitorOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

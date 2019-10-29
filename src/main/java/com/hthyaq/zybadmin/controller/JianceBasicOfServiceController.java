@@ -229,7 +229,7 @@ public class JianceBasicOfServiceController {
             if (!Strings.isNullOrEmpty(year)) {
                 queryWrapper.eq("year", year);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<JianceBasicOfService> page = jianceBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -251,7 +251,7 @@ public class JianceBasicOfServiceController {
             if (!Strings.isNullOrEmpty(year)) {
                 queryWrapper.eq("year", year);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<JianceBasicOfService> page = jianceBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

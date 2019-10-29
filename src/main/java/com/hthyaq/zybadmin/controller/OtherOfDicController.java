@@ -92,7 +92,7 @@ public class OtherOfDicController {
         if (!Strings.isNullOrEmpty(loseMoney)) {
             queryWrapper.eq("loseMoney", loseMoney);
         }
-
+        queryWrapper.orderByDesc("id");
         IPage<OtherOfDic> page = otherOfDicService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;

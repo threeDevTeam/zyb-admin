@@ -169,6 +169,7 @@ public class AccidentSumOfEnterpriseController {
             if (!Strings.isNullOrEmpty(accidentNum)) {
                 queryWrapper.eq("accidentNum", accidentNum);
             }
+            queryWrapper.orderByDesc("id");
             IPage<AccidentSumOfEnterprise> page = accidentSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -186,6 +187,7 @@ public class AccidentSumOfEnterpriseController {
             if (!Strings.isNullOrEmpty(accidentNum)) {
                 queryWrapper.eq("accidentNum", accidentNum);
             }
+            queryWrapper.orderByDesc("id");
             IPage<AccidentSumOfEnterprise> page = accidentSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

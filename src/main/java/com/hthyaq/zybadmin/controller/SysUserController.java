@@ -79,7 +79,7 @@ public class SysUserController {
         if (!Strings.isNullOrEmpty(username)) {
             queryWrapper.eq("username", username);
         }
-
+        queryWrapper.orderByDesc("id");
         IPage<SysUser> page = sysUserService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;

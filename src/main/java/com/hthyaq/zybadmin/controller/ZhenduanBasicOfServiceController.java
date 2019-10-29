@@ -232,6 +232,7 @@ public class ZhenduanBasicOfServiceController {
             if (!Strings.isNullOrEmpty(name)) {
                 queryWrapper.eq("name", name);
             }
+            queryWrapper.orderByDesc("id");
             IPage<ZhenduanBasicOfService> page = zhenduanBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -251,7 +252,7 @@ public class ZhenduanBasicOfServiceController {
                 queryWrapper.eq("name", name);
             }
 
-
+            queryWrapper.orderByDesc("id");
             IPage<ZhenduanBasicOfService> page = zhenduanBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

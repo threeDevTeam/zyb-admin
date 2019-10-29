@@ -111,7 +111,7 @@ public class AccidentOfSuperviseController {
             if (!Strings.isNullOrEmpty(loseMoney)) {
                 queryWrapper.eq("loseMoney", loseMoney);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<AccidentOfSupervise> page = accidentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -132,7 +132,7 @@ public class AccidentOfSuperviseController {
             if (!Strings.isNullOrEmpty(loseMoney)) {
                 queryWrapper.eq("loseMoney", loseMoney);
             }
-
+            queryWrapper.orderByDesc("id");
             IPage<AccidentOfSupervise> page = accidentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

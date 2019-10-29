@@ -134,6 +134,7 @@ public class ProtectOfEnterpriseController {
             if (!Strings.isNullOrEmpty(type)) {
                 queryWrapper.eq("type", type);
             }
+            queryWrapper.orderByDesc("id");
             IPage<ProtectOfEnterprise> page = protectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -154,6 +155,7 @@ public class ProtectOfEnterpriseController {
             if (!Strings.isNullOrEmpty(type)) {
                 queryWrapper.eq("type", type);
             }
+            queryWrapper.orderByDesc("id");
             IPage<ProtectOfEnterprise> page = protectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;

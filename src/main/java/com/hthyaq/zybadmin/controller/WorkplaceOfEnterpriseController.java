@@ -95,6 +95,7 @@ public class WorkplaceOfEnterpriseController {
             if (!Strings.isNullOrEmpty(username)) {
                 queryWrapper.eq("username", username);
             }
+            queryWrapper.orderByDesc("id");
             IPage<WorkplaceOfEnterprise> page = workplaceOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
@@ -112,6 +113,7 @@ public class WorkplaceOfEnterpriseController {
             if (!Strings.isNullOrEmpty(username)) {
                 queryWrapper.eq("username", username);
             }
+            queryWrapper.orderByDesc("id");
             IPage<WorkplaceOfEnterprise> page = workplaceOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
             return page;
