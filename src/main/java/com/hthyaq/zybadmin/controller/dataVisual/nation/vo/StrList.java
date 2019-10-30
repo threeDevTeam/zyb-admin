@@ -1,4 +1,4 @@
-package com.hthyaq.zybadmin.controller.dataVisual.vo;
+package com.hthyaq.zybadmin.controller.dataVisual.nation.vo;
 
 import lombok.Data;
 

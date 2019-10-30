@@ -1,12 +1,12 @@
-package com.hthyaq.zybadmin.controller.dataVisual;
+package com.hthyaq.zybadmin.controller.dataVisual.nation;
 
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hthyaq.zybadmin.controller.dataVisual.vo.NameValue;
-import com.hthyaq.zybadmin.controller.dataVisual.vo.Scroll;
-import com.hthyaq.zybadmin.controller.dataVisual.vo.StrList;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.NameValue;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.Scroll;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.StrList;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
@@ -220,6 +220,47 @@ public class NationDangerVisual {
             data3List.add(RandomUtil.randomInt(1, 1000));
         });
 
+        strList.setFlagList(flagList);
+        strList.setZero(data0List);
+        strList.setOne(data1List);
+        strList.setTwo(data2List);
+        strList.setThree(data3List);
+        return strList;
+    }
+
+    /*
+来源：表2-46 区域职业病危害风险分布情况
+*/
+    @GetMapping("/option6")
+    public StrList option6() {
+        StrList strList = new StrList();
+        List<String> flagList = Lists.newArrayList();
+        List<Integer> data0List = Lists.newArrayList();
+        List<Integer> data1List = Lists.newArrayList();
+        List<Integer> data2List = Lists.newArrayList();
+        List<Integer> data3List = Lists.newArrayList();
+        //模拟数据
+        List<AreaOfDic> list = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        for (AreaOfDic tmp : list) {
+            flagList.add(tmp.getName());
+            int i = tmp.getChildNum();
+            if (i > 0) {
+                int j0 = RandomUtil.randomInt(0, i);
+                int j1 = RandomUtil.randomInt(0, i - j0);
+                int j2 = RandomUtil.randomInt(0, i - j0 - j1);
+                int j3 = i - j0 - j1 - j2;
+                data0List.add(j0);
+                data1List.add(j1);
+                data2List.add(j2);
+                data3List.add(j3);
+            }else{
+                data0List.add(0);
+                data1List.add(0);
+                data2List.add(0);
+                data3List.add(0);
+            }
+
+        }
         strList.setFlagList(flagList);
         strList.setZero(data0List);
         strList.setOne(data1List);
