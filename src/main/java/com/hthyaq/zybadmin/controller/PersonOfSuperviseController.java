@@ -10,10 +10,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.LawOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.PersonOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
+import com.hthyaq.zybadmin.model.vo.PersonOfSuperviseView;
 import com.hthyaq.zybadmin.service.PersonOfSuperviseService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
@@ -59,8 +61,12 @@ public class PersonOfSuperviseController {
     SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
-    public boolean add(@RequestBody PersonOfSupervise personOfSupervise, HttpSession httpSession) {
+    public boolean add(@RequestBody PersonOfSuperviseView personOfSuperviseView, HttpSession httpSession) {
         boolean flag = false;
+        PersonOfSupervise personOfSupervise=new PersonOfSuperviseView();
+        BeanUtils.copyProperties(personOfSuperviseView, personOfSupervise);
+        personOfSupervise.setBirth(AntdDateUtil.getInteger(personOfSuperviseView.getBirthStr()).longValue());
+
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<SuperviseOfRegister> queryWrapper = new QueryWrapper();
         queryWrapper.eq("id", sysUser.getCompanyId());
@@ -84,14 +90,12 @@ public class PersonOfSuperviseController {
 
     @GetMapping("/getById")
     public PersonOfSupervise getById(Integer id) {
-
+        PersonOfSuperviseView personOfSuperviseView=new PersonOfSuperviseView();
         PersonOfSupervise personOfSupervise = personOfSuperviseService.getById(id);
-        //demoCourse
-        QueryWrapper<PersonOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", id);
-        List<PersonOfSupervise> demoCourseList = personOfSuperviseService.list(queryWrapper);
-        //将demoCourse的数据设置到demoData
-        return personOfSupervise;
+        BeanUtils.copyProperties(personOfSupervise, personOfSuperviseView);
+        personOfSuperviseView.setBirthStr( AntdDateUtil.getString(personOfSupervise.getBirth().intValue()));
+
+        return personOfSuperviseView;
     }
 
     @PostMapping("/edit")

@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.bean.Child2;
@@ -111,6 +112,8 @@ public class JianceDetailOfServiceController {
         JianceDetailOfService jianceDetailOfService = jianceDetailOfServiceService.getById(id);
         //将demo的数据设置到demoData
         BeanUtils.copyProperties(jianceDetailOfService, jianceDetailOfServiceView);
+        jianceDetailOfServiceView.setCheckDateStr( AntdDateUtil.getString(jianceDetailOfService.getCheckDate()));
+
         //登记注册类型
         QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
         qw2.eq("name", jianceDetailOfService.getRegisterSmallName());

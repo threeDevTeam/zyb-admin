@@ -16,4 +16,5 @@ public class ZhenduanDetailOfServiceView extends ZhenduanDetailOfService {
     private ArrayList cascaded3;
     private ArrayList cascaded4;
     private ArrayList cascaded5;
+    private String checkDateStr;
 }

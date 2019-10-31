@@ -10,10 +10,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.EducationOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.EquipmentOfSuperviseModel;
 import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
+import com.hthyaq.zybadmin.model.vo.EquipmentOfSuperviseView;
 import com.hthyaq.zybadmin.service.EquipmentOfSuperviseService;
 import com.hthyaq.zybadmin.service.SuperviseOfRegisterService;
 import com.hthyaq.zybadmin.service.SuperviseService;
@@ -50,8 +52,13 @@ public class EquipmentOfSuperviseController {
     SysRoleUserService sysRoleUserService;
 
     @PostMapping("/add")
-    public boolean add(@RequestBody EquipmentOfSupervise equipmentOfSupervise, HttpSession httpSession) {
+    public boolean add(@RequestBody EquipmentOfSuperviseView equipmentOfSuperviseView, HttpSession httpSession) {
         boolean flag = false;
+        EquipmentOfSupervise equipmentOfSupervise=new EquipmentOfSupervise();
+        BeanUtils.copyProperties(equipmentOfSuperviseView, equipmentOfSupervise);
+        equipmentOfSupervise.setBuyDate(AntdDateUtil.getInteger(equipmentOfSuperviseView.getBuyDateStr()));
+
+
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<SuperviseOfRegister> queryWrapper = new QueryWrapper();
         queryWrapper.eq("id", sysUser.getCompanyId());
@@ -75,14 +82,12 @@ public class EquipmentOfSuperviseController {
 
     @GetMapping("/getById")
     public EquipmentOfSupervise getById(Integer id) {
+        EquipmentOfSuperviseView equipmentOfSuperviseView=new EquipmentOfSuperviseView();
+        EquipmentOfSupervise equipmentOfSupervise = equipmentOfSuperviseService.getById(id);
+        BeanUtils.copyProperties(equipmentOfSupervise, equipmentOfSuperviseView);
+        equipmentOfSuperviseView.setBuyDateStr( AntdDateUtil.getString(equipmentOfSupervise.getBuyDate()));
 
-        EquipmentOfSupervise educationOfSupervise = equipmentOfSuperviseService.getById(id);
-        //demoCourse
-        QueryWrapper<EquipmentOfSupervise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", id);
-        List<EquipmentOfSupervise> demoCourseList = equipmentOfSuperviseService.list(queryWrapper);
-        //将demoCourse的数据设置到demoData
-        return educationOfSupervise;
+        return equipmentOfSuperviseView;
     }
 
     @PostMapping("/edit")

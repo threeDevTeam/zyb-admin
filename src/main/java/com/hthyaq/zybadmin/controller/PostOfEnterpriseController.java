@@ -74,7 +74,11 @@ public class PostOfEnterpriseController {
                 postOfEnterprise.setPostSmallName(gangwei.getName());
             }
         }else{
-            postOfEnterprise.setPostSmallName("无");
+            qw3.eq("id", postOfEnterpriseView.getCascaded1().get(0));
+            List<Gangwei> list2 = gangweiService.list(qw3);
+            for (Gangwei gangwei : list2) {
+                postOfEnterprise.setPostBigName(gangwei.getName());
+            }
         }
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);

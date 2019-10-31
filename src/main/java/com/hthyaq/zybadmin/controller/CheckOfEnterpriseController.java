@@ -10,9 +10,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.CheckOfEnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
+import com.hthyaq.zybadmin.model.vo.CheckOfEnterpriseView;
 import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
@@ -45,8 +47,12 @@ public class CheckOfEnterpriseController {
     @Autowired
     SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
-    public boolean add(@RequestBody CheckOfEnterprise CheckOfEnterprise, HttpSession httpSession) {
+    public boolean add(@RequestBody CheckOfEnterpriseView checkOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
+        CheckOfEnterprise checkOfEnterprise=new CheckOfEnterprise();
+        BeanUtils.copyProperties(checkOfEnterpriseView, checkOfEnterprise);
+        checkOfEnterprise.setCheckDate(AntdDateUtil.getInteger(checkOfEnterpriseView.getCheckDateStr()));
+
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<EnterpriseOfRegister> queryWrapper = new QueryWrapper();
         queryWrapper.eq("id", sysUser.getCompanyId());
@@ -56,8 +62,8 @@ public class CheckOfEnterpriseController {
             queryWrapper1.eq("name", enterpriseOfRegister.getName());
             List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
             for (Enterprise enterprise : list1) {
-                CheckOfEnterprise.setEnterpriseId(enterprise.getId());
-                flag = checkOfEnterpriseService.save(CheckOfEnterprise);
+                checkOfEnterprise.setEnterpriseId(enterprise.getId());
+                flag = checkOfEnterpriseService.save(checkOfEnterprise);
             }
         }
         return flag;
@@ -70,14 +76,13 @@ public class CheckOfEnterpriseController {
 
     @GetMapping("/getById")
     public CheckOfEnterprise getById(Integer id) {
-
+        CheckOfEnterpriseView checkOfEnterpriseView=new CheckOfEnterpriseView();
         CheckOfEnterprise checkOfEnterprise = checkOfEnterpriseService.getById(id);
-        //demoCourse
-        QueryWrapper<CheckOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id", id);
-        List<CheckOfEnterprise> demoCourseList = checkOfEnterpriseService.list(queryWrapper);
+        BeanUtils.copyProperties(checkOfEnterprise, checkOfEnterpriseView);
+        checkOfEnterpriseView.setCheckDateStr( AntdDateUtil.getString(checkOfEnterprise.getCheckDate()));
+
         //将demoCourse的数据设置到demoData
-        return checkOfEnterprise;
+        return checkOfEnterpriseView;
     }
 
     @PostMapping("/edit")

@@ -20,4 +20,5 @@ public class JianceDetailOfServiceView extends JianceDetailOfService {
     private ArrayList cascaded2;
     private ArrayList cascaded3;
     private ArrayList cascaded4;
+    private String checkDateStr;
 }

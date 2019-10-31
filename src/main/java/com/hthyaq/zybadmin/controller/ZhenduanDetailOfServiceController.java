@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
@@ -74,6 +75,9 @@ public class ZhenduanDetailOfServiceController {
                 //demo
                 ZhenduanDetailOfService zhenduanDetailOfService = new ZhenduanDetailOfService();
                 BeanUtils.copyProperties(zhenduanDetailOfServiceView, zhenduanDetailOfService);
+                zhenduanDetailOfService.setCheckDate(AntdDateUtil.getInteger(zhenduanDetailOfServiceView.getCheckDateStr()));
+
+
                 QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("id", zhenduanDetailOfServiceView.getCascader().get(0));
                 List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
@@ -231,6 +235,8 @@ public class ZhenduanDetailOfServiceController {
         ZhenduanDetailOfServiceView zhenduanDetailOfServiceView = new ZhenduanDetailOfServiceView();
         ZhenduanDetailOfService zhenduanDetailOfService = zhenduanDetailOfServiceService.getById(id);
         BeanUtils.copyProperties(zhenduanDetailOfService, zhenduanDetailOfServiceView);
+        zhenduanDetailOfServiceView.setCheckDateStr( AntdDateUtil.getString(zhenduanDetailOfService.getCheckDate()));
+
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("code", zhenduanDetailOfService.getProvinceCode());
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);

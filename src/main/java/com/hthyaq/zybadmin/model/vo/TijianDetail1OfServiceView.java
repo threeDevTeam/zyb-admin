@@ -14,5 +14,5 @@ public class TijianDetail1OfServiceView extends TijianDetail1OfService {
     private ArrayList cascaded1;
     private ArrayList cascaded2;
     private ArrayList cascaded3;
-
+    private String checkDateStr;
 }

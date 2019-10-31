@@ -3,6 +3,7 @@ package com.hthyaq.zybadmin.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.mapper.JianceDetailOfServiceMapper;
 import com.hthyaq.zybadmin.model.vo.JianceDetailOfServiceView;
@@ -80,6 +81,8 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
 
                 JianceDetailOfService jianceDetailOfService = new JianceDetailOfService();
                 BeanUtils.copyProperties(jianceDetailOfServiceView, jianceDetailOfService);
+                jianceDetailOfService.setCheckDate(AntdDateUtil.getInteger(jianceDetailOfServiceView.getCheckDateStr()));
+
                 //省/市/区
                 QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("id", jianceDetailOfServiceView.getCascader().get(0));

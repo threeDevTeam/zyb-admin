@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.bean.Child2;
@@ -73,6 +74,9 @@ public class TijianDetail1OfServiceController {
                 //demo
                 TijianDetail1OfService tijianDetail1OfService = new TijianDetail1OfService();
                 BeanUtils.copyProperties(tijianDetail1OfServiceView, tijianDetail1OfService);
+                tijianDetail1OfService.setCheckDate(AntdDateUtil.getInteger(tijianDetail1OfServiceView.getCheckDateStr()));
+
+
                 QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("id", tijianDetail1OfServiceView.getCascader().get(0));
                 List<AreaOfDic> list = areaOfDicService.list(queryWrapper);
@@ -194,6 +198,9 @@ public class TijianDetail1OfServiceController {
         TijianDetail1OfServiceView tijianDetail1OfServiceView = new TijianDetail1OfServiceView();
         TijianDetail1OfService tijianDetail1OfService = tijianDetail1OfServiceService.getById(id);
         BeanUtils.copyProperties(tijianDetail1OfService, tijianDetail1OfServiceView);
+
+        tijianDetail1OfServiceView.setCheckDateStr( AntdDateUtil.getString(tijianDetail1OfService.getCheckDate()));
+
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("code", tijianDetail1OfService.getProvinceCode());
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);
