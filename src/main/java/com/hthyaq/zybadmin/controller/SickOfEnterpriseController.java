@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.SickOfEnterpriseModel;
@@ -66,6 +67,8 @@ public class SickOfEnterpriseController {
 
         //other
         BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
+        sickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getCheckDateStr()));
+
         //职业病名称
         QueryWrapper<Zybname> qw4 = new QueryWrapper<>();
         qw4.eq("id", sickOfEnterpriseView.getCascaded1().get(0));
@@ -117,6 +120,10 @@ public class SickOfEnterpriseController {
         SickOfEnterpriseView sickOfEnterpriseView = new SickOfEnterpriseView();
         SickOfEnterprise sickOfEnterprise = sickOfEnterpriseService.getById(id);
         BeanUtils.copyProperties(sickOfEnterprise, sickOfEnterpriseView);
+
+
+        sickOfEnterpriseView.setCheckDateStr( AntdDateUtil.getString(sickOfEnterprise.getCheckDate()));
+
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(sickOfEnterprise.getPostDangerId());
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(sickOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise = workplaceOfEnterpriseService.getById(sickOfEnterprise.getWorkplaceId());
@@ -146,6 +153,7 @@ public class SickOfEnterpriseController {
         SickOfEnterprise sickOfEnterprise = new SickOfEnterprise();
 
         BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
+
         //职业病名称
         QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
         qwZ.eq("id", sickOfEnterpriseView.getCascaded1().get(0));

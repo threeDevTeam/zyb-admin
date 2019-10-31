@@ -8,4 +8,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class AccidentPersonOfEnterpriseView extends AccidentPersonOfEnterprise {
     private String treeSelect;
+    private String dieDateStr;
 }

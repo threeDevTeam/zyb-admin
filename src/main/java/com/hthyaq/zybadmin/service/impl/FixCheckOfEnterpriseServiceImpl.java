@@ -3,6 +3,7 @@ package com.hthyaq.zybadmin.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.mapper.FixCheckOfEnterpriseMapper;
 import com.hthyaq.zybadmin.model.vo.FixCheckOfView;
@@ -41,6 +42,8 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
         FixCheckOfEnterprise fixCheckOfEnterprise=new FixCheckOfEnterprise();
 
         BeanUtils.copyProperties(fixCheckOfView, fixCheckOfEnterprise);
+        fixCheckOfEnterprise.setCheckDate(AntdDateUtil.getInteger(fixCheckOfView.getCheckDateStr()));
+
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();

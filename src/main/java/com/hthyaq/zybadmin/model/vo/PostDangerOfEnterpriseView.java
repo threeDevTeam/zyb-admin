@@ -15,4 +15,5 @@ public class PostDangerOfEnterpriseView  extends PostDangerOfEnterprise {
     private String treeSelect;
     private ArrayList cascaded1;
     private ArrayList cascaded2;
+    private String upDateeStr;
 }

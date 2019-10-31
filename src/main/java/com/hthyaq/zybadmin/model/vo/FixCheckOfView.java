@@ -10,5 +10,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class FixCheckOfView extends FixCheckOfEnterprise {
     private String treeSelect;
+    private String checkDateStr;
     private Child3<FixCheckResultOfEnterprise> course;
 }

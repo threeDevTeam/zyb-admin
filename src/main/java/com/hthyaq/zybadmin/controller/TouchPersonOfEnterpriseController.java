@@ -115,7 +115,14 @@ public class TouchPersonOfEnterpriseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody TouchPersonOfEnterprise touchPersonOfEnterprise) {
+    public boolean edit(@RequestBody TouchPersonOfEnterpriseView touchPersonOfEnterpriseView) {
+        TouchPersonOfEnterprise touchPersonOfEnterprise=new TouchPersonOfEnterpriseView();
+        BeanUtils.copyProperties(touchPersonOfEnterpriseView, touchPersonOfEnterprise);
+
+        touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirthStr()));
+        touchPersonOfEnterprise.setStartDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getStartDateStr()));
+        touchPersonOfEnterprise.setLeaveDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getLeaveDateStr()));
+
         return touchPersonOfEnterpriseService.updateById(touchPersonOfEnterprise);
     }
 

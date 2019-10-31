@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.AccidentPersonOfEnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
@@ -61,6 +62,7 @@ public class AccidentPersonOfEnterpriseController {
         AccidentPersonOfEnterprise accidentPersonOfEnterprise = new AccidentPersonOfEnterprise();
         //other
         BeanUtils.copyProperties(accidentPersonOfEnterpriseView, accidentPersonOfEnterprise);
+        accidentPersonOfEnterprise.setDieDate(AntdDateUtil.getInteger(accidentPersonOfEnterpriseView.getDieDateStr()));
 
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
@@ -95,6 +97,9 @@ public class AccidentPersonOfEnterpriseController {
         AccidentPersonOfEnterpriseView accidentPersonOfEnterpriseView=new AccidentPersonOfEnterpriseView();
         AccidentPersonOfEnterprise accidentPersonOfEnterprise = accidentPersonOfEnterpriseService.getById(id);
         BeanUtils.copyProperties(accidentPersonOfEnterprise, accidentPersonOfEnterpriseView);
+
+        accidentPersonOfEnterpriseView.setDieDateStr( AntdDateUtil.getString(accidentPersonOfEnterprise.getDieDate()));
+
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(accidentPersonOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(accidentPersonOfEnterprise.getWorkplaceId());
         accidentPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()));

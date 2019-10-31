@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.bean.Child;
 import com.hthyaq.zybadmin.model.bean.Child3;
 import com.hthyaq.zybadmin.model.entity.*;
@@ -88,6 +89,7 @@ public class FixCheckOfEnterpriseController {
         QueryWrapper<FixCheckResultOfEnterprise> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("fixCheckId", id);
         List<FixCheckResultOfEnterprise> demoCourseList = fixCheckResultOfEnterpriseService.list(queryWrapper);
+        fixCheckOfView.setCheckDateStr( AntdDateUtil.getString(fixCheckOfEnterprise.getCheckDate()));
 
         //将demoCourse的数据设置到demoData
         fixCheckOfView.setCourse(new Child3<>(demoCourseList));

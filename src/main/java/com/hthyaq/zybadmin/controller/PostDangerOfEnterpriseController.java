@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.PostDangerOfEnterpriseModel;
@@ -60,10 +61,12 @@ public class PostDangerOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody PostDangerOfEnterpriseView postDangerOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(postDangerOfEnterpriseView);
+        System.out.println(postDangerOfEnterpriseView.getUpDateeStr());
         PostDangerOfEnterprise postDangerOfEnterprise = new PostDangerOfEnterprise();
         //other
         BeanUtils.copyProperties(postDangerOfEnterpriseView, postDangerOfEnterprise);
+        postDangerOfEnterprise.setUpDatee(AntdDateUtil.getInteger(postDangerOfEnterpriseView.getUpDateeStr()));
+
         //职业病危害因素名称
         QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();
         qw4.eq("id", postDangerOfEnterpriseView.getCascaded1().get(0));
@@ -134,6 +137,8 @@ public class PostDangerOfEnterpriseController {
         PostDangerOfEnterpriseView postDangerOfEnterpriseView=new PostDangerOfEnterpriseView();
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(id);
         BeanUtils.copyProperties(postDangerOfEnterprise, postDangerOfEnterpriseView);
+        postDangerOfEnterpriseView.setUpDateeStr( AntdDateUtil.getString(postDangerOfEnterprise.getUpDatee()));
+
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(postDangerOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(postDangerOfEnterprise.getWorkplaceId());
         postDangerOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()));
@@ -166,7 +171,7 @@ public class PostDangerOfEnterpriseController {
             listc2.add(zybname.getId());
         }
         postDangerOfEnterpriseView.setCascaded2((ArrayList) listc2);
-        return postDangerOfEnterpriseView;
+       return postDangerOfEnterpriseView;
     }
 
     @PostMapping("/edit")

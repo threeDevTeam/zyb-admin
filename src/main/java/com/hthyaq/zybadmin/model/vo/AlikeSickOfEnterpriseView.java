@@ -8,4 +8,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class AlikeSickOfEnterpriseView extends AlikeSickOfEnterprise {
     private String treeSelect;
+    private String checkDateStr;
 }

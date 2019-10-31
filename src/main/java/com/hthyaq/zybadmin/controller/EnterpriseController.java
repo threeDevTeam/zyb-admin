@@ -217,6 +217,9 @@ public class EnterpriseController {
 
         BeanUtils.copyProperties(enterpriseView, enterprise);
 
+        enterprise.setRegisterDate(enterpriseView.getRegisterDate());
+        enterprise.setStartDate(enterpriseView.getStartDate());
+
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id",enterpriseView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);

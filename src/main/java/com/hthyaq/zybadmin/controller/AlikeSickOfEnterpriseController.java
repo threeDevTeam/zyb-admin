@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.AlikeSickOfEnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
@@ -64,6 +65,7 @@ public class AlikeSickOfEnterpriseController {
 
         //other
         BeanUtils.copyProperties(alikeSickOfEnterpriseView,  alikeSickOfEnterprise);
+        alikeSickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(alikeSickOfEnterpriseView.getCheckDateStr()));
 
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
@@ -97,6 +99,9 @@ public class AlikeSickOfEnterpriseController {
         AlikeSickOfEnterpriseView alikeSickOfEnterpriseView=new AlikeSickOfEnterpriseView();
         AlikeSickOfEnterprise alikeSickOfEnterprise = alikeSickOfEnterpriseService.getById(id);
         BeanUtils.copyProperties(alikeSickOfEnterprise,alikeSickOfEnterpriseView);
+
+        alikeSickOfEnterpriseView.setCheckDateStr( AntdDateUtil.getString(alikeSickOfEnterprise.getCheckDate()));
+
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(alikeSickOfEnterprise.getPostDangerId());
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(alikeSickOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(alikeSickOfEnterprise.getWorkplaceId());
