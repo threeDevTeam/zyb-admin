@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
 import com.hthyaq.zybadmin.model.excelModel.TouchPersonOfEnterpriseModel;
@@ -82,6 +83,7 @@ public class TouchPersonOfEnterpriseController {
         touchPersonOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         touchPersonOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
+        touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirth()));
         System.out.println(postDangerOfEnterprise);
         flag = touchPersonOfEnterpriseService.save(touchPersonOfEnterprise);
 
@@ -102,7 +104,7 @@ public class TouchPersonOfEnterpriseController {
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(touchPersonOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise = workplaceOfEnterpriseService.getById(touchPersonOfEnterprise.getWorkplaceId());
         touchPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName() + "--" + postOfEnterprise.getPostSmallName() + "--" + postDangerOfEnterprise.getDangerSmallName()));
-
+        touchPersonOfEnterpriseView.setBirth(AntdDateUtil.getString(touchPersonOfEnterprise.getBirth()));
         System.out.println(touchPersonOfEnterpriseView);
         //将demoCourse的数据设置到demoData
         return touchPersonOfEnterpriseView;
