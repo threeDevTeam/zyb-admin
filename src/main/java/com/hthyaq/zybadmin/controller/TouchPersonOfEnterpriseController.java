@@ -83,7 +83,7 @@ public class TouchPersonOfEnterpriseController {
         touchPersonOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         touchPersonOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
-        touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirth()));
+        touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirthStr()));
         System.out.println(postDangerOfEnterprise);
         flag = touchPersonOfEnterpriseService.save(touchPersonOfEnterprise);
 
@@ -104,7 +104,7 @@ public class TouchPersonOfEnterpriseController {
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(touchPersonOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise = workplaceOfEnterpriseService.getById(touchPersonOfEnterprise.getWorkplaceId());
         touchPersonOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName() + "--" + postOfEnterprise.getPostSmallName() + "--" + postDangerOfEnterprise.getDangerSmallName()));
-        touchPersonOfEnterpriseView.setBirth(AntdDateUtil.getString(touchPersonOfEnterprise.getBirth()));
+        touchPersonOfEnterpriseView.setBirthStr(AntdDateUtil.getString(touchPersonOfEnterprise.getBirth()));
         System.out.println(touchPersonOfEnterpriseView);
         //将demoCourse的数据设置到demoData
         return touchPersonOfEnterpriseView;

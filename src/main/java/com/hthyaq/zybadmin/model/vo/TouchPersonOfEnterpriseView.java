@@ -12,18 +12,18 @@ public class TouchPersonOfEnterpriseView extends TouchPersonOfEnterprise {
     /**
      * 出生日期，例如20190101
      */
-    private String birth;
+    private String birthStr;
 
     /**
      * 上岗时间，例如20190101
      */
     @TableField("startDate")
-    private String startDate;
+    private String startDateStr;
 
     /**
      * 离岗时间，例如20190101
      */
     @TableField("leaveDate")
-    private String leaveDate;
+    private String leaveDateStr;
 
 }
