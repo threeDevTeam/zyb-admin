@@ -282,6 +282,8 @@ public class TijianDetail1OfServiceController {
         TijianDetail1OfService tijianDetail1OfService = new TijianDetail1OfServiceView();
 
         BeanUtils.copyProperties(tijianDetail1OfServiceView, tijianDetail1OfService);
+        tijianDetail1OfService.setCheckDate(AntdDateUtil.getInteger(tijianDetail1OfServiceView.getCheckDateStr()));
+
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", tijianDetail1OfServiceView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);

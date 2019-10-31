@@ -91,7 +91,10 @@ public class EquipmentOfSuperviseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody EquipmentOfSupervise equipmentOfSupervise) {
+    public boolean edit(@RequestBody EquipmentOfSuperviseView equipmentOfSuperviseView) {
+        EquipmentOfSupervise equipmentOfSupervise=new EquipmentOfSupervise();
+        BeanUtils.copyProperties(equipmentOfSuperviseView, equipmentOfSupervise);
+
         return equipmentOfSuperviseService.updateById(equipmentOfSupervise);
     }
 

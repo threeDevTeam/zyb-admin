@@ -101,6 +101,8 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
         //demo
         FixCheckOfEnterprise fixCheckOfEnterprise=new FixCheckOfEnterprise();
         BeanUtils.copyProperties(fixCheckOfView, fixCheckOfEnterprise);
+        fixCheckOfEnterprise.setCheckDate(AntdDateUtil.getInteger(fixCheckOfView.getCheckDateStr()));
+
         flag1 = this.updateById(fixCheckOfEnterprise);
 
         //demoCourse，先删除，后插入

@@ -347,6 +347,8 @@ public class ZhenduanDetailOfServiceController {
         ZhenduanDetailOfService zhenduanDetailOfService = new ZhenduanDetailOfServiceView();
 
         BeanUtils.copyProperties(zhenduanDetailOfServiceView, zhenduanDetailOfService);
+        zhenduanDetailOfService.setCheckDate(AntdDateUtil.getInteger(zhenduanDetailOfServiceView.getCheckDateStr()));
+
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", zhenduanDetailOfServiceView.getCascader().get(0));
         List<AreaOfDic> list = areaOfDicService.list(queryWrapper);

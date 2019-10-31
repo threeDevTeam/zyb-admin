@@ -12,4 +12,5 @@ public class SickOfEnterpriseView extends SickOfEnterprise {
     private String treeSelect;
     private ArrayList cascaded1;
     private String checkDateStr;
+    private String   dieDateStr;
 }

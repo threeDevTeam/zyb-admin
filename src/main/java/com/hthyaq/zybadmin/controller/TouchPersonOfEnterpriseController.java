@@ -118,6 +118,9 @@ public class TouchPersonOfEnterpriseController {
     public boolean edit(@RequestBody TouchPersonOfEnterpriseView touchPersonOfEnterpriseView) {
         TouchPersonOfEnterprise touchPersonOfEnterprise=new TouchPersonOfEnterpriseView();
         BeanUtils.copyProperties(touchPersonOfEnterpriseView, touchPersonOfEnterprise);
+        touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirthStr()));
+        touchPersonOfEnterprise.setStartDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getStartDateStr()));
+        touchPersonOfEnterprise.setLeaveDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getLeaveDateStr()));
 
         touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirthStr()));
         touchPersonOfEnterprise.setStartDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getStartDateStr()));

@@ -232,6 +232,7 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
         JianceDetailOfService jianceDetailOfService = new JianceDetailOfService();
 
         BeanUtils.copyProperties(jianceDetailOfServiceView, jianceDetailOfService);
+        jianceDetailOfService.setCheckDate(AntdDateUtil.getInteger(jianceDetailOfServiceView.getCheckDateStr()));
 
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id",jianceDetailOfServiceView.getCascader().get(0));

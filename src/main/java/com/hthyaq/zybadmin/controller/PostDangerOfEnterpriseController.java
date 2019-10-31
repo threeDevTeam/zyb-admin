@@ -179,6 +179,7 @@ public class PostDangerOfEnterpriseController {
         PostDangerOfEnterprise postDangerOfEnterprise = new PostDangerOfEnterprise();
 
         BeanUtils.copyProperties(postDangerOfEnterpriseView, postDangerOfEnterprise);
+        postDangerOfEnterprise.setUpDatee(AntdDateUtil.getInteger(postDangerOfEnterpriseView.getUpDateeStr()));
 
         //职业病危害因素名称
         QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();

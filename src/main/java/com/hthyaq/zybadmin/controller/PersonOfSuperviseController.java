@@ -94,12 +94,16 @@ public class PersonOfSuperviseController {
         PersonOfSupervise personOfSupervise = personOfSuperviseService.getById(id);
         BeanUtils.copyProperties(personOfSupervise, personOfSuperviseView);
         personOfSuperviseView.setBirthStr( AntdDateUtil.getString(personOfSupervise.getBirth().intValue()));
+        personOfSupervise.setBirth(AntdDateUtil.getInteger(personOfSuperviseView.getBirthStr()).longValue());
 
         return personOfSuperviseView;
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody PersonOfSupervise personOfSupervise) {
+    public boolean edit(@RequestBody PersonOfSuperviseView personOfSuperviseView) {
+        PersonOfSupervise personOfSupervise=new PersonOfSuperviseView();
+        BeanUtils.copyProperties(personOfSuperviseView, personOfSupervise);
+
         return personOfSuperviseService.updateById(personOfSupervise);
     }
 

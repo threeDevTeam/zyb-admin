@@ -86,7 +86,11 @@ public class CheckOfEnterpriseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody CheckOfEnterprise checkOfEnterprise) {
+    public boolean edit(@RequestBody CheckOfEnterpriseView checkOfEnterpriseView) {
+        CheckOfEnterprise checkOfEnterprise=new CheckOfEnterprise();
+        BeanUtils.copyProperties(checkOfEnterpriseView, checkOfEnterprise);
+        checkOfEnterprise.setCheckDate(AntdDateUtil.getInteger(checkOfEnterpriseView.getCheckDateStr()));
+
         return checkOfEnterpriseService.updateById(checkOfEnterprise);
     }
 

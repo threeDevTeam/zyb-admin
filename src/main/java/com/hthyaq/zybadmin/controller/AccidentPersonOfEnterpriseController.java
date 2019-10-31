@@ -107,7 +107,11 @@ public class AccidentPersonOfEnterpriseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody AccidentPersonOfEnterprise accidentPersonOfEnterprise) {
+    public boolean edit(@RequestBody AccidentPersonOfEnterpriseView accidentPersonOfEnterpriseView) {
+        AccidentPersonOfEnterprise accidentPersonOfEnterprise=new AccidentPersonOfEnterprise();
+        BeanUtils.copyProperties(accidentPersonOfEnterpriseView, accidentPersonOfEnterprise);
+        accidentPersonOfEnterprise.setDieDate(AntdDateUtil.getInteger(accidentPersonOfEnterpriseView.getDieDateStr()));
+
         return accidentPersonOfEnterpriseService.updateById(accidentPersonOfEnterprise);
     }
 

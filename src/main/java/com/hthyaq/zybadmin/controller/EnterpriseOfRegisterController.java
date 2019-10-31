@@ -84,8 +84,10 @@ public class EnterpriseOfRegisterController {
         enterpriseOfRegister.setUnitType(enterpriseUserView.getUnitType());
         enterpriseOfRegister.setRegiterMoney(enterpriseUserView.getRegiterMoney());
         enterpriseOfRegister.setRegisterAddress(enterpriseUserView.getRegisterAddress());
-        enterpriseOfRegister.setRegisterDate(enterpriseUserView.getRegisterDate());
-        enterpriseOfRegister.setStartDate(enterpriseUserView.getStartDate());
+
+        enterpriseOfRegister.setRegisterDate( String.valueOf(AntdDateUtil.getInteger(enterpriseUserView.getRegisterDateStr())));
+        enterpriseOfRegister.setStartDate( String.valueOf( AntdDateUtil.getInteger(enterpriseUserView.getStartDateStr())));
+
 
 
         enterpriseOfRegister.setPropertyMoney(enterpriseUserView.getPropertyMoney());

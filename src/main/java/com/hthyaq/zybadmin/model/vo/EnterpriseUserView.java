@@ -126,14 +126,14 @@ public class EnterpriseUserView {
     /**
      * 注册时间
      */
-    @TableField("registerDate")
-    private String registerDate;
+    @TableField("registerDateStr")
+    private String registerDateStr;
 
     /**
      * startDate
      */
-    @TableField("startDate")
-    private String startDate;
+    @TableField("startDateStr")
+    private String startDateStr;
 
     /**
      * 资产总额

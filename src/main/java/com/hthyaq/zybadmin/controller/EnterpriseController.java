@@ -120,8 +120,10 @@ public class EnterpriseController {
             enterprise.setUnitType(enterpriseOfRegister.getUnitType());
             enterprise.setRegiterMoney(Double.parseDouble(enterpriseOfRegister.getRegiterMoney()));
             enterprise.setRegisterAddress(enterpriseOfRegister.getRegisterAddress());
+
             enterprise.setRegisterDate(AntdDateUtil.getInteger(enterpriseOfRegister.getRegisterDate()));
             enterprise.setStartDate(AntdDateUtil.getInteger(enterpriseOfRegister.getStartDate()));
+
             enterprise.setPropertyMoney(Double.parseDouble(enterpriseOfRegister.getPropertyMoney()));
             if(enterpriseView.getWomenWorkerNumber()>= 1000&&enterpriseView.getSaleMoney()>=40000){
                 enterprise.setSize("大型");
@@ -151,6 +153,10 @@ public class EnterpriseController {
         EnterpriseView enterpriseView = new EnterpriseView();
         Enterprise enterprise = enterpriseService.getById(id);
         BeanUtils.copyProperties(enterprise, enterpriseView);
+
+        enterpriseView.setRegisterDateStr( AntdDateUtil.getString(enterprise.getRegisterDate()));
+        enterpriseView.setStartDateStr( AntdDateUtil.getString(enterprise.getStartDate()));
+
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("code", enterprise.getProvinceCode());
         List<AreaOfDic> list1 = areaOfDicService.list(queryWrapper);
@@ -213,12 +219,11 @@ public class EnterpriseController {
     }
     @PostMapping("/edit")
     public boolean edit(@RequestBody EnterpriseView enterpriseView) {
-        Enterprise enterprise = new EnterpriseView();
+        Enterprise enterprise = new Enterprise();
 
         BeanUtils.copyProperties(enterpriseView, enterprise);
-
-        enterprise.setRegisterDate(enterpriseView.getRegisterDate());
-        enterprise.setStartDate(enterpriseView.getStartDate());
+        enterprise.setStartDate(AntdDateUtil.getInteger(enterpriseView.getStartDateStr()));
+        enterprise.setRegisterDate(AntdDateUtil.getInteger(enterpriseView.getRegisterDateStr()));
 
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id",enterpriseView.getCascader().get(0));

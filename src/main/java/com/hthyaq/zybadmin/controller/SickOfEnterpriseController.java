@@ -68,6 +68,7 @@ public class SickOfEnterpriseController {
         //other
         BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
         sickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getCheckDateStr()));
+        sickOfEnterprise.setDieDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getDieDateStr()));
 
         //职业病名称
         QueryWrapper<Zybname> qw4 = new QueryWrapper<>();
@@ -123,6 +124,7 @@ public class SickOfEnterpriseController {
 
 
         sickOfEnterpriseView.setCheckDateStr( AntdDateUtil.getString(sickOfEnterprise.getCheckDate()));
+        sickOfEnterpriseView.setDieDateStr( AntdDateUtil.getString(sickOfEnterprise.getDieDate()));
 
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(sickOfEnterprise.getPostDangerId());
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(sickOfEnterprise.getPostId());
@@ -153,6 +155,8 @@ public class SickOfEnterpriseController {
         SickOfEnterprise sickOfEnterprise = new SickOfEnterprise();
 
         BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
+        sickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getCheckDateStr()));
+        sickOfEnterprise.setDieDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getDieDateStr()));
 
         //职业病名称
         QueryWrapper<Zybname> qwZ = new QueryWrapper<>();

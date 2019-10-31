@@ -113,7 +113,11 @@ public class AlikeSickOfEnterpriseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody AlikeSickOfEnterprise alikeSickOfEnterprise) {
+    public boolean edit(@RequestBody AlikeSickOfEnterpriseView alikeSickOfEnterpriseView) {
+        AlikeSickOfEnterprise alikeSickOfEnterprise=new AlikeSickOfEnterprise();
+        BeanUtils.copyProperties(alikeSickOfEnterpriseView,alikeSickOfEnterprise);
+        alikeSickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(alikeSickOfEnterpriseView.getCheckDateStr()));
+
         return alikeSickOfEnterpriseService.updateById(alikeSickOfEnterprise);
     }
 
