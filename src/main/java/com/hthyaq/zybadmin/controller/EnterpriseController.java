@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
@@ -119,8 +120,8 @@ public class EnterpriseController {
             enterprise.setUnitType(enterpriseOfRegister.getUnitType());
             enterprise.setRegiterMoney(Double.parseDouble(enterpriseOfRegister.getRegiterMoney()));
             enterprise.setRegisterAddress(enterpriseOfRegister.getRegisterAddress());
-            enterprise.setRegisterDate(Integer.parseInt(enterpriseOfRegister.getRegisterDate()));
-            enterprise.setStartDate(Integer.parseInt(enterpriseOfRegister.getStartDate()));
+            enterprise.setRegisterDate(AntdDateUtil.getInteger(enterpriseOfRegister.getRegisterDate()));
+            enterprise.setStartDate(AntdDateUtil.getInteger(enterpriseOfRegister.getStartDate()));
             enterprise.setPropertyMoney(Double.parseDouble(enterpriseOfRegister.getPropertyMoney()));
             if(enterpriseView.getWomenWorkerNumber()>= 1000&&enterpriseView.getSaleMoney()>=40000){
                 enterprise.setSize("大型");

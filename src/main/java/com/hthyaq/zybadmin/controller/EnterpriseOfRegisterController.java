@@ -2,6 +2,7 @@ package com.hthyaq.zybadmin.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.EnterpriseUserView;
 import com.hthyaq.zybadmin.service.*;
@@ -85,6 +86,8 @@ public class EnterpriseOfRegisterController {
         enterpriseOfRegister.setRegisterAddress(enterpriseUserView.getRegisterAddress());
         enterpriseOfRegister.setRegisterDate(enterpriseUserView.getRegisterDate());
         enterpriseOfRegister.setStartDate(enterpriseUserView.getStartDate());
+
+
         enterpriseOfRegister.setPropertyMoney(enterpriseUserView.getPropertyMoney());
         enterpriseOfRegister.setEmail(enterpriseUserView.getEmail());
         enterpriseOfRegister.setMobile(enterpriseUserView.getMobile());
