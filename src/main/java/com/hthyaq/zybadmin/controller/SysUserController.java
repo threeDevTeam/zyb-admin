@@ -74,12 +74,12 @@ public class SysUserController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String username = jsonObject.getString("username");
+        String loginName = jsonObject.getString("loginName");
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(username)) {
-            queryWrapper.eq("username", username);
+        if (!Strings.isNullOrEmpty(loginName)) {
+            queryWrapper.eq("loginName", loginName);
         }
-        queryWrapper.orderByDesc("id");
+
         IPage<SysUser> page = sysUserService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;

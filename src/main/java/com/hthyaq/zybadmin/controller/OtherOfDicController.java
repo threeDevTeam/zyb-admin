@@ -83,16 +83,14 @@ public class OtherOfDicController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String year = jsonObject.getString("year");
-        String loseMoney = jsonObject.getString("loseMoney");
+        String name = jsonObject.getString("name");
+
         QueryWrapper<OtherOfDic> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(year)) {
-            queryWrapper.eq("year", year);
+        if (!Strings.isNullOrEmpty(name)) {
+            queryWrapper.eq("name", name);
         }
-        if (!Strings.isNullOrEmpty(loseMoney)) {
-            queryWrapper.eq("loseMoney", loseMoney);
-        }
-        queryWrapper.orderByDesc("id");
+
+
         IPage<OtherOfDic> page = otherOfDicService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;

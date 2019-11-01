@@ -84,12 +84,12 @@ public class SysMenuController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String username = jsonObject.getString("username");
+        String name = jsonObject.getString("name");
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(username)) {
-            queryWrapper.eq("username", username);
+        if (!Strings.isNullOrEmpty(name)) {
+            queryWrapper.eq("name", name);
         }
-        queryWrapper.orderByDesc("id");
+
         IPage<SysMenu> page = sysMenuService.page(new Page<>(currentPage, pageSize), queryWrapper);
 
         return page;
