@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/nationDangerVisual")
-public class NationDangerVisual {
+@RequestMapping("/nationDangerVisual/no")
+public class NationDangerVisualNo {
     @Autowired
     AreaOfDicService areaOfDicService;
     @Autowired
@@ -43,7 +43,7 @@ public class NationDangerVisual {
         List<Scroll> data4List = Lists.newArrayList();
 
         //模拟数据
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1));
+        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
         for (AreaOfDic tmp : areaList) {
             Scroll scroll = new Scroll();
             scroll.setKey(tmp.getId());
@@ -83,7 +83,7 @@ public class NationDangerVisual {
         List<NameValue> data3List = Lists.newArrayList();
         List<NameValue> data4List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1));
+        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
         areaList.forEach(tmp -> {
             NameValue nameValue = new NameValue();
             nameValue.setName(tmp.getName());
@@ -253,7 +253,7 @@ public class NationDangerVisual {
                 data1List.add(j1);
                 data2List.add(j2);
                 data3List.add(j3);
-            }else{
+            } else {
                 data0List.add(0);
                 data1List.add(0);
                 data2List.add(0);
