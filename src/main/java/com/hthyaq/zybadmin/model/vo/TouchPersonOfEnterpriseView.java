@@ -3,8 +3,9 @@ package com.hthyaq.zybadmin.model.vo;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.hthyaq.zybadmin.model.entity.TouchPersonOfEnterprise;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
 public class TouchPersonOfEnterpriseView extends TouchPersonOfEnterprise {

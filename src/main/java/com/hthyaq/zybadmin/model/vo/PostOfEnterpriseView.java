@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.hthyaq.zybadmin.model.entity.PostOfEnterprise;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 /**
  * @author Administrator
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
 public class PostOfEnterpriseView extends  PostOfEnterprise {

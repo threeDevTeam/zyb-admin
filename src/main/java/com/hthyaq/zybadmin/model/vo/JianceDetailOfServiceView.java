@@ -5,11 +5,12 @@ import com.hthyaq.zybadmin.model.bean.Child2;
 import com.hthyaq.zybadmin.model.entity.JianceDetailResultOfService;
 import com.hthyaq.zybadmin.model.entity.JianceDetailOfService;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@EqualsAndHashCode(callSuper = true)
 //demo的页面数据
 @Data
 @Accessors(chain = true)

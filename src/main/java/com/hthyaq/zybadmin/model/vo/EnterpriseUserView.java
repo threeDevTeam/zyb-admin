@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * @author Administrator
  */
+
 @Data
 @Accessors(chain = true)
 public class EnterpriseUserView {

@@ -5,10 +5,11 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.hthyaq.zybadmin.model.entity.PostDangerOfEnterprise;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
 public class PostDangerOfEnterpriseView  extends PostDangerOfEnterprise {
