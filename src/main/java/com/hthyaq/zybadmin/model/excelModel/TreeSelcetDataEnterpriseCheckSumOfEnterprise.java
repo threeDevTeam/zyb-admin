@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * @author Administrator
  */
+
 @Data
 public class TreeSelcetDataEnterpriseCheckSumOfEnterprise {
     private String title;

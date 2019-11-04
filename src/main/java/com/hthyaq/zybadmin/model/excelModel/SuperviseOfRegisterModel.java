@@ -3,7 +3,9 @@ package com.hthyaq.zybadmin.model.excelModel;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SuperviseOfRegisterModel extends BaseRowModel {
 	@ExcelProperty(value = {"省的名称"},index=0)

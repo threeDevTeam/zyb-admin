@@ -3,7 +3,9 @@ package com.hthyaq.zybadmin.model.excelModel;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class PersonProtectOfEnterpriseModel extends BaseRowModel {
 	@ExcelProperty(value = {"是否配备个人防护用品"},index=0)

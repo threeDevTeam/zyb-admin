@@ -3,10 +3,12 @@ package com.hthyaq.zybadmin.model.excelModel;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Administrator
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ThreeCheckOfSuperviseModel extends BaseRowModel {
 	@ExcelProperty(value = {"年份 "},index=0)

@@ -3,6 +3,7 @@ import lombok.Data;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+
 @Data
 public class TreeSelcetDataAccidentPersonOfEnterprise {
     private String title;
