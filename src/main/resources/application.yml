@@ -87,12 +87,6 @@ spring:
         login-username: admin
         # 登录密码
         login-password: hthyaq
-  #热部署开发，线上环境要关闭
-  devtools:
-    restart:
-      enabled: true
-  application:
-    name: aaaaaaaa
 #mybatis plus配置
 mybatis-plus:
   type-aliases-package: com.hthyaq.zybadmin.model.entity

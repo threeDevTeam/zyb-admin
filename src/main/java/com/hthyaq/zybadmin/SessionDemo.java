@@ -3,7 +3,6 @@ package com.hthyaq.zybadmin;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.bean.GlobalResult;
 import com.hthyaq.zybadmin.model.entity.SysUser;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -12,7 +11,7 @@ import javax.servlet.http.HttpSession;
 public class SessionDemo {
 
     //设置session
-    @GetMapping("/user/login")
+//    @GetMapping("/user/login")
     public GlobalResult set(HttpSession httpSession) {
         SysUser sysUser=new SysUser();
         sysUser.setLoginName("uname");
@@ -22,7 +21,7 @@ public class SessionDemo {
     }
 
     //获取session
-    @GetMapping("/get")
+//    @GetMapping("/get")
     public GlobalResult get(HttpSession httpSession) {
 //        String data = httpSession.getId() + "," + httpSession.getAttribute("a");
         return GlobalResult.success("获取session", httpSession.getAttribute(GlobalConstants.LOGIN_NAME));

@@ -11,7 +11,11 @@ public class PageResourceCorsConfig extends WebMvcConfigurationSupport {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //前端页面相关的js、css、img等资源无法访问
-//        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("*.jpg").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("*.js").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("*.css").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("*.ico").addResourceLocations("classpath:/static/");
     }
 
     @Override

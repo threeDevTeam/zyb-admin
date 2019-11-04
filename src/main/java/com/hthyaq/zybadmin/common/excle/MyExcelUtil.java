@@ -10,6 +10,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.FilenameUtils;
@@ -20,7 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -122,6 +122,7 @@ public class MyExcelUtil {
 
 
     // 模型 解析监听器
+    @EqualsAndHashCode(callSuper = true)
     @Data
     private static class ExcelListener extends AnalysisEventListener {
         private List<Object> dataList;
