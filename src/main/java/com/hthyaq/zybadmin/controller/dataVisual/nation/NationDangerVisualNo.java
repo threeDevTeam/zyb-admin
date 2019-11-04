@@ -174,58 +174,70 @@ public class NationDangerVisualNo {
 来源：表2-41 企业职业病危害风险分布情况（按行业统计）
  */
     @GetMapping("/option4")
-    public StrList option4() {
-        StrList strList = new StrList();
-        List<String> flagList = Lists.newArrayList();
-        List<Integer> data0List = Lists.newArrayList();
-        List<Integer> data1List = Lists.newArrayList();
-        List<Integer> data2List = Lists.newArrayList();
-        List<Integer> data3List = Lists.newArrayList();
-        //模拟数据
+    public Map<String, List<Integer>> option4() {
         List<IndustryOfDic> list = industryOfDicService.list(new QueryWrapper<IndustryOfDic>().eq("topid", -1));
-        list.forEach(tmp -> {
-            flagList.add(tmp.getName());
-            data0List.add(RandomUtil.randomInt(1, 1000));
-            data1List.add(RandomUtil.randomInt(1, 1000));
-            data2List.add(RandomUtil.randomInt(1, 1000));
-            data3List.add(RandomUtil.randomInt(1, 1000));
-        });
+        int size = list.size();
 
-        strList.setFlagList(flagList);
-        strList.setZero(data0List);
-        strList.setOne(data1List);
-        strList.setTwo(data2List);
-        strList.setThree(data3List);
-        return strList;
+        Map<String, List<Integer>> map = Maps.newHashMap();
+        //'暂无风险', '低度风险(Ⅰ级)', '中度风险(Ⅱ级)', '高度风险(Ⅲ级)'
+        List<Integer> list1 = Lists.newArrayList();
+        List<Integer> list2 = Lists.newArrayList();
+        List<Integer> list3 = Lists.newArrayList();
+        List<Integer> list4 = Lists.newArrayList();
+        for (int i = 0; i < size; i++) {
+            //
+            int i1 = RandomUtil.randomInt(1, 100);
+            list1.add(i1);
+            //
+            int i2 = RandomUtil.randomInt(1, 100);
+            list2.add(i2);
+            //
+            int i3 = RandomUtil.randomInt(1, 100);
+            list3.add(i3);
+            //
+            int i4 = RandomUtil.randomInt(1, 100);
+            list4.add(i4);
+        }
+        map.put("list1", list1);
+        map.put("list2", list2);
+        map.put("list3", list3);
+        map.put("list4", list4);
+        return map;
     }
 
     /*
 来源：表2-41 企业职业病危害风险分布情况（按登记注册类型统计）
 */
     @GetMapping("/option5")
-    public StrList option5() {
-        StrList strList = new StrList();
-        List<String> flagList = Lists.newArrayList();
-        List<Integer> data0List = Lists.newArrayList();
-        List<Integer> data1List = Lists.newArrayList();
-        List<Integer> data2List = Lists.newArrayList();
-        List<Integer> data3List = Lists.newArrayList();
-        //模拟数据
+    public Map<String, List<Integer>> option5() {
         List<BaseOfDic> list = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
-        list.forEach(tmp -> {
-            flagList.add(tmp.getBigName());
-            data0List.add(RandomUtil.randomInt(1, 1000));
-            data1List.add(RandomUtil.randomInt(1, 1000));
-            data2List.add(RandomUtil.randomInt(1, 1000));
-            data3List.add(RandomUtil.randomInt(1, 1000));
-        });
+        int size = list.size();
 
-        strList.setFlagList(flagList);
-        strList.setZero(data0List);
-        strList.setOne(data1List);
-        strList.setTwo(data2List);
-        strList.setThree(data3List);
-        return strList;
+        Map<String, List<Integer>> map = Maps.newHashMap();
+        //'暂无风险', '低度风险(Ⅰ级)', '中度风险(Ⅱ级)', '高度风险(Ⅲ级)'
+        List<Integer> list1 = Lists.newArrayList();
+        List<Integer> list2 = Lists.newArrayList();
+        List<Integer> list3 = Lists.newArrayList();
+        List<Integer> list4 = Lists.newArrayList();
+        for (int i = 0; i < size; i++) {
+            //
+            int i1 = RandomUtil.randomInt(1, 100);
+            list1.add(i1);
+            //
+            int i2 = RandomUtil.randomInt(1, 100);
+            list2.add(i2);
+            //
+            int i3 = RandomUtil.randomInt(1, 100);
+            list3.add(i3);
+            //
+            int i4 = RandomUtil.randomInt(1, 100);
+            list4.add(i4);
+        }
+        map.put("list1", list1);
+        map.put("list2", list2);
+        map.put("list3", list3);
+        map.put("list4", list4);
+        return map;
     }
 
     /*
