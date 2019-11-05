@@ -16,8 +16,6 @@ spring:
             starttls:
               enable: true
               required: true
-
-
         lance:
           mail:
             sender: 18256542305@163.com
