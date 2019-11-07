@@ -4,9 +4,9 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.NameValue;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.Scroll;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.StrList;
+import com.hthyaq.zybadmin.common.utils.DoubleUtil;
+import com.hthyaq.zybadmin.common.utils.VisualUtil;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.*;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+//默认条件：当前年份
 @RestController
 @RequestMapping("/nationDangerVisual/no")
 public class NationDangerVisualNo {
@@ -30,6 +32,8 @@ public class NationDangerVisualNo {
     IndustryOfDicService industryOfDicService;
     @Autowired
     BaseOfDicService baseOfDicService;
+    @Autowired
+    VisualUtil visualUtil;
 
     /*
         来源：表2-40 企业职业病危害风险分级及管控措施
@@ -108,6 +112,34 @@ public class NationDangerVisualNo {
         return map;
     }
 
+    @GetMapping("/option1Detail")
+    public List<DangerFour> option1Detail() {
+        List<DangerFour> list = Lists.newArrayList();
+        List<AreaOfDic> areaList = visualUtil.getAreaList("nation");
+        for (AreaOfDic areaOfDic : areaList) {
+            DangerFour tmp = new DangerFour();
+            tmp.setName(areaOfDic.getName());
+            double d = RandomUtil.randomDouble(0.0, 5.0);
+            double d2 = DoubleUtil.get(d);
+            tmp.setVar1(d2);
+            if (d2 < 0.8) {
+                tmp.setVar2("暂无风险");
+            } else if (d2 > 0.8 && d2 < 1.75) {
+                tmp.setVar2("轻微风险(Ⅰ级)");
+            } else if (d2 > 1.75 && d2 < 2.3) {
+                tmp.setVar2("低度风险(Ⅱ级)");
+            } else if (d2 > 2.3 && d < 4.0) {
+                tmp.setVar2("中度风险(Ⅲ级)");
+            } else {
+                tmp.setVar2("高度风险(Ⅳ级)");
+            }
+            tmp.setVar3(RandomUtil.randomInt(1, 1000));
+            tmp.setVar4(RandomUtil.randomInt(1, 1000));
+            list.add(tmp);
+        }
+        return list;
+    }
+
     /*
     来源：表2-44 企业职业病危害风险分布情况
  */
@@ -127,7 +159,7 @@ public class NationDangerVisualNo {
         for (int i = 0; i < size; i++) {
             List<Integer> tmp = Lists.newArrayList();
             for (int j = 0; j < size; j++) {
-                tmp.add(RandomUtil.randomInt(1, 100));
+                tmp.add(RandomUtil.randomInt(1, 1000));
             }
             if (i == 0) {
                 map.put("one", tmp);
@@ -139,6 +171,21 @@ public class NationDangerVisualNo {
         }
         map.put("yearList", yearList);
         return map;
+    }
+
+    @GetMapping("/option2Detail")
+    public List<DangerThree> option2Detail() {
+        List<DangerThree> list = Lists.newArrayList();
+        int currentYear = LocalDateTime.now().getYear();
+        for (int i = currentYear; i > (currentYear - 3); i--) {
+            DangerThree tmp = new DangerThree();
+            tmp.setYear(i);
+            tmp.setVar1(RandomUtil.randomInt(1, 1000));
+            tmp.setVar2(RandomUtil.randomInt(1, 1000));
+            tmp.setVar3(RandomUtil.randomInt(1, 1000));
+            list.add(tmp);
+        }
+        return list;
     }
 
     /*
@@ -168,6 +215,23 @@ public class NationDangerVisualNo {
         strList.setTwo(data2List);
         strList.setThree(data3List);
         return strList;
+    }
+
+    @GetMapping("/option3Detail")
+    public List<DangerFour> option3Detail() {
+        List<DangerFour> list = Lists.newArrayList();
+        List<AreaOfDic> areaList = visualUtil.getAreaList("nation");
+        for (AreaOfDic areaOfDic : areaList) {
+            DangerFour tmp = new DangerFour();
+            tmp.setName(areaOfDic.getName());
+            tmp.setVar1(RandomUtil.randomInt(1, 1000));
+            tmp.setVar2(RandomUtil.randomInt(1, 1000));
+            tmp.setVar3(RandomUtil.randomInt(1, 1000));
+            tmp.setVar4(RandomUtil.randomInt(1, 1000));
+
+            list.add(tmp);
+        }
+        return list;
     }
 
     /*
@@ -205,6 +269,22 @@ public class NationDangerVisualNo {
         return map;
     }
 
+    @GetMapping("/option4Detail")
+    public List<DangerFour> option4Detail() {
+        List<DangerFour> list = Lists.newArrayList();
+        List<IndustryOfDic> industryList = visualUtil.getIndustryList();
+        for (IndustryOfDic industryOfDic : industryList) {
+            DangerFour tmp = new DangerFour();
+            tmp.setName(industryOfDic.getName());
+            tmp.setVar1(RandomUtil.randomInt(1, 1000));
+            tmp.setVar2(RandomUtil.randomInt(1, 1000));
+            tmp.setVar3(RandomUtil.randomInt(1, 1000));
+            tmp.setVar4(RandomUtil.randomInt(1, 1000));
+            list.add(tmp);
+        }
+        return list;
+    }
+
     /*
 来源：表2-41 企业职业病危害风险分布情况（按登记注册类型统计）
 */
@@ -238,6 +318,22 @@ public class NationDangerVisualNo {
         map.put("list3", list3);
         map.put("list4", list4);
         return map;
+    }
+
+    @GetMapping("/option5Detail")
+    public List<DangerFour> option5Detail() {
+        List<DangerFour> list = Lists.newArrayList();
+        List<BaseOfDic> registerTypeList = visualUtil.getRegisterTypeList();
+        for (BaseOfDic baseOfDic : registerTypeList) {
+            DangerFour tmp = new DangerFour();
+            tmp.setName(baseOfDic.getBigName());
+            tmp.setVar1(RandomUtil.randomInt(1, 1000));
+            tmp.setVar2(RandomUtil.randomInt(1, 1000));
+            tmp.setVar3(RandomUtil.randomInt(1, 1000));
+            tmp.setVar4(RandomUtil.randomInt(1, 1000));
+            list.add(tmp);
+        }
+        return list;
     }
 
     /*
@@ -279,6 +375,34 @@ public class NationDangerVisualNo {
         strList.setTwo(data2List);
         strList.setThree(data3List);
         return strList;
+    }
+
+    @GetMapping("/option6Detail")
+    public List<DangerFour> option6Detail() {
+        List<DangerFour> list = Lists.newArrayList();
+        List<AreaOfDic> areaList = visualUtil.getAreaList("nation");
+        for (AreaOfDic areaOfDic : areaList) {
+            DangerFour tmp = new DangerFour();
+            tmp.setName(areaOfDic.getName());
+            int i = areaOfDic.getChildNum();
+            if (i > 0) {
+                int j0 = RandomUtil.randomInt(0, i);
+                int j1 = RandomUtil.randomInt(0, i - j0);
+                int j2 = RandomUtil.randomInt(0, i - j0 - j1);
+                int j3 = i - j0 - j1 - j2;
+                tmp.setVar1(j0);
+                tmp.setVar2(j1);
+                tmp.setVar3(j2);
+                tmp.setVar4(j3);
+            } else {
+                tmp.setVar1(0);
+                tmp.setVar2(0);
+                tmp.setVar3(0);
+                tmp.setVar4(0);
+            }
+            list.add(tmp);
+        }
+        return list;
     }
 
     /*
