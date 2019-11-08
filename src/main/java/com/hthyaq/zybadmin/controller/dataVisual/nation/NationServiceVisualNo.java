@@ -5,7 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.DoubleUtil;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.*;
+import com.hthyaq.zybadmin.common.utils.VisualUtil;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovEight;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovSix;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.NameValueDouble;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.ServiceFive;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
@@ -28,6 +32,8 @@ public class NationServiceVisualNo {
     IndustryOfDicService industryOfDicService;
     @Autowired
     BaseOfDicService baseOfDicService;
+    @Autowired
+    VisualUtil visualUtil;
 
     //危害因素
     //    表1  作业场所职业病危害因素检测情况统计分析表

@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.hthyaq.zybadmin.common.utils.VisualUtil;
 import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovEight;
 import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovSeven;
 import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovSix;
@@ -28,6 +29,8 @@ public class NationGovVisualNo {
     IndustryOfDicService industryOfDicService;
     @Autowired
     BaseOfDicService baseOfDicService;
+    @Autowired
+    VisualUtil visualUtil;
 
     //表2-29 职业健康监管资源统计分析表
     @GetMapping("/option1")

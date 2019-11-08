@@ -5,7 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.DoubleUtil;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.Enterprise14;
+import com.hthyaq.zybadmin.common.utils.VisualUtil;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.Twenty;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
@@ -29,6 +30,8 @@ public class NationEnterpriseVisualNo {
     IndustryOfDicService industryOfDicService;
     @Autowired
     BaseOfDicService baseOfDicService;
+    @Autowired
+    VisualUtil visualUtil;
 
     //危害因素、企业规模
     /*
@@ -69,25 +72,46 @@ public class NationEnterpriseVisualNo {
     }
 
     @GetMapping("/option11Detail")
-    public List<Enterprise14> option11Detail(String year, String type) {
-        List<Enterprise14> list = Lists.newArrayList();
+    public List<Twenty> option11Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
         if ("危害因素".equals(type)) {
-            Enterprise14 tmp = new Enterprise14();
+            Twenty tmp = new Twenty();
             tmp.setVar1(RandomUtil.randomInt(1, 10000));
             tmp.setVar2(RandomUtil.randomInt(1, 10000));
             tmp.setVar3(RandomUtil.randomInt(1, 10000));
-            tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
             tmp.setVar5(RandomUtil.randomInt(1, 10000));
-            tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
             tmp.setVar7(RandomUtil.randomInt(1, 10000));
-            tmp.setVar8(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar8(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
             tmp.setVar9(RandomUtil.randomInt(1, 10000));
-            tmp.setVar10(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar10(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
             tmp.setVar11(RandomUtil.randomInt(1, 10000));
-            tmp.setVar12(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar12(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
             tmp.setVar13(RandomUtil.randomInt(1, 10000));
-            tmp.setVar14(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar14(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
             list.add(tmp);
+        } else if ("企业规模".equals(type)) {
+            List<String> enterpriseSizeList = visualUtil.getEnterpriseSize();
+            for (String s : enterpriseSizeList) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                tmp.setVar1(RandomUtil.randomInt(1, 10000));
+                tmp.setVar2(RandomUtil.randomInt(1, 10000));
+                tmp.setVar3(RandomUtil.randomInt(1, 10000));
+                tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar5(RandomUtil.randomInt(1, 10000));
+                tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar7(RandomUtil.randomInt(1, 10000));
+                tmp.setVar8(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar9(RandomUtil.randomInt(1, 10000));
+                tmp.setVar10(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar11(RandomUtil.randomInt(1, 10000));
+                tmp.setVar12(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar13(RandomUtil.randomInt(1, 10000));
+                tmp.setVar14(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                list.add(tmp);
+            }
         }
         return list;
     }
@@ -140,6 +164,39 @@ public class NationEnterpriseVisualNo {
         map.put("list2", list2);
         map.put("list3", list3);
         return map;
+    }
+
+    @GetMapping("/option12Detail")
+    public List<Twenty> option12Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        if ("危害因素".equals(type)) {
+            List<String> dangerList = visualUtil.getDangerList();
+            for (String s : dangerList) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                tmp.setVar1(RandomUtil.randomInt(1, 10000));
+                tmp.setVar2(RandomUtil.randomInt(1, 10000));
+                double d = DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0));
+                tmp.setVar3(d + "%");
+                tmp.setVar4(RandomUtil.randomInt(1, 10000));
+                tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, d)) + "%");
+                list.add(tmp);
+            }
+        } else if ("企业规模".equals(type)) {
+            List<String> enterpriseSizeList = visualUtil.getEnterpriseSize();
+            for (String s : enterpriseSizeList) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                tmp.setVar1(RandomUtil.randomInt(1, 10000));
+                tmp.setVar2(RandomUtil.randomInt(1, 10000));
+                double d = DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0));
+                tmp.setVar3(d + "%");
+                tmp.setVar4(RandomUtil.randomInt(1, 10000));
+                tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, d)) + "%");
+                list.add(tmp);
+            }
+        }
+        return list;
     }
 
     /*
@@ -207,6 +264,37 @@ public class NationEnterpriseVisualNo {
         return map;
     }
 
+    @GetMapping("/option13Detail")
+    public List<Twenty> option13Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        if ("危害因素".equals(type)) {
+            List<String> dangerList = visualUtil.getDangerList();
+            for (String s : dangerList) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                tmp.setVar1(RandomUtil.randomInt(1, 10000));
+                tmp.setVar2(RandomUtil.randomInt(1, 10000));
+                tmp.setVar3(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar4(RandomUtil.randomInt(1, 10000));
+                tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                list.add(tmp);
+            }
+        } else if ("企业规模".equals(type)) {
+            List<String> enterpriseSizeList = visualUtil.getEnterpriseSize();
+            for (String s : enterpriseSizeList) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                tmp.setVar1(RandomUtil.randomInt(1, 10000));
+                tmp.setVar2(RandomUtil.randomInt(1, 10000));
+                tmp.setVar3(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar4(RandomUtil.randomInt(1, 10000));
+                tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                list.add(tmp);
+            }
+        }
+        return list;
+    }
+
     /*
     表2-3 基础信息统计分析表（按危害因素续3）
        type=危害因素、企业规模
@@ -247,6 +335,47 @@ public class NationEnterpriseVisualNo {
         map.put("list2", list2);
         map.put("list3", list3);
         return map;
+    }
+
+    @GetMapping("/option14Detail")
+    public List<Twenty> option14Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        if ("危害因素".equals(type)) {
+            List<String> dangerList = visualUtil.getDangerList();
+            for (String s : dangerList) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                tmp.setVar1(RandomUtil.randomInt(1, 10000));
+                tmp.setVar2(RandomUtil.randomInt(1, 10000) + "%");
+                tmp.setVar3(RandomUtil.randomInt(1, 10000));
+                tmp.setVar4(RandomUtil.randomInt(1, 10000));
+                tmp.setVar5(RandomUtil.randomInt(1, 10000));
+                tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar7(RandomUtil.randomInt(1, 10000));
+                tmp.setVar8(RandomUtil.randomInt(1, 10000));
+                tmp.setVar9(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar10(RandomUtil.randomInt(1, 10000));
+                list.add(tmp);
+            }
+        } else if ("企业规模".equals(type)) {
+            List<String> enterpriseSizeList = visualUtil.getEnterpriseSize();
+            for (String s : enterpriseSizeList) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                tmp.setVar1(RandomUtil.randomInt(1, 10000));
+                tmp.setVar2(RandomUtil.randomInt(1, 10000) + "%");
+                tmp.setVar3(RandomUtil.randomInt(1, 10000));
+                tmp.setVar4(RandomUtil.randomInt(1, 10000));
+                tmp.setVar5(RandomUtil.randomInt(1, 10000));
+                tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar7(RandomUtil.randomInt(1, 10000));
+                tmp.setVar8(RandomUtil.randomInt(1, 10000));
+                tmp.setVar9(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+                tmp.setVar10(RandomUtil.randomInt(1, 10000));
+                list.add(tmp);
+            }
+        }
+        return list;
     }
 
     //行政区划、登记注册类型、所属行业
@@ -298,6 +427,39 @@ public class NationEnterpriseVisualNo {
         return map;
     }
 
+    @GetMapping("/option21Detail")
+    public List<Twenty> option21Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        } else if ("所属行业".equals(type)) {
+            list2 = visualUtil.getIndustryStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar7(RandomUtil.randomInt(1, 10000));
+            tmp.setVar8(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar9(RandomUtil.randomInt(1, 10000));
+            tmp.setVar10(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar11(RandomUtil.randomInt(1, 10000));
+            tmp.setVar12(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar13(RandomUtil.randomInt(1, 10000));
+            tmp.setVar14(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
+    }
+
     //这里的省份是倒序的
     //行政区划、登记注册类型、所属行业
     @GetMapping("/option22")
@@ -340,6 +502,31 @@ public class NationEnterpriseVisualNo {
         return map;
     }
 
+    @GetMapping("/option22Detail")
+    public List<Twenty> option22Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        } else if ("所属行业".equals(type)) {
+            list2 = visualUtil.getIndustryStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            double d = DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0));
+            tmp.setVar3(d + "%");
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, d)) + "%");
+            list.add(tmp);
+        }
+        return list;
+    }
+
     //行政区划、登记注册类型、所属行业
     @GetMapping("/option23")
     public Map<String, List<Double>> option23(String year, String type) {
@@ -372,6 +559,31 @@ public class NationEnterpriseVisualNo {
         }
         return map;
     }
+
+    @GetMapping("/option23Detail")
+    public List<Twenty> option23Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        } else if ("所属行业".equals(type)) {
+            list2 = visualUtil.getIndustryStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
+    }
+
 
     //行政区划、登记注册类型、所属行业
     @GetMapping("/option24")
@@ -410,6 +622,35 @@ public class NationEnterpriseVisualNo {
         map.put("list2", list2);
         map.put("list3", list3);
         return map;
+    }
+
+    @GetMapping("/option24Detail")
+    public List<Twenty> option24Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        } else if ("所属行业".equals(type)) {
+            list2 = visualUtil.getIndustryStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000) + "%");
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar7(RandomUtil.randomInt(1, 10000));
+            tmp.setVar8(RandomUtil.randomInt(1, 10000));
+            tmp.setVar9(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar10(RandomUtil.randomInt(1, 10000));
+            list.add(tmp);
+        }
+        return list;
     }
 
     /*
@@ -458,5 +699,30 @@ public class NationEnterpriseVisualNo {
         map.put("list1", list1);
         map.put("list2", list2);
         return map;
+    }
+
+    @GetMapping("/option25Detail")
+    public List<Twenty> option25Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        } else if ("所属行业".equals(type)) {
+            list2 = visualUtil.getIndustryStrList();
+        } else if ("企业规模".equals(type)) {
+            list2 = visualUtil.getEnterpriseSize();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
     }
 }
