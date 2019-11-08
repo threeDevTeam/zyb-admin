@@ -1,3 +1,4 @@
+/*
 package com.hthyaq.zybadmin.common.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -95,3 +96,4 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
 }
+*/

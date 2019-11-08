@@ -24,13 +24,13 @@ spring:
   jackson:
     default-property-inclusion: non_null
     date-format: yyyy-MM-dd HH:mm:ss
-  redis:
-    host: 192.168.99.99
-    port: 6379
-    database: 0
-  session:
-    store-type: redis
-    timeout: 2000
+#  redis:
+#    host: 192.168.99.99
+#    port: 6379
+#    database: 0
+#  session:
+#    store-type: redis
+#    timeout: 2000
   servlet:
     multipart:
       max-file-size: 10MB
