@@ -8,6 +8,7 @@ import com.hthyaq.zybadmin.common.utils.VisualUtil;
 import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovEight;
 import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovSeven;
 import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovSix;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.Twenty;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
 import com.hthyaq.zybadmin.service.BaseOfDicService;
@@ -76,6 +77,24 @@ public class NationGovVisualNo {
         map.put("list2", list2);
         map.put("list3", list3);
         return map;
+    }
+
+    @GetMapping("/option2Detail")
+    public List<Twenty> option2Detail(String year) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> nationList = visualUtil.getAreaStrList("nation");
+        for (String s : nationList) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(RandomUtil.randomInt(1, 10000));
+            list.add(tmp);
+        }
+        return list;
     }
 
     //表2-31 职业健康监督执法统计分析表
@@ -150,6 +169,28 @@ public class NationGovVisualNo {
         return map;
     }
 
+    @GetMapping("/option5Detail")
+    public List<Twenty> option5Detail(String year) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> nationList = visualUtil.getAreaStrList("nation");
+        for (String s : nationList) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(RandomUtil.randomInt(1, 10000));
+            tmp.setVar7(RandomUtil.randomInt(1, 10000));
+            tmp.setVar8(RandomUtil.randomInt(1, 10000));
+            tmp.setVar9(RandomUtil.randomInt(1, 10000));
+            tmp.setVar10(RandomUtil.randomInt(1, 10000));
+            list.add(tmp);
+        }
+        return list;
+    }
+
     //表2-34 技术服务机构监管情况统计分析表（续）
     @GetMapping("/option6")
     public Map<String, List<Integer>> option6(String year) {
@@ -184,7 +225,29 @@ public class NationGovVisualNo {
         map.put("list4", list4);
         return map;
     }
-
+    @GetMapping("/option6Detail")
+    public List<Twenty> option6Detail(String year) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> nationList = visualUtil.getAreaStrList("nation");
+        for (String s : nationList) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(RandomUtil.randomInt(1, 10000));
+            tmp.setVar7(RandomUtil.randomInt(1, 10000));
+            tmp.setVar8(RandomUtil.randomInt(1, 10000));
+            tmp.setVar9(RandomUtil.randomInt(1, 10000));
+            tmp.setVar10(RandomUtil.randomInt(1, 10000));
+            tmp.setVar11(RandomUtil.randomInt(1, 10000));
+            tmp.setVar12(RandomUtil.randomInt(1, 10000));
+            list.add(tmp);
+        }
+        return list;
+    }
     //表2-35 职业病危害事故统计分析表
     @GetMapping("/option7")
     public Map<String, List<Integer>> option7(String year) {
@@ -212,5 +275,26 @@ public class NationGovVisualNo {
         map.put("list2", list2);
         map.put("list3", list3);
         return map;
+    }
+    @GetMapping("/option7Detail")
+    public List<Twenty> option7Detail(String year) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> nationList = visualUtil.getAreaStrList("nation");
+        for (String s : nationList) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(RandomUtil.randomInt(1, 10000));
+            tmp.setVar7(RandomUtil.randomInt(1, 10000));
+            tmp.setVar8(RandomUtil.randomInt(1, 10000));
+            tmp.setVar9(RandomUtil.randomInt(1, 10000));
+            tmp.setVar10(RandomUtil.randomInt(1, 10000));
+            list.add(tmp);
+        }
+        return list;
     }
 }

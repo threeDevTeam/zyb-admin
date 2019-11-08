@@ -711,6 +711,8 @@ public class NationEnterpriseVisualNo {
             list2 = visualUtil.getRegisterTypeStrList();
         } else if ("所属行业".equals(type)) {
             list2 = visualUtil.getIndustryStrList();
+        } else if ("危害因素".equals(type)) {
+            list2 = visualUtil.getDangerList();
         } else if ("企业规模".equals(type)) {
             list2 = visualUtil.getEnterpriseSize();
         }
