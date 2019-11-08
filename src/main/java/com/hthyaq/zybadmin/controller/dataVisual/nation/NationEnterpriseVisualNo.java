@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.DoubleUtil;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.Enterprise14;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
@@ -63,6 +64,30 @@ public class NationEnterpriseVisualNo {
                     list.add(DoubleUtil.get(d));
                 }
             }
+        }
+        return list;
+    }
+
+    @GetMapping("/option11Detail")
+    public List<Enterprise14> option11Detail(String year, String type) {
+        List<Enterprise14> list = Lists.newArrayList();
+        if ("危害因素".equals(type)) {
+            Enterprise14 tmp = new Enterprise14();
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar7(RandomUtil.randomInt(1, 10000));
+            tmp.setVar8(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar9(RandomUtil.randomInt(1, 10000));
+            tmp.setVar10(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar11(RandomUtil.randomInt(1, 10000));
+            tmp.setVar12(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            tmp.setVar13(RandomUtil.randomInt(1, 10000));
+            tmp.setVar14(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0))+"%");
+            list.add(tmp);
         }
         return list;
     }
