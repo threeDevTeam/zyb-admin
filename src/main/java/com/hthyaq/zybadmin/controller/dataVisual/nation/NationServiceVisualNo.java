@@ -6,10 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.DoubleUtil;
 import com.hthyaq.zybadmin.common.utils.VisualUtil;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovEight;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.GovSix;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.NameValueDouble;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.ServiceFive;
+import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.*;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.service.AreaOfDicService;
@@ -53,6 +50,28 @@ public class NationServiceVisualNo {
         return list;
     }
 
+    @GetMapping("/option11Detail")
+    public List<Twenty> option11Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("危害因素".equals(type)) {
+            list2 = visualUtil.getDangerList();
+        } else if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
+    }
+
     //表2-职业健康检查结果统计分析表
     @GetMapping("/option12")
     public Map<String, List<Double>> option12(String year, String type) {
@@ -78,6 +97,33 @@ public class NationServiceVisualNo {
         return map;
     }
 
+    @GetMapping("/option12Detail")
+    public List<Twenty> option12Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("危害因素".equals(type)) {
+            list2 = visualUtil.getDangerList();
+        } else if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar7(RandomUtil.randomInt(1, 10000));
+            tmp.setVar8(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
+    }
+
     //表3 职业病诊断情况统计分析表
     @GetMapping("/option13")
     public Map<String, List<Double>> option13(String year, String type) {
@@ -91,6 +137,30 @@ public class NationServiceVisualNo {
         }
         map.put("list1", list1);
         return map;
+    }
+
+    @GetMapping("/option13Detail")
+    public List<Twenty> option13Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("危害因素".equals(type)) {
+            list2 = visualUtil.getDangerList();
+        } else if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
     }
 
     //行政区划、登记注册类型
@@ -139,6 +209,28 @@ public class NationServiceVisualNo {
         return map;
     }
 
+    @GetMapping("/option21Detail")
+    public List<Twenty> option21Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("危害因素".equals(type)) {
+            list2 = visualUtil.getDangerList();
+        } else if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
+    }
+
     @GetMapping("/option22")
     public Map<String, List<Double>> option22(String year, String type) {
         List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
@@ -174,6 +266,33 @@ public class NationServiceVisualNo {
         return map;
     }
 
+    @GetMapping("/option22Detail")
+    public List<Twenty> option22Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("危害因素".equals(type)) {
+            list2 = visualUtil.getDangerList();
+        } else if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar5(RandomUtil.randomInt(1, 10000));
+            tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            tmp.setVar7(RandomUtil.randomInt(1, 10000));
+            tmp.setVar8(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
+    }
+
     @GetMapping("/option23")
     public Map<String, List<Double>> option23(String year, String type) {
         List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
@@ -197,6 +316,30 @@ public class NationServiceVisualNo {
         }
         map.put("list1", list1);
         return map;
+    }
+
+    @GetMapping("/option23Detail")
+    public List<Twenty> option23Detail(String year, String type) {
+        List<Twenty> list = Lists.newArrayList();
+        List<String> list2 = null;
+        if ("危害因素".equals(type)) {
+            list2 = visualUtil.getDangerList();
+        } else if ("行政区划".equals(type)) {
+            list2 = visualUtil.getAreaStrList("nation");
+        } else if ("登记注册类型".equals(type)) {
+            list2 = visualUtil.getRegisterTypeStrList();
+        }
+        for (String s : list2) {
+            Twenty tmp = new Twenty();
+            tmp.setName(s);
+            tmp.setVar1(RandomUtil.randomInt(1, 10000));
+            tmp.setVar2(RandomUtil.randomInt(1, 10000));
+            tmp.setVar3(RandomUtil.randomInt(1, 10000));
+            tmp.setVar4(RandomUtil.randomInt(1, 10000));
+            tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
+            list.add(tmp);
+        }
+        return list;
     }
 
     //表4-职业卫生技术服务机构统计分析表
