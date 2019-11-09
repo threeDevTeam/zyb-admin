@@ -16,8 +16,6 @@ import com.hthyaq.zybadmin.service.DemoCourseService;
 import com.hthyaq.zybadmin.service.DemoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -43,8 +41,8 @@ public class DemoController {
 
     @Autowired
     private RestTemplate restTemplate;
-    @Autowired
-    private RedisTemplate redisTemplate;
+/*    @Autowired
+    private RedisTemplate redisTemplate;*/
 
     @GetMapping("/test")
     public GlobalResult test(){
@@ -90,7 +88,7 @@ public class DemoController {
 
     @GetMapping("/list")
     public IPage<Demo> list(String json) {
-        System.out.println(redisTemplate);
+//        System.out.println(redisTemplate);
         //字符串解析成java对象
         JSONObject jsonObject = JSON.parseObject(json);jsonObject.getObject("zbry",String.class);
         //从对象中获取值
