@@ -32,50 +32,6 @@ public class DataVisualSwitchFlagController {
     public boolean up( @RequestBody DataVisualSwitchFlag dataVisualSwitchFlag) {
         boolean flag=false;
         System.out.println(dataVisualSwitchFlag);
-        if(dataVisualSwitchFlag.getNationSwitch().equals("开")){
-            dataVisualSwitchFlag.setNationSwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setNationSwitch("no");
-        }
-        if(dataVisualSwitchFlag.getProvinceOrCitySwitch().equals("开")){
-            dataVisualSwitchFlag.setProvinceOrCitySwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setProvinceOrCitySwitch("no");
-        }
-        if(dataVisualSwitchFlag.getCitySwitch().equals("开")){
-            dataVisualSwitchFlag.setCitySwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setCitySwitch("no");
-        }
-        if(dataVisualSwitchFlag.getCountryOrDistrictSwitch().equals("开")){
-            dataVisualSwitchFlag.setCountryOrDistrictSwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setCountryOrDistrictSwitch("no");
-        }
-        if(dataVisualSwitchFlag.getEnterpriceSwitch().equals("开")){
-            dataVisualSwitchFlag.setEnterpriceSwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setEnterpriceSwitch("no");
-        }if(dataVisualSwitchFlag.getJianceSwitch().equals("开")){
-            dataVisualSwitchFlag.setJianceSwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setJianceSwitch("no");
-        }
-        if(dataVisualSwitchFlag.getTijianSwitch().equals("开")){
-            dataVisualSwitchFlag.setTijianSwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setTijianSwitch("no");
-        }
-        if(dataVisualSwitchFlag.getZhenduanSwitch().equals("开")){
-            dataVisualSwitchFlag.setZhenduanSwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setZhenduanSwitch("no");
-        }
-        if(dataVisualSwitchFlag.getZhengfuSwitch().equals("开")){
-            dataVisualSwitchFlag.setZhengfuSwitch("yes");
-        }else {
-            dataVisualSwitchFlag.setZhengfuSwitch("no");
-        }
         dataVisualSwitchFlag.setId(1);
         flag=dataVisualSwitchFlagService.updateById(dataVisualSwitchFlag);
         return flag;
@@ -85,50 +41,6 @@ public class DataVisualSwitchFlagController {
         QueryWrapper<DataVisualSwitchFlag> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("id",1);
         DataVisualSwitchFlag dataVisualSwitchFlag = dataVisualSwitchFlagService.getOne(queryWrapper);
-        if(dataVisualSwitchFlag.getNationSwitch().equals("yes")){
-            dataVisualSwitchFlag.setNationSwitch("开");
-        }else {
-            dataVisualSwitchFlag.setNationSwitch("关");
-        }
-        if(dataVisualSwitchFlag.getProvinceOrCitySwitch().equals("yes")){
-            dataVisualSwitchFlag.setProvinceOrCitySwitch("开");
-        }else {
-            dataVisualSwitchFlag.setProvinceOrCitySwitch("关");
-        }
-        if(dataVisualSwitchFlag.getCitySwitch().equals("yes")){
-            dataVisualSwitchFlag.setCitySwitch("开");
-        }else {
-            dataVisualSwitchFlag.setCitySwitch("关");
-        }
-        if(dataVisualSwitchFlag.getCountryOrDistrictSwitch().equals("yes")){
-            dataVisualSwitchFlag.setCountryOrDistrictSwitch("开");
-        }else {
-            dataVisualSwitchFlag.setCountryOrDistrictSwitch("关");
-        }
-        if(dataVisualSwitchFlag.getEnterpriceSwitch().equals("yes")){
-            dataVisualSwitchFlag.setEnterpriceSwitch("开");
-        }else {
-            dataVisualSwitchFlag.setEnterpriceSwitch("关");
-        }if(dataVisualSwitchFlag.getJianceSwitch().equals("yes")){
-            dataVisualSwitchFlag.setJianceSwitch("开");
-        }else {
-            dataVisualSwitchFlag.setJianceSwitch("关");
-        }
-        if(dataVisualSwitchFlag.getTijianSwitch().equals("yes")){
-            dataVisualSwitchFlag.setTijianSwitch("开");
-        }else {
-            dataVisualSwitchFlag.setTijianSwitch("关");
-        }
-        if(dataVisualSwitchFlag.getZhenduanSwitch().equals("yes")){
-            dataVisualSwitchFlag.setZhenduanSwitch("开");
-        }else {
-            dataVisualSwitchFlag.setZhenduanSwitch("关");
-        }
-        if(dataVisualSwitchFlag.getZhengfuSwitch().equals("yes")){
-            dataVisualSwitchFlag.setZhengfuSwitch("开");
-        }else {
-            dataVisualSwitchFlag.setZhengfuSwitch("关");
-        }
         return dataVisualSwitchFlag;
     }
 }
