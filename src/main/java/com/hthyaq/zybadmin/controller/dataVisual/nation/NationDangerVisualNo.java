@@ -146,7 +146,11 @@ public class NationDangerVisualNo {
     @GetMapping("/option2")
     public Map<String, List<Integer>> option2() {
         Map<String, List<Integer>> map = Maps.newHashMap();
-        List<Integer> yearList = Lists.newArrayList(2017, 2018, 2019);
+        int year = LocalDateTime.now().getYear();
+        List<Integer> yearList = Lists.newArrayList();
+        yearList.add(year - 2);
+        yearList.add(year - 1);
+        yearList.add(year);
         //模拟数据
         int size = yearList.size();
         //zero
