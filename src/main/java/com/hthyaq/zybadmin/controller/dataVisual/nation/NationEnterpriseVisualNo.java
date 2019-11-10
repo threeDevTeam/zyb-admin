@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.DoubleUtil;
 import com.hthyaq.zybadmin.common.utils.VisualUtil;
-import com.hthyaq.zybadmin.controller.dataVisual.nation.vo.Twenty;
+import com.hthyaq.zybadmin.controller.dataVisual.vo.Twenty;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;

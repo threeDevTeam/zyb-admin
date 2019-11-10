@@ -1,9 +1,9 @@
-package com.hthyaq.zybadmin.controller.dataVisual.nation.vo;
+package com.hthyaq.zybadmin.controller.dataVisual.vo;
 
 import lombok.Data;
 
 @Data
-public class GovSeven {
+public class GovSix {
     private String area;
     private Integer var1;
     private Integer var2;
@@ -11,5 +11,4 @@ public class GovSeven {
     private Integer var4;
     private Integer var5;
     private Integer var6;
-    private Integer var7;
 }
