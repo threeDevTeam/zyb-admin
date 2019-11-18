@@ -1,19 +1,14 @@
 package com.hthyaq.zybadmin.controller.dataVisual.nation;
 
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hthyaq.zybadmin.common.utils.VisualUtil;
+import com.hthyaq.zybadmin.common.utils.cache.DataVisualCacheUtil;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.GovEight;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.GovSeven;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.GovSix;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.Twenty;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
-import com.hthyaq.zybadmin.service.AreaOfDicService;
-import com.hthyaq.zybadmin.service.BaseOfDicService;
-import com.hthyaq.zybadmin.service.IndustryOfDicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,22 +19,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/nationGovVisual/no")
 public class NationGovVisualNo {
-    @Autowired
-    AreaOfDicService areaOfDicService;
-    @Autowired
-    IndustryOfDicService industryOfDicService;
-    @Autowired
-    BaseOfDicService baseOfDicService;
-    @Autowired
-    VisualUtil visualUtil;
-
     //表2-29 职业健康监管资源统计分析表
     @GetMapping("/option1")
     public List<GovSix> option1(String year) {
         List<GovSix> list = Lists.newArrayList();
         //6个字段
         //行政区划、行政区划内用人单位数（个）、行政区划内从业人员数（人）、职业健康监管人员数（人）、取得执法资格证书职业健康监管人员数（人）、职业健康监管装备数量（台/套）、在用职业健康监管装备数量（台/套）
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
         for (AreaOfDic areaOfDic : areaList) {
             GovSix govSeven = new GovSix();
             govSeven.setArea(areaOfDic.getName());
@@ -59,7 +45,7 @@ public class NationGovVisualNo {
     //['香港', '新疆', '宁夏', '青海', '甘肃', '陕西', '西藏', '云南', '贵州', '四川', '重庆', '海南', '广西', '广东', '湖南', '湖北', '河南', '山东', '江西', '福建', '安徽', '浙江', '江苏', '上海', '黑龙江', '吉林', '辽宁', '内蒙古', '山西', '河北', '天津', '北京']
     @GetMapping("/option2")
     public Map<String, List<Integer>> option2(String year) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
 
         Map<String, List<Integer>> map = Maps.newHashMap();
         //印发法律法规累计、印发规范性文件累计、印发标准累计
@@ -82,7 +68,7 @@ public class NationGovVisualNo {
     @GetMapping("/option2Detail")
     public List<Twenty> option2Detail(String year) {
         List<Twenty> list = Lists.newArrayList();
-        List<String> nationList = visualUtil.getAreaStrList("nation");
+        List<String> nationList = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         for (String s : nationList) {
             Twenty tmp = new Twenty();
             tmp.setName(s);
@@ -102,7 +88,7 @@ public class NationGovVisualNo {
     public List<GovEight> option3(String year) {
         List<GovEight> list = Lists.newArrayList();
         //8个字段
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
         for (AreaOfDic areaOfDic : areaList) {
             GovEight govEight = new GovEight();
             govEight.setArea(areaOfDic.getName());
@@ -125,7 +111,7 @@ public class NationGovVisualNo {
         List<GovSeven> list = Lists.newArrayList();
         //7个字段
         //行政区划、行政区划内用人单位数（个）、行政区划内从业人员数（人）、职业健康监管人员数（人）、取得执法资格证书职业健康监管人员数（人）、职业健康监管装备数量（台/套）、在用职业健康监管装备数量（台/套）
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
         for (AreaOfDic areaOfDic : areaList) {
             GovSeven govSeven = new GovSeven();
             govSeven.setArea(areaOfDic.getName());
@@ -149,7 +135,7 @@ public class NationGovVisualNo {
         List<Integer> list1 = Lists.newArrayList();
         List<Integer> list2 = Lists.newArrayList();
         List<Integer> list3 = Lists.newArrayList();
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
         int size = areaList.size();
         for (int i = 0; i < size; i++) {
             //
@@ -172,7 +158,7 @@ public class NationGovVisualNo {
     @GetMapping("/option5Detail")
     public List<Twenty> option5Detail(String year) {
         List<Twenty> list = Lists.newArrayList();
-        List<String> nationList = visualUtil.getAreaStrList("nation");
+        List<String> nationList = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         for (String s : nationList) {
             Twenty tmp = new Twenty();
             tmp.setName(s);
@@ -194,7 +180,7 @@ public class NationGovVisualNo {
     //表2-34 技术服务机构监管情况统计分析表（续）
     @GetMapping("/option6")
     public Map<String, List<Integer>> option6(String year) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> areaList =DataVisualCacheUtil.getAreaChildren("国家",null,null);
         int size = areaList.size();
 
         Map<String, List<Integer>> map = Maps.newHashMap();
@@ -228,7 +214,7 @@ public class NationGovVisualNo {
     @GetMapping("/option6Detail")
     public List<Twenty> option6Detail(String year) {
         List<Twenty> list = Lists.newArrayList();
-        List<String> nationList = visualUtil.getAreaStrList("nation");
+        List<String> nationList = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         for (String s : nationList) {
             Twenty tmp = new Twenty();
             tmp.setName(s);
@@ -251,7 +237,7 @@ public class NationGovVisualNo {
     //表2-35 职业病危害事故统计分析表
     @GetMapping("/option7")
     public Map<String, List<Integer>> option7(String year) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
         int size = areaList.size();
 
         Map<String, List<Integer>> map = Maps.newHashMap();
@@ -279,7 +265,7 @@ public class NationGovVisualNo {
     @GetMapping("/option7Detail")
     public List<Twenty> option7Detail(String year) {
         List<Twenty> list = Lists.newArrayList();
-        List<String> nationList = visualUtil.getAreaStrList("nation");
+        List<String> nationList = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         for (String s : nationList) {
             Twenty tmp = new Twenty();
             tmp.setName(s);

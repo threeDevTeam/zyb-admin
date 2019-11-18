@@ -1,18 +1,13 @@
 package com.hthyaq.zybadmin.controller.dataVisual.nation;
 
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.DoubleUtil;
-import com.hthyaq.zybadmin.common.utils.VisualUtil;
+import com.hthyaq.zybadmin.common.utils.cache.DataVisualCacheUtil;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.*;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
-import com.hthyaq.zybadmin.service.AreaOfDicService;
-import com.hthyaq.zybadmin.service.BaseOfDicService;
-import com.hthyaq.zybadmin.service.IndustryOfDicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,15 +18,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/nationServiceVisual/no")
 public class NationServiceVisualNo {
-    @Autowired
-    AreaOfDicService areaOfDicService;
-    @Autowired
-    IndustryOfDicService industryOfDicService;
-    @Autowired
-    BaseOfDicService baseOfDicService;
-    @Autowired
-    VisualUtil visualUtil;
-
     //危害因素
     //    表1  作业场所职业病危害因素检测情况统计分析表
     @GetMapping("/option11")
@@ -55,11 +41,11 @@ public class NationServiceVisualNo {
         List<Twenty> list = Lists.newArrayList();
         List<String> list2 = null;
         if ("危害因素".equals(type)) {
-            list2 = visualUtil.getDangerList();
+            list2 = DataVisualCacheUtil.getDangerList();
         } else if ("行政区划".equals(type)) {
-            list2 = visualUtil.getAreaStrList("nation");
+            list2 = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         } else if ("登记注册类型".equals(type)) {
-            list2 = visualUtil.getRegisterTypeStrList();
+            list2 = DataVisualCacheUtil.getRegisterTypeStrList();
         }
         for (String s : list2) {
             Twenty tmp = new Twenty();
@@ -102,11 +88,11 @@ public class NationServiceVisualNo {
         List<Twenty> list = Lists.newArrayList();
         List<String> list2 = null;
         if ("危害因素".equals(type)) {
-            list2 = visualUtil.getDangerList();
+            list2 = DataVisualCacheUtil.getDangerList();
         } else if ("行政区划".equals(type)) {
-            list2 = visualUtil.getAreaStrList("nation");
+            list2 = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         } else if ("登记注册类型".equals(type)) {
-            list2 = visualUtil.getRegisterTypeStrList();
+            list2 = DataVisualCacheUtil.getRegisterTypeStrList();
         }
         for (String s : list2) {
             Twenty tmp = new Twenty();
@@ -144,11 +130,11 @@ public class NationServiceVisualNo {
         List<Twenty> list = Lists.newArrayList();
         List<String> list2 = null;
         if ("危害因素".equals(type)) {
-            list2 = visualUtil.getDangerList();
+            list2 = DataVisualCacheUtil.getDangerList();
         } else if ("行政区划".equals(type)) {
-            list2 = visualUtil.getAreaStrList("nation");
+            list2 = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         } else if ("登记注册类型".equals(type)) {
-            list2 = visualUtil.getRegisterTypeStrList();
+            list2 = DataVisualCacheUtil.getRegisterTypeStrList();
         }
         for (String s : list2) {
             Twenty tmp = new Twenty();
@@ -166,8 +152,8 @@ public class NationServiceVisualNo {
     //行政区划、登记注册类型
     @GetMapping("/option21")
     public Map<String, List<Double>> option21(String year, String type) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
-        List<BaseOfDic> registerList = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<BaseOfDic> registerList = DataVisualCacheUtil.getRegisterTypeList();
 
         Map<String, List<Double>> map = Maps.newHashMap();
         //['粉尘', '化学因素', '物理因素', '放射性因素', '生物因素']
@@ -214,11 +200,11 @@ public class NationServiceVisualNo {
         List<Twenty> list = Lists.newArrayList();
         List<String> list2 = null;
         if ("危害因素".equals(type)) {
-            list2 = visualUtil.getDangerList();
+            list2 = DataVisualCacheUtil.getDangerList();
         } else if ("行政区划".equals(type)) {
-            list2 = visualUtil.getAreaStrList("nation");
+            list2 = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         } else if ("登记注册类型".equals(type)) {
-            list2 = visualUtil.getRegisterTypeStrList();
+            list2 = DataVisualCacheUtil.getRegisterTypeStrList();
         }
         for (String s : list2) {
             Twenty tmp = new Twenty();
@@ -233,8 +219,8 @@ public class NationServiceVisualNo {
 
     @GetMapping("/option22")
     public Map<String, List<Double>> option22(String year, String type) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
-        List<BaseOfDic> registerList = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<BaseOfDic> registerList = DataVisualCacheUtil.getRegisterTypeList();
 
         int size = 0;
         if ("行政区划".equals(type)) {
@@ -271,11 +257,11 @@ public class NationServiceVisualNo {
         List<Twenty> list = Lists.newArrayList();
         List<String> list2 = null;
         if ("危害因素".equals(type)) {
-            list2 = visualUtil.getDangerList();
+            list2 = DataVisualCacheUtil.getDangerList();
         } else if ("行政区划".equals(type)) {
-            list2 = visualUtil.getAreaStrList("nation");
+            list2 = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         } else if ("登记注册类型".equals(type)) {
-            list2 = visualUtil.getRegisterTypeStrList();
+            list2 = DataVisualCacheUtil.getRegisterTypeStrList();
         }
         for (String s : list2) {
             Twenty tmp = new Twenty();
@@ -295,8 +281,8 @@ public class NationServiceVisualNo {
 
     @GetMapping("/option23")
     public Map<String, List<Double>> option23(String year, String type) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
-        List<BaseOfDic> registerList = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<BaseOfDic> registerList = DataVisualCacheUtil.getRegisterTypeList();
 
         int size = 0;
         if ("行政区划".equals(type)) {
@@ -323,11 +309,11 @@ public class NationServiceVisualNo {
         List<Twenty> list = Lists.newArrayList();
         List<String> list2 = null;
         if ("危害因素".equals(type)) {
-            list2 = visualUtil.getDangerList();
+            list2 = DataVisualCacheUtil.getDangerList();
         } else if ("行政区划".equals(type)) {
-            list2 = visualUtil.getAreaStrList("nation");
+            list2 = DataVisualCacheUtil.getAreaStrChildren("国家",null,null);
         } else if ("登记注册类型".equals(type)) {
-            list2 = visualUtil.getRegisterTypeStrList();
+            list2 = DataVisualCacheUtil.getRegisterTypeStrList();
         }
         for (String s : list2) {
             Twenty tmp = new Twenty();
@@ -345,8 +331,8 @@ public class NationServiceVisualNo {
     //表4-职业卫生技术服务机构统计分析表
     @GetMapping("/option24")
     public List<GovEight> option24(String year, String type) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
-        List<BaseOfDic> registerList = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<BaseOfDic> registerList = DataVisualCacheUtil.getRegisterTypeList();
 
         List<GovEight> list = Lists.newArrayList();
         if ("行政区划".equals(type)) {
@@ -384,8 +370,8 @@ public class NationServiceVisualNo {
     //表5-职业健康检查机构统计分析表
     @GetMapping("/option25")
     public List<GovSix> option25(String year, String type) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
-        List<BaseOfDic> registerList = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<BaseOfDic> registerList = DataVisualCacheUtil.getRegisterTypeList();
 
         List<GovSix> list = Lists.newArrayList();
         if ("行政区划".equals(type)) {
@@ -419,8 +405,8 @@ public class NationServiceVisualNo {
     //表6-职业病诊断机构统计分析表
     @GetMapping("/option26")
     public List<ServiceFive> option26(String year, String type) {
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
-        List<BaseOfDic> registerList = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<BaseOfDic> registerList = DataVisualCacheUtil.getRegisterTypeList();
 
         List<ServiceFive> list = Lists.newArrayList();
         if ("行政区划".equals(type)) {
