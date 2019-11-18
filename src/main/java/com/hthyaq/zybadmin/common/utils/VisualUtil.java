@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.common.utils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
@@ -31,6 +32,28 @@ public class VisualUtil {
             return areaList;
         }
     }
+
+    //areaNames=nation、other
+    public List<AreaOfDic> getAreaList(String name1, String name2, String name3) {
+        List<AreaOfDic> areaList = null;
+        if (!Strings.isNullOrEmpty(name1) && Strings.isNullOrEmpty(name2) && Strings.isNullOrEmpty(name3)) {
+            //name1
+            AreaOfDic n1 = areaOfDicService.getOne(new QueryWrapper<AreaOfDic>().eq("level", 1).eq("name", name1));
+            areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("pid", n1.getId()).orderByAsc("id"));
+        } else if (!Strings.isNullOrEmpty(name1) && !Strings.isNullOrEmpty(name2) && Strings.isNullOrEmpty(name3)) {
+            //name1、name2
+            AreaOfDic n1 = areaOfDicService.getOne(new QueryWrapper<AreaOfDic>().eq("level", 1).eq("name", name1));
+            AreaOfDic n2 = areaOfDicService.getOne(new QueryWrapper<AreaOfDic>().eq("pid", n1.getId()).eq("name", name2));
+            areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("pid", n2.getId()).orderByAsc("id"));
+        } else if (!Strings.isNullOrEmpty(name1) && !Strings.isNullOrEmpty(name2) && !Strings.isNullOrEmpty(name3)) {
+            //name1、name2、name3
+            AreaOfDic n1 = areaOfDicService.getOne(new QueryWrapper<AreaOfDic>().eq("level", 1).eq("name", name1));
+            AreaOfDic n2 = areaOfDicService.getOne(new QueryWrapper<AreaOfDic>().eq("pid", n1.getId()).eq("name", name2));
+            areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("pid", n2.getId()).eq("name", name3).orderByAsc("id"));
+        }
+        return areaList;
+    }
+
 
     public List<String> getAreaStrList(String areaNames) {
         List<String> list = Lists.newArrayList();

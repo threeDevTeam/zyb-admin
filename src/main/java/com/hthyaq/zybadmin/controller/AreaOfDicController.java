@@ -6,6 +6,7 @@ import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
+import com.hthyaq.zybadmin.common.utils.cache.DataVisualCacheUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
 import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.common.utils.treeSelect.TreeSelectUtil;
@@ -55,8 +56,18 @@ public class AreaOfDicController {
         return areaOfDicService.saveBatch(areaList);
     }
 
+    @GetMapping("/get")
+    public int get(String name1, String name2, String name3) {
+        AreaOfDic areaOfDic = DataVisualCacheUtil.getAreaSelf(name1, name2, name3);
+        return areaOfDic.getChildNum();
+    }
+
     @GetMapping("/getGeoJsonByName")
-    public GlobalResult getGeoJsonByName(String name) {
+    public GlobalResult getGeoJsonByName(String name1, String name2) {
+        String name = name1;
+        if (!Strings.isNullOrEmpty(name2)) {
+            name = name2;
+        }
         List<AreaOfDic> list = areaOfDicService.list(new QueryWrapper<AreaOfDic>().likeRight("name", name));
         if (ObjectUtil.length(list) != 1) {
             throw new RuntimeException("根据" + name + "查询时出错误了");
@@ -146,6 +157,7 @@ public class AreaOfDicController {
         List<AreaOfDic> list = areaOfDicService.list();
         return CascadeUtil.get(list);
     }
+
     @GetMapping("/treeSelcetData")
     public List<TreeSelectView> treeSelcetData() {
         List<AreaOfDic> list = areaOfDicService.list();

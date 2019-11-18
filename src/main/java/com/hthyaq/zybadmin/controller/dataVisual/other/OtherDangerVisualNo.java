@@ -1,20 +1,14 @@
-package com.hthyaq.zybadmin.controller.dataVisual.nation;
+package com.hthyaq.zybadmin.controller.dataVisual.other;
 
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.DoubleUtil;
-import com.hthyaq.zybadmin.common.utils.VisualUtil;
 import com.hthyaq.zybadmin.common.utils.cache.DataVisualCacheUtil;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.*;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
-import com.hthyaq.zybadmin.service.AreaOfDicService;
-import com.hthyaq.zybadmin.service.BaseOfDicService;
-import com.hthyaq.zybadmin.service.IndustryOfDicService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,24 +17,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-//默认条件：当前年份
 @RestController
-@RequestMapping("/nationDangerVisual/no")
-public class NationDangerVisualNo {
-    @Autowired
-    AreaOfDicService areaOfDicService;
-    @Autowired
-    IndustryOfDicService industryOfDicService;
-    @Autowired
-    BaseOfDicService baseOfDicService;
-    @Autowired
-    VisualUtil visualUtil;
-
+@RequestMapping("/otherDangerVisual/no")
+public class OtherDangerVisualNo {
     /*
         来源：表2-40 企业职业病危害风险分级及管控措施
      */
     @GetMapping("/scroll")
-    public Map<String, List<Scroll>> scroll() {
+    public Map<String, List<Scroll>> scroll(String name1, String name2, String name3) {
         Map<String, List<Scroll>> map = Maps.newHashMap();
         List<Scroll> data1List = Lists.newArrayList();
         List<Scroll> data2List = Lists.newArrayList();
@@ -48,7 +32,7 @@ public class NationDangerVisualNo {
         List<Scroll> data4List = Lists.newArrayList();
 
         //模拟数据
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
         for (AreaOfDic tmp : areaList) {
             Scroll scroll = new Scroll();
             scroll.setKey(tmp.getId());
@@ -80,7 +64,7 @@ public class NationDangerVisualNo {
         来源：表2-45 区域职业病危害风险分级及管控措施
      */
     @GetMapping("/option1")
-    public Map<String, List<NameValue>> option1() {
+    public Map<String, List<NameValue>> option1(String name1, String name2, String name3) {
         Map<String, List<NameValue>> map = Maps.newHashMap();
         List<NameValue> data0List = Lists.newArrayList();
         List<NameValue> data1List = Lists.newArrayList();
@@ -88,7 +72,7 @@ public class NationDangerVisualNo {
         List<NameValue> data3List = Lists.newArrayList();
         List<NameValue> data4List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
         areaList.forEach(tmp -> {
             NameValue nameValue = new NameValue();
             nameValue.setName(tmp.getName());
@@ -114,9 +98,9 @@ public class NationDangerVisualNo {
     }
 
     @GetMapping("/option1Detail")
-    public List<DangerFour> option1Detail() {
+    public List<DangerFour> option1Detail(String name1, String name2, String name3) {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = visualUtil.getAreaList("nation");
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());
@@ -145,7 +129,7 @@ public class NationDangerVisualNo {
     来源：表2-44 企业职业病危害风险分布情况
  */
     @GetMapping("/option2")
-    public Map<String, List<Integer>> option2() {
+    public Map<String, List<Integer>> option2(String name1, String name2, String name3) {
         Map<String, List<Integer>> map = Maps.newHashMap();
         int year = LocalDateTime.now().getYear();
         List<Integer> yearList = Lists.newArrayList();
@@ -179,7 +163,7 @@ public class NationDangerVisualNo {
     }
 
     @GetMapping("/option2Detail")
-    public List<DangerThree> option2Detail() {
+    public List<DangerThree> option2Detail(String name1, String name2, String name3) {
         List<DangerThree> list = Lists.newArrayList();
         int currentYear = LocalDateTime.now().getYear();
         for (int i = currentYear; i > (currentYear - 3); i--) {
@@ -197,7 +181,7 @@ public class NationDangerVisualNo {
     来源：表2-41 企业职业病危害风险分布情况（按行政区划统计）
      */
     @GetMapping("/option3")
-    public StrList option3() {
+    public StrList option3(String name1, String name2, String name3) {
         StrList strList = new StrList();
         List<String> flagList = Lists.newArrayList();
         List<Integer> data0List = Lists.newArrayList();
@@ -205,7 +189,7 @@ public class NationDangerVisualNo {
         List<Integer> data2List = Lists.newArrayList();
         List<Integer> data3List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> areaList = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
         areaList.forEach(tmp -> {
             flagList.add(tmp.getName());
             data0List.add(RandomUtil.randomInt(1, 1000));
@@ -223,9 +207,9 @@ public class NationDangerVisualNo {
     }
 
     @GetMapping("/option3Detail")
-    public List<DangerFour> option3Detail() {
+    public List<DangerFour> option3Detail(String name1, String name2, String name3) {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = visualUtil.getAreaList("nation");
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());
@@ -243,8 +227,8 @@ public class NationDangerVisualNo {
 来源：表2-41 企业职业病危害风险分布情况（按行业统计）
  */
     @GetMapping("/option4")
-    public Map<String, List<Integer>> option4() {
-        List<IndustryOfDic> list = industryOfDicService.list(new QueryWrapper<IndustryOfDic>().eq("topid", -1));
+    public Map<String, List<Integer>> option4(String name1, String name2, String name3) {
+        List<IndustryOfDic> list = DataVisualCacheUtil.getIndustryList();
         int size = list.size();
 
         Map<String, List<Integer>> map = Maps.newHashMap();
@@ -275,9 +259,9 @@ public class NationDangerVisualNo {
     }
 
     @GetMapping("/option4Detail")
-    public List<DangerFour> option4Detail() {
+    public List<DangerFour> option4Detail(String name1, String name2, String name3) {
         List<DangerFour> list = Lists.newArrayList();
-        List<IndustryOfDic> industryList = visualUtil.getIndustryList();
+        List<IndustryOfDic> industryList = DataVisualCacheUtil.getIndustryList();
         for (IndustryOfDic industryOfDic : industryList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(industryOfDic.getName());
@@ -294,8 +278,8 @@ public class NationDangerVisualNo {
 来源：表2-41 企业职业病危害风险分布情况（按登记注册类型统计）
 */
     @GetMapping("/option5")
-    public Map<String, List<Integer>> option5() {
-        List<BaseOfDic> list = baseOfDicService.list(new QueryWrapper<BaseOfDic>().eq("flag", "登记注册类型"));
+    public Map<String, List<Integer>> option5(String name1, String name2, String name3) {
+        List<BaseOfDic> list = DataVisualCacheUtil.getRegisterTypeList();
         int size = list.size();
 
         Map<String, List<Integer>> map = Maps.newHashMap();
@@ -326,9 +310,9 @@ public class NationDangerVisualNo {
     }
 
     @GetMapping("/option5Detail")
-    public List<DangerFour> option5Detail() {
+    public List<DangerFour> option5Detail(String name1, String name2, String name3) {
         List<DangerFour> list = Lists.newArrayList();
-        List<BaseOfDic> registerTypeList = visualUtil.getRegisterTypeList();
+        List<BaseOfDic> registerTypeList = DataVisualCacheUtil.getRegisterTypeList();
         for (BaseOfDic baseOfDic : registerTypeList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(baseOfDic.getBigName());
@@ -345,7 +329,7 @@ public class NationDangerVisualNo {
 来源：表2-46 区域职业病危害风险分布情况
 */
     @GetMapping("/option6")
-    public StrList option6() {
+    public StrList option6(String name1, String name2, String name3) {
         StrList strList = new StrList();
         List<String> flagList = Lists.newArrayList();
         List<Integer> data0List = Lists.newArrayList();
@@ -353,7 +337,7 @@ public class NationDangerVisualNo {
         List<Integer> data2List = Lists.newArrayList();
         List<Integer> data3List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> list = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("level", 1).notIn("name", "澳门", "台湾"));
+        List<AreaOfDic> list = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
         for (AreaOfDic tmp : list) {
             flagList.add(tmp.getName());
             int i = tmp.getChildNum();
@@ -383,9 +367,9 @@ public class NationDangerVisualNo {
     }
 
     @GetMapping("/option6Detail")
-    public List<DangerFour> option6Detail() {
+    public List<DangerFour> option6Detail(String name1, String name2, String name3) {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = visualUtil.getAreaList("nation");
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());
