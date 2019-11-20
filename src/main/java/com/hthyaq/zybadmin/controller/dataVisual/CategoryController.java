@@ -1,7 +1,6 @@
 package com.hthyaq.zybadmin.controller.dataVisual;
 
 import com.hthyaq.zybadmin.common.utils.cache.DataVisualCacheUtil;
-import com.hthyaq.zybadmin.model.bean.GlobalResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,27 +23,13 @@ public class CategoryController {
 
     //登记注册类型
     @GetMapping("/getRegisterTypeStrList")
-    public GlobalResult getRegisterTypeStrList() {
-        List<String> list = DataVisualCacheUtil.getRegisterTypeStrList();
-        StringBuffer sb = new StringBuffer();
-        sb.append("[");
-        for (String s : list) {
-            sb.append("'" + s + "',");
-        }
-        sb.append("]");
-        return GlobalResult.success("", sb.toString());
+    public List<String> getRegisterTypeStrList() {
+        return DataVisualCacheUtil.getRegisterTypeStrList();
     }
 
     @GetMapping("/getRegisterTypeReverseStrList")
-    public GlobalResult getRegisterTypeReverseStrList() {
-        List<String> list = DataVisualCacheUtil.getRegisterTypeReverseStrList();
-        StringBuffer sb = new StringBuffer();
-        sb.append("[");
-        for (String s : list) {
-            sb.append("'" + s + "',");
-        }
-        sb.append("]");
-        return GlobalResult.success("", sb.toString());
+    public List<String> getRegisterTypeReverseStrList() {
+        return DataVisualCacheUtil.getRegisterTypeReverseStrList();
     }
 
     //所属行业
