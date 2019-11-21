@@ -7,7 +7,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.hthyaq'
-archivesBaseName = 'zybadmin'
+archivesBaseName = 'zyb'
 sourceCompatibility = '1.8'
 
 configurations {
