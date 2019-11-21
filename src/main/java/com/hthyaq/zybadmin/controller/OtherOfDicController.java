@@ -83,11 +83,11 @@ public class OtherOfDicController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String name = jsonObject.getString("name");
+        String chineseColumnName = jsonObject.getString("chineseColumnName");
 
         QueryWrapper<OtherOfDic> queryWrapper = new QueryWrapper<>();
-        if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
+        if (!Strings.isNullOrEmpty(chineseColumnName)) {
+            queryWrapper.eq("chineseColumnName", chineseColumnName);
         }
 
 
