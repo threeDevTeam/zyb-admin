@@ -1,13 +1,11 @@
 部署步骤：
     1.后台调整
+        修改CreateDirectory中的directory
         logback-spring.xml
             日志调整为fileErrorApp
             d:/zybFile(确保目录存在)
         ureport.properties
-            ureport.fileStoreDir=D:/zybFile/ureportfiles(确保目录存在)
             ureport.debug=false
-        GlobalConstants
-            EXCEL_PATH = "D:/zybFile/excel"(确保目录存在)
         application.yml的log-impl需要被注释掉
     2.前端整合
         2.1将dist下的index.html拷贝到templates
