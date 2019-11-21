@@ -68,7 +68,7 @@ public class AreaOfDicController {
         if (!Strings.isNullOrEmpty(name2)) {
             name = name2;
         }
-        List<AreaOfDic> list = areaOfDicService.list(new QueryWrapper<AreaOfDic>().likeRight("name", name));
+        List<AreaOfDic> list = areaOfDicService.list(new QueryWrapper<AreaOfDic>().eq("name", name));
         if (ObjectUtil.length(list) != 1) {
             throw new RuntimeException("根据" + name + "查询时出错误了");
         }

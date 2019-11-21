@@ -31,9 +31,8 @@ public class NationDangerVisualNo {
         List<Scroll> data2List = Lists.newArrayList();
         List<Scroll> data3List = Lists.newArrayList();
         List<Scroll> data4List = Lists.newArrayList();
-
         //模拟数据
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
         for (AreaOfDic tmp : areaList) {
             Scroll scroll = new Scroll();
             scroll.setKey(tmp.getId());
@@ -54,10 +53,14 @@ public class NationDangerVisualNo {
                 data4List.add(scroll);
             }
         }
-        map.put("one", data1List);
-        map.put("two", data2List);
-        map.put("three", data3List);
-        map.put("four", data4List);
+
+        List<Scroll> low = Lists.newArrayList(data2List);
+        low.addAll(data1List);
+        List<Scroll> high = Lists.newArrayList(data4List);
+        high.addAll(data3List);
+
+        map.put("low", low);
+        map.put("high", high);
         return map;
     }
 
@@ -73,7 +76,7 @@ public class NationDangerVisualNo {
         List<NameValue> data3List = Lists.newArrayList();
         List<NameValue> data4List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
         areaList.forEach(tmp -> {
             NameValue nameValue = new NameValue();
             nameValue.setName(tmp.getName());
@@ -101,7 +104,7 @@ public class NationDangerVisualNo {
     @GetMapping("/option1Detail")
     public List<DangerFour> option1Detail() {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());
@@ -190,7 +193,7 @@ public class NationDangerVisualNo {
         List<Integer> data2List = Lists.newArrayList();
         List<Integer> data3List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
         areaList.forEach(tmp -> {
             flagList.add(tmp.getName());
             data0List.add(RandomUtil.randomInt(1, 1000));
@@ -210,7 +213,7 @@ public class NationDangerVisualNo {
     @GetMapping("/option3Detail")
     public List<DangerFour> option3Detail() {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());
@@ -338,7 +341,7 @@ public class NationDangerVisualNo {
         List<Integer> data2List = Lists.newArrayList();
         List<Integer> data3List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> list = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> list = DataVisualCacheUtil.getAreaChildren("国家", null, null);
         for (AreaOfDic tmp : list) {
             flagList.add(tmp.getName());
             int i = tmp.getChildNum();
@@ -370,7 +373,7 @@ public class NationDangerVisualNo {
     @GetMapping("/option6Detail")
     public List<DangerFour> option6Detail() {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());

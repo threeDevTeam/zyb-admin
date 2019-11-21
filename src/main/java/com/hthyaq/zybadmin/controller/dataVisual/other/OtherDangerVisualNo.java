@@ -32,7 +32,7 @@ public class OtherDangerVisualNo {
         List<Scroll> data4List = Lists.newArrayList();
 
         //模拟数据
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1, name2, name3);
         for (AreaOfDic tmp : areaList) {
             Scroll scroll = new Scroll();
             scroll.setKey(tmp.getId());
@@ -53,10 +53,13 @@ public class OtherDangerVisualNo {
                 data4List.add(scroll);
             }
         }
-        map.put("one", data1List);
-        map.put("two", data2List);
-        map.put("three", data3List);
-        map.put("four", data4List);
+        List<Scroll> low = Lists.newArrayList(data2List);
+        low.addAll(data1List);
+        List<Scroll> high = Lists.newArrayList(data4List);
+        high.addAll(data3List);
+
+        map.put("low", low);
+        map.put("high", high);
         return map;
     }
 
@@ -72,7 +75,7 @@ public class OtherDangerVisualNo {
         List<NameValue> data3List = Lists.newArrayList();
         List<NameValue> data4List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1, name2, name3);
         areaList.forEach(tmp -> {
             NameValue nameValue = new NameValue();
             nameValue.setName(tmp.getName());
@@ -100,7 +103,7 @@ public class OtherDangerVisualNo {
     @GetMapping("/option1Detail")
     public List<DangerFour> option1Detail(String name1, String name2, String name3) {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1, name2, name3);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());
@@ -189,7 +192,7 @@ public class OtherDangerVisualNo {
         List<Integer> data2List = Lists.newArrayList();
         List<Integer> data3List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1, name2, name3);
         areaList.forEach(tmp -> {
             flagList.add(tmp.getName());
             data0List.add(RandomUtil.randomInt(1, 1000));
@@ -209,7 +212,7 @@ public class OtherDangerVisualNo {
     @GetMapping("/option3Detail")
     public List<DangerFour> option3Detail(String name1, String name2, String name3) {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1, name2, name3);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());
@@ -337,7 +340,7 @@ public class OtherDangerVisualNo {
         List<Integer> data2List = Lists.newArrayList();
         List<Integer> data3List = Lists.newArrayList();
         //模拟数据
-        List<AreaOfDic> list = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
+        List<AreaOfDic> list = DataVisualCacheUtil.getAreaChildren(name1, name2, name3);
         for (AreaOfDic tmp : list) {
             flagList.add(tmp.getName());
             int i = tmp.getChildNum();
@@ -369,7 +372,7 @@ public class OtherDangerVisualNo {
     @GetMapping("/option6Detail")
     public List<DangerFour> option6Detail(String name1, String name2, String name3) {
         List<DangerFour> list = Lists.newArrayList();
-        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1,name2,name3);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren(name1, name2, name3);
         for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
             tmp.setName(areaOfDic.getName());
