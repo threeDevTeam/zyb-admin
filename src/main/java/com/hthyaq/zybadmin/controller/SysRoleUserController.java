@@ -39,6 +39,8 @@ public class SysRoleUserController {
         //sysRoleMenuService.save(sysRoleMenu);
         System.out.println(id);
         SysRoleUser sysRoleUser=new SysRoleUser();
+        QueryWrapper<SysRoleUser> queryWrapper=new QueryWrapper<>();
+        sysRoleUserService.remove(queryWrapper.eq("roleId",id));
         for(int i=1;i<=sysRoleUserView.getCheckbox().size();i++) {
             sysRoleUser.setRoleId(id);
             sysRoleUser.setUserId((Integer) sysRoleUserView.getCheckbox().get(i-1));
