@@ -4,12 +4,13 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 @Data
 @Accessors(chain = true)
 public class SysRoleMenuView {
-    private ArrayList checkbox;
-    private ArrayList checkbox2;
-    private ArrayList checkbox3;
-    private ArrayList checkbox4;
+    private HashSet<Integer> checkbox;
+    private HashSet<Integer> checkbox2;
+    private HashSet<Integer> checkbox3;
+    private HashSet<Integer> checkbox4;
 }
