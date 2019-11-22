@@ -3,8 +3,6 @@
 build
 logs
 out
-static
-templates
 gradle
 gradlew
 gradlew.bat
