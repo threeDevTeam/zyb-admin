@@ -7,6 +7,7 @@
         ureport.properties
             ureport.debug=false
         application.yml的log-impl需要被注释掉
+        application.yml的数据库的ip需要修改
     2.前端整合
         2.1将dist下的index.html拷贝到templates
             在index.html中添加命名空间<html xmlns:th="http://www.thymeleaf.org">
