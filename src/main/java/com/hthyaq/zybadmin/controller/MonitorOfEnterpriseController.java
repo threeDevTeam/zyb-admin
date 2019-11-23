@@ -130,7 +130,7 @@ public class MonitorOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<MonitorOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(monitorTime)) {
-                queryWrapper.eq("monitorTime", monitorTime);
+                queryWrapper.like("monitorTime", monitorTime);
             }
             queryWrapper.orderByDesc("id");
             IPage<MonitorOfEnterprise> page = monitorOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -148,7 +148,7 @@ public class MonitorOfEnterpriseController {
             QueryWrapper<MonitorOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(monitorTime)) {
-                queryWrapper.eq("monitorTime", monitorTime);
+                queryWrapper.like("monitorTime", monitorTime);
             }
             queryWrapper.orderByDesc("id");
             IPage<MonitorOfEnterprise> page = monitorOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

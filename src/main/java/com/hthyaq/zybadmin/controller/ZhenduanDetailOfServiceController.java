@@ -496,10 +496,10 @@ public class ZhenduanDetailOfServiceController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<ZhenduanDetailOfService> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(enterpriseName)) {
-                queryWrapper.eq("enterpriseName", enterpriseName);
+                queryWrapper.like("enterpriseName", enterpriseName);
             }
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<ZhenduanDetailOfService> page = zhenduanDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -524,10 +524,10 @@ public class ZhenduanDetailOfServiceController {
             QueryWrapper<ZhenduanDetailOfService> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("zhenduanBasicId", list1.get(0));
             if (!Strings.isNullOrEmpty(enterpriseName)) {
-                queryWrapper.eq("enterpriseName", enterpriseName);
+                queryWrapper.like("enterpriseName", enterpriseName);
             }
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<ZhenduanDetailOfService> page = zhenduanDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);

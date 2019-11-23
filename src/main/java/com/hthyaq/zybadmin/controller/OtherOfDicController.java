@@ -87,7 +87,7 @@ public class OtherOfDicController {
 
         QueryWrapper<OtherOfDic> queryWrapper = new QueryWrapper<>();
         if (!Strings.isNullOrEmpty(chineseColumnName)) {
-            queryWrapper.eq("chineseColumnName", chineseColumnName);
+            queryWrapper.like("chineseColumnName", chineseColumnName);
         }
 
 

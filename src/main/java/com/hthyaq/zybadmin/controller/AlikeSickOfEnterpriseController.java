@@ -138,7 +138,7 @@ public class AlikeSickOfEnterpriseController {
 
             QueryWrapper<AlikeSickOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<AlikeSickOfEnterprise> page = alikeSickOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -156,7 +156,7 @@ public class AlikeSickOfEnterpriseController {
             QueryWrapper<AlikeSickOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<AlikeSickOfEnterprise> page = alikeSickOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

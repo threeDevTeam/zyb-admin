@@ -130,7 +130,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<EnterpriseCheckSumOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.eq("upDate", upDate);
+                queryWrapper.like("upDate", upDate);
             }
             queryWrapper.orderByDesc("id");
             IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -148,7 +148,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
             QueryWrapper<EnterpriseCheckSumOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.eq("upDate", upDate);
+                queryWrapper.like("upDate", upDate);
             }
             queryWrapper.orderByDesc("id");
             IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

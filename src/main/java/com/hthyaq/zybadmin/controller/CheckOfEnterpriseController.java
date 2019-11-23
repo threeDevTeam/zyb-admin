@@ -110,7 +110,7 @@ public class CheckOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<CheckOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(org)) {
-                queryWrapper.eq("org", org);
+                queryWrapper.like("org", org);
             }
             queryWrapper.orderByDesc("id");
             IPage<CheckOfEnterprise> page = checkOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -128,7 +128,7 @@ public class CheckOfEnterpriseController {
             QueryWrapper<CheckOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(org)) {
-                queryWrapper.eq("org", org);
+                queryWrapper.like("org", org);
             }
             queryWrapper.orderByDesc("id");
             IPage<CheckOfEnterprise> page = checkOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

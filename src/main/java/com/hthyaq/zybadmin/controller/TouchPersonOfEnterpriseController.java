@@ -145,7 +145,7 @@ public class TouchPersonOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<TouchPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.eq("upDate", upDate);
+                queryWrapper.like("upDate", upDate);
             }
             queryWrapper.orderByDesc("id");
             IPage<TouchPersonOfEnterprise> page = touchPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -163,7 +163,7 @@ public class TouchPersonOfEnterpriseController {
             QueryWrapper<TouchPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.eq("upDate", upDate);
+                queryWrapper.like("upDate", upDate);
             }
             queryWrapper.orderByDesc("id");
             IPage<TouchPersonOfEnterprise> page = touchPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

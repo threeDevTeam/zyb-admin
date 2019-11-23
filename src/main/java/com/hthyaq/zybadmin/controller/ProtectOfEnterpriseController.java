@@ -129,10 +129,10 @@ public class ProtectOfEnterpriseController {
 
             QueryWrapper<ProtectOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(type)) {
-                queryWrapper.eq("type", type);
+                queryWrapper.like("type", type);
             }
             queryWrapper.orderByDesc("id");
             IPage<ProtectOfEnterprise> page = protectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -150,10 +150,10 @@ public class ProtectOfEnterpriseController {
             QueryWrapper<ProtectOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(type)) {
-                queryWrapper.eq("type", type);
+                queryWrapper.like("type", type);
             }
             queryWrapper.orderByDesc("id");
             IPage<ProtectOfEnterprise> page = protectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

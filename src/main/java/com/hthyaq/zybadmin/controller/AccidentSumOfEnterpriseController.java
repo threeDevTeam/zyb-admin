@@ -167,7 +167,7 @@ public class AccidentSumOfEnterpriseController {
             QueryWrapper<AccidentSumOfEnterprise> queryWrapper = new QueryWrapper<>();
 
             if (!Strings.isNullOrEmpty(accidentNum)) {
-                queryWrapper.eq("accidentNum", accidentNum);
+                queryWrapper.like("accidentNum", accidentNum);
             }
             queryWrapper.orderByDesc("id");
             IPage<AccidentSumOfEnterprise> page = accidentSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -185,7 +185,7 @@ public class AccidentSumOfEnterpriseController {
             QueryWrapper<AccidentSumOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(accidentNum)) {
-                queryWrapper.eq("accidentNum", accidentNum);
+                queryWrapper.like("accidentNum", accidentNum);
             }
             queryWrapper.orderByDesc("id");
             IPage<AccidentSumOfEnterprise> page = accidentSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

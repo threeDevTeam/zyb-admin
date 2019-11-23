@@ -107,7 +107,7 @@ public class TijianTotalOfServiceController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<TijianTotalOfService> queryWrapper = new QueryWrapper();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<TijianTotalOfService> page = tijianTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -131,7 +131,7 @@ public class TijianTotalOfServiceController {
             }
             queryWrapper.eq("tijianBasicId", list1.get(0));
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<TijianTotalOfService> page = tijianTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);

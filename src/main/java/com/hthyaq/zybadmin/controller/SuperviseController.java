@@ -181,10 +181,10 @@ public class SuperviseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<Supervise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -194,10 +194,10 @@ public class SuperviseController {
             QueryWrapper<Supervise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("name", sysUser.getCompanyName());
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<Supervise> page = superviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

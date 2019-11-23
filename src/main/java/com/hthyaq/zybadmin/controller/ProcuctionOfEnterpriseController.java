@@ -103,10 +103,10 @@ public class ProcuctionOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<ProcuctionOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(productionType)) {
-                queryWrapper.eq("productionType", productionType);
+                queryWrapper.like("productionType", productionType);
             }
             queryWrapper.orderByDesc("id");
             IPage<ProcuctionOfEnterprise> page = procuctionOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -124,10 +124,10 @@ public class ProcuctionOfEnterpriseController {
             QueryWrapper<ProcuctionOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(productionType)) {
-                queryWrapper.eq("productionType", productionType);
+                queryWrapper.like("productionType", productionType);
             }
             queryWrapper.orderByDesc("id");
             IPage<ProcuctionOfEnterprise> page = procuctionOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

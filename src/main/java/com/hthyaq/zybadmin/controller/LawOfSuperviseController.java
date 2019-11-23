@@ -102,7 +102,7 @@ public class LawOfSuperviseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<LawOfSupervise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<LawOfSupervise> page = lawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -120,7 +120,7 @@ public class LawOfSuperviseController {
             QueryWrapper<LawOfSupervise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("superviseId", list1.get(0));
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<LawOfSupervise> page = lawOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

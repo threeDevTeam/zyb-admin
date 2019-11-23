@@ -104,7 +104,7 @@ public class ZhenduanTotalOfServiceController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<ZhenduanTotalOfService> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<ZhenduanTotalOfService> page = zhenduanTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -129,7 +129,7 @@ public class ZhenduanTotalOfServiceController {
             QueryWrapper<ZhenduanTotalOfService> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("zhenduanBasicId", list1.get(0));
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<ZhenduanTotalOfService> page = zhenduanTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);

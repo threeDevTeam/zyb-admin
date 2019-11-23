@@ -230,7 +230,7 @@ public class ZhenduanBasicOfServiceController {
 
             QueryWrapper<ZhenduanBasicOfService> queryWrapper = new QueryWrapper();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<ZhenduanBasicOfService> page = zhenduanBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -249,7 +249,7 @@ public class ZhenduanBasicOfServiceController {
             QueryWrapper<ZhenduanBasicOfService> queryWrapper = new QueryWrapper();
             queryWrapper.eq("name", list1.get(0));
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
 
             queryWrapper.orderByDesc("id");

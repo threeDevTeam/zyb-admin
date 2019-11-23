@@ -107,7 +107,7 @@ public class JianceTotalOfServiceController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<JianceTotalOfService> queryWrapper = new QueryWrapper();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<JianceTotalOfService> page = jianceTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -131,7 +131,7 @@ public class JianceTotalOfServiceController {
             }
             queryWrapper.eq("jianceBasicId", list1.get(0));
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<JianceTotalOfService> page = jianceTotalOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);

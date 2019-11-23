@@ -224,10 +224,10 @@ public class JianceBasicOfServiceController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<JianceBasicOfService> queryWrapper = new QueryWrapper();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<JianceBasicOfService> page = jianceBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -246,10 +246,10 @@ public class JianceBasicOfServiceController {
             QueryWrapper<JianceBasicOfService> queryWrapper = new QueryWrapper();
             queryWrapper.eq("name", list1.get(0));
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             queryWrapper.orderByDesc("id");
             IPage<JianceBasicOfService> page = jianceBasicOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);

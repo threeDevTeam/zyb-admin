@@ -105,10 +105,10 @@ public class EducationOfSuperviseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<EducationOfSupervise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(personCount)) {
-                queryWrapper.eq("personCount", personCount);
+                queryWrapper.like("personCount", personCount);
             }
             queryWrapper.orderByDesc("id");
             IPage<EducationOfSupervise> page = educationOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -126,10 +126,10 @@ public class EducationOfSuperviseController {
             QueryWrapper<EducationOfSupervise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("superviseId", list1.get(0));
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(personCount)) {
-                queryWrapper.eq("personCount", personCount);
+                queryWrapper.like("personCount", personCount);
             }
             queryWrapper.orderByDesc("id");
             IPage<EducationOfSupervise> page = educationOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

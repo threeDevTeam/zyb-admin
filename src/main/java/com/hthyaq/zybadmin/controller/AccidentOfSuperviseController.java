@@ -106,10 +106,10 @@ public class AccidentOfSuperviseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<AccidentOfSupervise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(loseMoney)) {
-                queryWrapper.eq("loseMoney", loseMoney);
+                queryWrapper.like("loseMoney", loseMoney);
             }
             queryWrapper.orderByDesc("id");
             IPage<AccidentOfSupervise> page = accidentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -127,10 +127,10 @@ public class AccidentOfSuperviseController {
             QueryWrapper<AccidentOfSupervise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("superviseId", list1.get(0));
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(loseMoney)) {
-                queryWrapper.eq("loseMoney", loseMoney);
+                queryWrapper.like("loseMoney", loseMoney);
             }
             queryWrapper.orderByDesc("id");
             IPage<AccidentOfSupervise> page = accidentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

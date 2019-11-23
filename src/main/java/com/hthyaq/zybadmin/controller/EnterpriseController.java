@@ -319,7 +319,7 @@ public class EnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<Enterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<Enterprise> page = enterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -329,7 +329,7 @@ public class EnterpriseController {
             QueryWrapper<Enterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("name", sysUser.getCompanyName());
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<Enterprise> page = enterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

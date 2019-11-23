@@ -103,10 +103,10 @@ public class PropagateOfSuperviseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<PropagateOfSupervise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(acceptCount)) {
-                queryWrapper.eq("acceptCount", acceptCount);
+                queryWrapper.like("acceptCount", acceptCount);
             }
             queryWrapper.orderByDesc("id");
             IPage<PropagateOfSupervise> page = propagateOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -124,10 +124,10 @@ public class PropagateOfSuperviseController {
             QueryWrapper<PropagateOfSupervise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("superviseId", list1.get(0));
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(acceptCount)) {
-                queryWrapper.eq("acceptCount", acceptCount);
+                queryWrapper.like("acceptCount", acceptCount);
             }
             queryWrapper.orderByDesc("id");
             IPage<PropagateOfSupervise> page = propagateOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

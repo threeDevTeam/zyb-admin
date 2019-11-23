@@ -119,7 +119,7 @@ public class FixCheckOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<FixCheckOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(org)) {
-                queryWrapper.eq("org", org);
+                queryWrapper.like("org", org);
             }
             queryWrapper.orderByDesc("id");
             IPage<FixCheckOfEnterprise> page = fixCheckOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -137,7 +137,7 @@ public class FixCheckOfEnterpriseController {
             QueryWrapper<FixCheckOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(org)) {
-                queryWrapper.eq("org", org);
+                queryWrapper.like("org", org);
             }
             queryWrapper.orderByDesc("id");
             IPage<FixCheckOfEnterprise> page = fixCheckOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

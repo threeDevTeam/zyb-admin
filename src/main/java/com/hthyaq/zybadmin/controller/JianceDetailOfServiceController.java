@@ -233,10 +233,10 @@ public class JianceDetailOfServiceController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(enterpriseName)) {
-                queryWrapper.eq("enterpriseName", enterpriseName);
+                queryWrapper.like("enterpriseName", enterpriseName);
             }
             if (!Strings.isNullOrEmpty(decideResult)) {
-                queryWrapper.eq("decideResult", decideResult);
+                queryWrapper.like("decideResult", decideResult);
             }
             queryWrapper.orderByDesc("id");
             IPage<JianceDetailOfService> page = jianceDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -261,10 +261,10 @@ public class JianceDetailOfServiceController {
             QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("jianceBasicId", list1.get(0));
             if (!Strings.isNullOrEmpty(enterpriseName)) {
-                queryWrapper.eq("enterpriseName", enterpriseName);
+                queryWrapper.like("enterpriseName", enterpriseName);
             }
             if (!Strings.isNullOrEmpty(decideResult)) {
-                queryWrapper.eq("decideResult", decideResult);
+                queryWrapper.like("decideResult", decideResult);
             }
             queryWrapper.orderByDesc("id");
             IPage<JianceDetailOfService> page = jianceDetailOfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);

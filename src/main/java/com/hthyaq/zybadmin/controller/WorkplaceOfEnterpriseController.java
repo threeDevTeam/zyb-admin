@@ -93,7 +93,7 @@ public class WorkplaceOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<WorkplaceOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(username)) {
-                queryWrapper.eq("username", username);
+                queryWrapper.like("username", username);
             }
             queryWrapper.orderByDesc("id");
             IPage<WorkplaceOfEnterprise> page = workplaceOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -111,7 +111,7 @@ public class WorkplaceOfEnterpriseController {
             QueryWrapper<WorkplaceOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(username)) {
-                queryWrapper.eq("username", username);
+                queryWrapper.like("username", username);
             }
             queryWrapper.orderByDesc("id");
             IPage<WorkplaceOfEnterprise> page = workplaceOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

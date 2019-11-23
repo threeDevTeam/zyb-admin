@@ -101,7 +101,7 @@ public class HealthOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<HealthOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(isA)) {
-                queryWrapper.eq("isA", isA);
+                queryWrapper.like("isA", isA);
             }
             queryWrapper.orderByDesc("id");
             IPage<HealthOfEnterprise> page = healthOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -119,7 +119,7 @@ public class HealthOfEnterpriseController {
             QueryWrapper<HealthOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(isA)) {
-                queryWrapper.eq("isA", isA);
+                queryWrapper.like("isA", isA);
             }
             queryWrapper.orderByDesc("id");
             IPage<HealthOfEnterprise> page = healthOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

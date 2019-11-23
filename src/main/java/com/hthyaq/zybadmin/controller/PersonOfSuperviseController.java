@@ -124,10 +124,10 @@ public class PersonOfSuperviseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<PersonOfSupervise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(idNum)) {
-                queryWrapper.eq("idNum", idNum);
+                queryWrapper.like("idNum", idNum);
             }
             queryWrapper.orderByDesc("id");
             IPage<PersonOfSupervise> page = personOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -145,10 +145,10 @@ public class PersonOfSuperviseController {
             QueryWrapper<PersonOfSupervise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("superviseId", list1.get(0));
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(idNum)) {
-                queryWrapper.eq("idNum", idNum);
+                queryWrapper.like("idNum", idNum);
             }
             queryWrapper.orderByDesc("id");
             IPage<PersonOfSupervise> page = personOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

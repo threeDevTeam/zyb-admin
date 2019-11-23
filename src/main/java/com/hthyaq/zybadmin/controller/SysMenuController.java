@@ -87,7 +87,7 @@ public class SysMenuController {
         String name = jsonObject.getString("name");
         QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
         if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
+            queryWrapper.like("name", name);
         }
 
         IPage<SysMenu> page = sysMenuService.page(new Page<>(currentPage, pageSize), queryWrapper);

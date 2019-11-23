@@ -126,7 +126,7 @@ public class PersonProtectOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<PersonProtectOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<PersonProtectOfEnterprise> page = personProtectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -144,7 +144,7 @@ public class PersonProtectOfEnterpriseController {
             QueryWrapper<PersonProtectOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<PersonProtectOfEnterprise> page = personProtectOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

@@ -496,10 +496,10 @@ public class TijianDetail2OfServiceController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<TijianDetail2OfService> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(enterpriseName)) {
-                queryWrapper.eq("enterpriseName", enterpriseName);
+                queryWrapper.like("enterpriseName", enterpriseName);
             }
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<TijianDetail2OfService> page = tijianDetail2OfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -524,10 +524,10 @@ public class TijianDetail2OfServiceController {
             QueryWrapper<TijianDetail2OfService> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("tijianBasicId", list1.get(0));
             if (!Strings.isNullOrEmpty(enterpriseName)) {
-                queryWrapper.eq("enterpriseName", enterpriseName);
+                queryWrapper.like("enterpriseName", enterpriseName);
             }
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<TijianDetail2OfService> page = tijianDetail2OfServiceService.page(new Page<>(currentPage, pageSize), queryWrapper);

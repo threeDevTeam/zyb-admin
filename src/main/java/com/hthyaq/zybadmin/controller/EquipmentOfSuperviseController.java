@@ -115,10 +115,10 @@ public class EquipmentOfSuperviseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<EquipmentOfSupervise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(name)) {
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(num)) {
-                queryWrapper.eq("num", num);
+                queryWrapper.like("num", num);
             }
             queryWrapper.orderByDesc("id");
             IPage<EquipmentOfSupervise> page = equipmentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -136,10 +136,10 @@ public class EquipmentOfSuperviseController {
             queryWrapper.eq("superviseId", list1.get(0));
             if (!Strings.isNullOrEmpty(name)) {
 
-                queryWrapper.eq("name", name);
+                queryWrapper.like("name", name);
             }
             if (!Strings.isNullOrEmpty(num)) {
-                queryWrapper.eq("num", num);
+                queryWrapper.like("num", num);
             }
             queryWrapper.orderByDesc("id");
             IPage<EquipmentOfSupervise> page = equipmentOfSuperviseService.page(new Page<>(currentPage, pageSize), queryWrapper);

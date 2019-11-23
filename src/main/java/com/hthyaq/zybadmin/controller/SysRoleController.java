@@ -137,7 +137,7 @@ public class SysRoleController {
         String name = jsonObject.getString("name");
         QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
         if (!Strings.isNullOrEmpty(name)) {
-            queryWrapper.eq("name", name);
+            queryWrapper.like("name", name);
         }
 
         IPage<SysRole> page = sysRoleService.page(new Page<>(currentPage, pageSize), queryWrapper);

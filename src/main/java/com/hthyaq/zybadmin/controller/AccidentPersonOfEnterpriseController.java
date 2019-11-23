@@ -131,7 +131,7 @@ public class AccidentPersonOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<AccidentPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(org)) {
-                queryWrapper.eq("org", org);
+                queryWrapper.like("org", org);
             }
             queryWrapper.orderByDesc("id");
             IPage<AccidentPersonOfEnterprise> page = accidentPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -149,7 +149,7 @@ public class AccidentPersonOfEnterpriseController {
             QueryWrapper<AccidentPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(org)) {
-                queryWrapper.eq("org", org);
+                queryWrapper.like("org", org);
             }
             queryWrapper.orderByDesc("id");
             IPage<AccidentPersonOfEnterprise> page = accidentPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

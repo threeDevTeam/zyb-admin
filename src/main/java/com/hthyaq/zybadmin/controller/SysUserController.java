@@ -149,7 +149,7 @@ public class SysUserController {
         String loginName = jsonObject.getString("loginName");
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
         if (!Strings.isNullOrEmpty(loginName)) {
-            queryWrapper.eq("loginName", loginName);
+            queryWrapper.like("loginName",loginName );
         }
 
         IPage<SysUser> page = sysUserService.page(new Page<>(currentPage, pageSize), queryWrapper);

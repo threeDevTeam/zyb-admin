@@ -104,10 +104,10 @@ public class ThreeCheckOfSuperviseController {
             queryWrapper1.eq("name", sysUser.getCompanyName());
             QueryWrapper<ThreeCheckOfSupervise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(pulishMoney)) {
-                queryWrapper.eq("pulishMoney", pulishMoney);
+                queryWrapper.like("pulishMoney", pulishMoney);
             }
 
             queryWrapper.orderByDesc("id");
@@ -126,10 +126,10 @@ public class ThreeCheckOfSuperviseController {
             QueryWrapper<ThreeCheckOfSupervise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("superviseId", list1.get(0));
             if (!Strings.isNullOrEmpty(year)) {
-                queryWrapper.eq("year", year);
+                queryWrapper.like("year", year);
             }
             if (!Strings.isNullOrEmpty(pulishMoney)) {
-                queryWrapper.eq("pulishMoney", pulishMoney);
+                queryWrapper.like("pulishMoney", pulishMoney);
             }
 
             queryWrapper.orderByDesc("id");

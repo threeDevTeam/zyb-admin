@@ -235,7 +235,7 @@ public class PostDangerOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<PostDangerOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.eq("upDate", upDate);
+                queryWrapper.like("upDate", upDate);
             }
             queryWrapper.orderByDesc("id");
             IPage<PostDangerOfEnterprise> page = postDangerOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -253,7 +253,7 @@ public class PostDangerOfEnterpriseController {
             QueryWrapper<PostDangerOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.eq("upDate", upDate);
+                queryWrapper.like("upDate", upDate);
             }
             queryWrapper.orderByDesc("id");
             IPage<PostDangerOfEnterprise> page = postDangerOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
