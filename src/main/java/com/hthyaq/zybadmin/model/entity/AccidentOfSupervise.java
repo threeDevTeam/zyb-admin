@@ -73,13 +73,13 @@ public class AccidentOfSupervise implements Serializable {
      * 尘肺病事故死亡人数
      */
     @TableField("dustDieCount")
-    private String dustDieCount;
+    private Integer dustDieCount;
 
     /**
      * 中毒事故死亡人数
      */
     @TableField("poisonDieCount")
-    private String poisonDieCount;
+    private Integer poisonDieCount;
 
     /**
      * 其它事故死亡人数

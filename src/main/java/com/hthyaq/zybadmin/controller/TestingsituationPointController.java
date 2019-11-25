@@ -22,67 +22,19 @@ public class TestingsituationPointController {
 
     //粉尘
     @GetMapping("/list1")
-    public TestingsituationPoint list1(Integer year, String provinceCode, String cityCode, String districtCode, String dangerBigName, String dangerSmallName, String registerBigName, String registerSmallName, String industryBigName) {
+    public TestingsituationPoint list1(Integer year) {
         if (year != null) {
             TestingsituationPoint testingsituationPoint = new TestingsituationPoint();
             //Detectionpoints
             QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper();
             queryWrapper.eq("dangerBigName", "粉尘").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper.eq("districtCode", districtCode);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper.eq("industryBigName", industryBigName);
-            }
             testingsituationPoint.setDetectionpoints(jianceDetailOfServiceService.count(queryWrapper));
-
-
             //Targetnumber
             QueryWrapper<JianceDetailOfService> queryWrapper2 = new QueryWrapper();
             queryWrapper2.eq("dangerBigName", "粉尘").eq("decideResult", "合格").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper2.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper2.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper2.eq("districtCode", districtCode);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper2.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper2.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper2.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper2.eq("industryBigName", industryBigName);
-            }
             testingsituationPoint.setTargetnumber(jianceDetailOfServiceService.count(queryWrapper2));
-
-
             //Compliancerate
             testingsituationPoint.setCompliancerate((float) testingsituationPoint.getTargetnumber() / testingsituationPoint.getDetectionpoints());
-
-
             return testingsituationPoint;
         }
         return null;
@@ -90,66 +42,17 @@ public class TestingsituationPointController {
 
     //化学因素
     @GetMapping("/list2")
-    public TestingsituationPoint list2(Integer year, String provinceCode, String cityCode, String districtCode, String dangerBigName, String dangerSmallName, String registerBigName, String registerSmallName, String industryBigName) {
+    public TestingsituationPoint list2(Integer year) {
         if (year != null) {
             TestingsituationPoint testingsituationPoint = new TestingsituationPoint();
             //Detectionpoints
             QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper();
             queryWrapper.eq("dangerBigName", "化学因素").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper.eq("districtCode", districtCode);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper.eq("industryBigName", industryBigName);
-            }
             testingsituationPoint.setDetectionpoints(jianceDetailOfServiceService.count(queryWrapper));
-
-
             //Targetnumber
             QueryWrapper<JianceDetailOfService> queryWrapper2 = new QueryWrapper();
             queryWrapper2.eq("dangerBigName", "化学因素").eq("decideResult", "合格").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper2.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper2.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper2.eq("districtCode", districtCode);
-            }
-            if (dangerBigName != null) {
-                queryWrapper2.eq("dangerBigName", dangerBigName);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper2.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper2.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper2.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper2.eq("industryBigName", industryBigName);
-            }
             testingsituationPoint.setTargetnumber(jianceDetailOfServiceService.count(queryWrapper2));
-
-
             //Compliancerate
             testingsituationPoint.setCompliancerate((float) testingsituationPoint.getTargetnumber() / testingsituationPoint.getDetectionpoints());
 
@@ -161,66 +64,17 @@ public class TestingsituationPointController {
 
     //物理因素
     @GetMapping("/list3")
-    public TestingsituationPoint list3(Integer year, String provinceCode, String cityCode, String districtCode, String dangerBigName, String dangerSmallName, String registerBigName, String registerSmallName, String industryBigName) {
+    public TestingsituationPoint list3(Integer year) {
         if (year != null) {
             TestingsituationPoint testingsituationPoint = new TestingsituationPoint();
             //Detectionpoints
             QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper();
             queryWrapper.eq("dangerBigName", "物理因素").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper.eq("districtCode", districtCode);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper.eq("industryBigName", industryBigName);
-            }
             testingsituationPoint.setDetectionpoints(jianceDetailOfServiceService.count(queryWrapper));
-
-
             //Targetnumber
             QueryWrapper<JianceDetailOfService> queryWrapper2 = new QueryWrapper();
             queryWrapper2.eq("dangerBigName", "物理因素").eq("decideResult", "合格").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper2.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper2.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper2.eq("districtCode", districtCode);
-            }
-            if (dangerBigName != null) {
-                queryWrapper2.eq("dangerBigName", dangerBigName);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper2.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper2.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper2.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper2.eq("industryBigName", industryBigName);
-            }
             testingsituationPoint.setTargetnumber(jianceDetailOfServiceService.count(queryWrapper2));
-
-
             //Compliancerate
             testingsituationPoint.setCompliancerate((float) testingsituationPoint.getTargetnumber() / testingsituationPoint.getDetectionpoints());
 
@@ -232,66 +86,18 @@ public class TestingsituationPointController {
 
     //放射性因素
     @GetMapping("/list4")
-    public TestingsituationPoint list4(Integer year, String provinceCode, String cityCode, String districtCode, String dangerBigName, String dangerSmallName, String registerBigName, String registerSmallName, String industryBigName) {
+    public TestingsituationPoint list4(Integer year) {
         if (year != null) {
             TestingsituationPoint testingsituationPoint = new TestingsituationPoint();
             //Detectionpoints
             QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper();
             queryWrapper.eq("dangerBigName", "放射性因素").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper.eq("districtCode", districtCode);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper.eq("industryBigName", industryBigName);
-            }
+
             testingsituationPoint.setDetectionpoints(jianceDetailOfServiceService.count(queryWrapper));
-
-
             //Targetnumber
             QueryWrapper<JianceDetailOfService> queryWrapper2 = new QueryWrapper();
             queryWrapper2.eq("dangerBigName", "放射性因素").eq("decideResult", "合格").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper2.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper2.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper2.eq("districtCode", districtCode);
-            }
-            if (dangerBigName != null) {
-                queryWrapper2.eq("dangerBigName", dangerBigName);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper2.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper2.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper2.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper2.eq("industryBigName", industryBigName);
-            }
             testingsituationPoint.setTargetnumber(jianceDetailOfServiceService.count(queryWrapper2));
-
-
             //Compliancerate
             testingsituationPoint.setCompliancerate((float) testingsituationPoint.getTargetnumber() / testingsituationPoint.getDetectionpoints());
 
@@ -304,67 +110,19 @@ public class TestingsituationPointController {
 
     //生物因素
     @GetMapping("/list5")
-    public TestingsituationPoint list5(Integer year, String provinceCode, String cityCode, String districtCode, String dangerBigName, String dangerSmallName, String registerBigName, String registerSmallName, String industryBigName) {
+    public TestingsituationPoint list5(Integer year) {
         if (year != null) {
             TestingsituationPoint testingsituationPoint = new TestingsituationPoint();
             //Detectionpoints
             QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper();
             queryWrapper.eq("dangerBigName", "生物因素").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper.eq("districtCode", districtCode);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper.eq("industryBigName", industryBigName);
-            }
+
             testingsituationPoint.setDetectionpoints(jianceDetailOfServiceService.count(queryWrapper));
-
-
             //Targetnumber
             QueryWrapper<JianceDetailOfService> queryWrapper2 = new QueryWrapper();
             queryWrapper2.eq("dangerBigName", "生物因素").eq("decideResult", "合格").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper2.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper2.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper2.eq("districtCode", districtCode);
-            }
-            if (dangerBigName != null) {
-                queryWrapper2.eq("dangerBigName", dangerBigName);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper2.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper2.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper2.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper2.eq("industryBigName", industryBigName);
-            }
             testingsituationPoint.setTargetnumber(jianceDetailOfServiceService.count(queryWrapper2));
-
-
-            //Compliancerate
+            //Compliancerat
             testingsituationPoint.setCompliancerate((float) testingsituationPoint.getTargetnumber() / testingsituationPoint.getDetectionpoints());
 
 
@@ -376,63 +134,20 @@ public class TestingsituationPointController {
 
     //其他因素
     @GetMapping("/list6")
-    public TestingsituationPoint list6(Integer year, String provinceCode, String cityCode, String districtCode, String dangerBigName, String dangerSmallName, String registerBigName, String registerSmallName, String industryBigName) {
+    public TestingsituationPoint list6(Integer year) {
         if (year != null) {
             TestingsituationPoint testingsituationPoint = new TestingsituationPoint();
             //Detectionpoints
             QueryWrapper<JianceDetailOfService> queryWrapper = new QueryWrapper();
             queryWrapper.eq("dangerBigName", "其他因素").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper.eq("districtCode", districtCode);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper.eq("industryBigName", industryBigName);
-            }
+
             testingsituationPoint.setDetectionpoints(jianceDetailOfServiceService.count(queryWrapper));
 
 
             //Targetnumber
             QueryWrapper<JianceDetailOfService> queryWrapper2 = new QueryWrapper();
             queryWrapper2.eq("dangerBigName", "其他因素").eq("decideResult", "合格").eq("checkYear", year);
-            if (provinceCode != null) {
-                queryWrapper2.eq("provinceCode", provinceCode);
-            }
-            if (cityCode != null) {
-                queryWrapper2.eq("cityCode", cityCode);
-            }
-            if (districtCode != null) {
-                queryWrapper2.eq("districtCode", districtCode);
-            }
-            if (dangerBigName != null) {
-                queryWrapper2.eq("dangerBigName", dangerBigName);
-            }
-            if (dangerSmallName != null) {
-                queryWrapper2.eq("dangerSmallName", dangerSmallName);
-            }
-            if (registerBigName != null) {
-                queryWrapper2.eq("registerBigName", registerBigName);
-            }
-            if (registerSmallName != null) {
-                queryWrapper2.eq("registerSmallName", registerSmallName);
-            }
-            if (industryBigName != null) {
-                queryWrapper2.eq("industryBigName", industryBigName);
-            }
+
             testingsituationPoint.setTargetnumber(jianceDetailOfServiceService.count(queryWrapper2));
 
 
