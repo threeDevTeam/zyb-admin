@@ -1,43 +1,84 @@
 package com.hthyaq.zybadmin;
 
-import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.WordUtils;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.util.Formatter;
 
+import com.alibaba.fastjson.JSONObject;
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 获取token类
+ */
 public class T3 {
+
+
+    /**
+     * 获取权限token
+     * @return 返回示例：
+     * {
+     * "access_token": "24.460da4889caad24cccdb1fea17221975.2592000.1491995545.282335-1234567",
+     * "expires_in": 2592000
+     * }
+
+
+    /**
+     * 获取API访问token
+     * 该token有一定的有效期，需要自行管理，当失效时需重新获取.
+     * @param  - 百度云官网获取的 API Key
+     * @param  - 百度云官网获取的 Securet Key
+     * @return assess_token 示例：
+     * "24.460da4889caad24cccdb1fea17221975.2592000.1491995545.282335-1234567"
+     * 24.ff1fb90822576173dd0dc9c755fdb96d.2592000.1577343796.282335-17644662
+     */
     public static void main(String[] args) {
-        String user_key = "eed2863a242541ee9da5515f5a656a0b";   //实际使用时客户需修改为自己的user_key
-        String user_secret = "aa260da228f74b23b5751c966ae34674";   //实际使用时客户需修改为自己的user_secret
-        long timestamp = Integer.valueOf(String.valueOf(System.currentTimeMillis()/1000));
-        String data = user_key + timestamp;
-        String hmac = encode(data, user_secret);
-        System.out.println(hmac);
-
-    }
-    private static String toHexString(byte[] bytes) {
-        Formatter formatter = new Formatter();
-        for (byte b : bytes) {
-            formatter.format("%02x", b);
-
-        }
-        return formatter.toString();
-
-    }
-    private static String encode(String data, String key) {
-        String token = null;
+        // 获取token地址
+      String  ak="PSgVELEEqYUTD82jEZEhKTCQ";
+      String  sk="FI8pbWG4ju1lOC38B4ULiQKuSFFnGW3v";
+        String authHost = "https://aip.baidubce.com/oauth/2.0/token?";
+        String getAccessTokenUrl = authHost
+                // 1. grant_type为固定参数
+                + "grant_type=client_credentials"
+                // 2. 官网获取的 API Key
+                + "&client_id=" + ak
+                // 3. 官网获取的 Secret Key
+                + "&client_secret=" + sk;
         try {
-            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), "HmacSHA1");
-            Mac mac = Mac.getInstance("HmacSHA1");
-            mac.init(signingKey);
-            token = toHexString(mac.doFinal(data.getBytes()));
-        } catch (Exception e) {
-            e.printStackTrace();
+            URL realUrl = new URL(getAccessTokenUrl);
+            // 打开和URL之间的连接
+            HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            // 获取所有响应头字段
+            Map<String, List<String>> map = connection.getHeaderFields();
+            // 遍历所有的响应头字段
+            for (String key : map.keySet()) {
+                System.err.println(key + "--->" + map.get(key));
+            }
+            // 定义 BufferedReader输入流来读取URL的响应
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String result = "";
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+            /**
+             * 返回结果示例
+             */
+            System.err.println("result:" + result);
+            JSONObject jsonObject = new JSONObject(Boolean.parseBoolean(result));
+            String access_token = jsonObject.getString("access_token");
 
+        } catch (Exception e) {
+            System.err.printf("获取token失败！");
+            e.printStackTrace(System.err);
         }
-        return token;
+
     }
+
 }

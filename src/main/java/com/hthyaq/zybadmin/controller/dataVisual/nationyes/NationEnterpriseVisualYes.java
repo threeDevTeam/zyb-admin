@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/nationEnterpriseVisual/yes")
+@RequestMapping("/nationEnterpriseVisual/no")
 public class NationEnterpriseVisualYes {
     //危害因素、企业规模
     /*

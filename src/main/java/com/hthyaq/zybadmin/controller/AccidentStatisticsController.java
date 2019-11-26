@@ -4,10 +4,9 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hthyaq.zybadmin.model.entity.AccidentOfSupervise;
-import com.hthyaq.zybadmin.model.entity.AccidentStatistics;
-import com.hthyaq.zybadmin.model.entity.Supervise;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.service.AccidentOfSuperviseService;
+import com.hthyaq.zybadmin.service.ServiceSuperviseOfSuperviseService;
 import com.hthyaq.zybadmin.service.SuperviseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -142,7 +141,7 @@ public class AccidentStatisticsController {
                 queryCondition("districtCode", provinceCode, "superviseId", "id", superviseService, queryWrapper1, queryWrapper7);
             }
             AccidentOfSupervise accidentOfSupervise7= accidentOfSuperviseService.getOne(queryWrapper7);
-            accidentStatistics.setDustDieCount(accidentOfSupervise7.getDustDieCount()+"");
+            accidentStatistics.setDustDieCount(Integer.toString(accidentOfSupervise7.getDustDieCount()));
 
             //poisonDieCount
             QueryWrapper<AccidentOfSupervise> queryWrapper8 = new QueryWrapper();
@@ -157,7 +156,7 @@ public class AccidentStatisticsController {
                 queryCondition("districtCode", provinceCode, "superviseId", "id", superviseService, queryWrapper1, queryWrapper8);
             }
             AccidentOfSupervise accidentOfSupervise8= accidentOfSuperviseService.getOne(queryWrapper8);
-            accidentStatistics.setPoisonDieCount(accidentOfSupervise8.getPoisonDieCount()+"");
+            accidentStatistics.setPoisonDieCount(Integer.toString(accidentOfSupervise8.getPoisonDieCount()));
 
             //otherDieCount
             QueryWrapper<AccidentOfSupervise> queryWrapper9 = new QueryWrapper();

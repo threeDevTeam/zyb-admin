@@ -1,7 +1,6 @@
 package com.hthyaq.zybadmin.controller.dataVisual.nationyes;
 
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.DoubleUtil;
@@ -9,10 +8,7 @@ import com.hthyaq.zybadmin.common.utils.cache.DataVisualCacheUtil;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.*;
 import com.hthyaq.zybadmin.model.entity.AreaOfDic;
 import com.hthyaq.zybadmin.model.entity.BaseOfDic;
-import com.hthyaq.zybadmin.model.entity.Enterprise;
 import com.hthyaq.zybadmin.model.entity.IndustryOfDic;
-import com.hthyaq.zybadmin.service.EnterpriseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,10 +19,8 @@ import java.util.Map;
 
 //默认条件：当前年份
 @RestController
-@RequestMapping("/nationDangerVisual/yes")
-public class NationDangerVisualYse {
-    @Autowired
-    EnterpriseService enterpriseService;
+@RequestMapping("/nationDangerVisual/no")
+public class NationDangerVisualYes {
     /*
         来源：表2-40 企业职业病危害风险分级及管控措施
      */
@@ -188,7 +182,7 @@ public class NationDangerVisualYse {
     }
 
     /*
-    来源：表2-41 企业职业病危害风险分布情况（按行政区划统计）完成
+    来源：表2-41 企业职业病危害风险分布情况（按行政区划统计）
      */
     @GetMapping("/option3")
     public StrList option3() {
@@ -199,17 +193,13 @@ public class NationDangerVisualYse {
         List<Integer> data2List = Lists.newArrayList();
         List<Integer> data3List = Lists.newArrayList();
         //模拟数据
-        List<Enterprise> list = enterpriseService.list();
-        list.forEach(tmp -> {
-            flagList.add(tmp.getProvinceName());
-            int riskLevel = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","暂无风险"));
-            data0List.add(riskLevel);
-            int riskLevel1 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","I级"));
-            data1List.add(riskLevel1);
-            int riskLevel2 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅱ级"));
-            data2List.add(riskLevel2);
-            int riskLevel3 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅲ级"));
-            data3List.add(riskLevel3);
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
+        areaList.forEach(tmp -> {
+            flagList.add(tmp.getName());
+            data0List.add(RandomUtil.randomInt(1, 1000));
+            data1List.add(RandomUtil.randomInt(1, 1000));
+            data2List.add(RandomUtil.randomInt(1, 1000));
+            data3List.add(RandomUtil.randomInt(1, 1000));
         });
 
         strList.setFlagList(flagList);
@@ -223,14 +213,14 @@ public class NationDangerVisualYse {
     @GetMapping("/option3Detail")
     public List<DangerFour> option3Detail() {
         List<DangerFour> list = Lists.newArrayList();
-        List<Enterprise> list1 = enterpriseService.list();
-        for (Enterprise enterprise : list1) {
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
+        for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
-            tmp.setName(enterprise.getProvinceName());
-            tmp.setVar1(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","暂无风险")));
-            tmp.setVar2(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","I级")));
-            tmp.setVar3(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅱ级")));
-            tmp.setVar4(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅲ级")));
+            tmp.setName(areaOfDic.getName());
+            tmp.setVar1(RandomUtil.randomInt(1, 1000));
+            tmp.setVar2(RandomUtil.randomInt(1, 1000));
+            tmp.setVar3(RandomUtil.randomInt(1, 1000));
+            tmp.setVar4(RandomUtil.randomInt(1, 1000));
 
             list.add(tmp);
         }
@@ -238,7 +228,7 @@ public class NationDangerVisualYse {
     }
 
     /*
-来源：表2-41 企业职业病危害风险分布情况（按行业统计）完成
+来源：表2-41 企业职业病危害风险分布情况（按行业统计）
  */
     @GetMapping("/option4")
     public Map<String, List<Integer>> option4() {
@@ -253,20 +243,17 @@ public class NationDangerVisualYse {
         List<Integer> list4 = Lists.newArrayList();
         for (int i = 0; i < size; i++) {
             //
-            List<Enterprise> liste = enterpriseService.list();
-            for (Enterprise enterprise : liste) {
-                int i1 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","暂无风险"));
-                list1.add(i1);
-                //
-                int i2 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","I级"));
-                list2.add(i2);
-                //
-                int i3 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅱ级"));
-                list3.add(i3);
-                //
-                int i4 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅲ级"));
-                list4.add(i4);
-            }
+            int i1 = RandomUtil.randomInt(1, 100);
+            list1.add(i1);
+            //
+            int i2 = RandomUtil.randomInt(1, 100);
+            list2.add(i2);
+            //
+            int i3 = RandomUtil.randomInt(1, 100);
+            list3.add(i3);
+            //
+            int i4 = RandomUtil.randomInt(1, 100);
+            list4.add(i4);
         }
         map.put("list1", list1);
         map.put("list2", list2);
@@ -278,21 +265,21 @@ public class NationDangerVisualYse {
     @GetMapping("/option4Detail")
     public List<DangerFour> option4Detail() {
         List<DangerFour> list = Lists.newArrayList();
-        List<Enterprise> list1 = enterpriseService.list();
-        for (Enterprise enterprise : list1) {
+        List<IndustryOfDic> industryList = DataVisualCacheUtil.getIndustryList();
+        for (IndustryOfDic industryOfDic : industryList) {
             DangerFour tmp = new DangerFour();
-            tmp.setName(enterprise.getIndustryBigName());
-            tmp.setVar1(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","暂无风险")));
-            tmp.setVar2(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","I级")));
-            tmp.setVar3(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅱ级")));
-            tmp.setVar4(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅲ级")));
+            tmp.setName(industryOfDic.getName());
+            tmp.setVar1(RandomUtil.randomInt(1, 1000));
+            tmp.setVar2(RandomUtil.randomInt(1, 1000));
+            tmp.setVar3(RandomUtil.randomInt(1, 1000));
+            tmp.setVar4(RandomUtil.randomInt(1, 1000));
             list.add(tmp);
         }
         return list;
     }
 
     /*
-来源：表2-41 企业职业病危害风险分布情况（按登记注册类型统计）完成
+来源：表2-41 企业职业病危害风险分布情况（按登记注册类型统计）
 */
     @GetMapping("/option5")
     public Map<String, List<Integer>> option5() {
@@ -307,20 +294,17 @@ public class NationDangerVisualYse {
         List<Integer> list4 = Lists.newArrayList();
         for (int i = 0; i < size; i++) {
             //
-            List<Enterprise> liste = enterpriseService.list();
-            for (Enterprise enterprise : liste) {
-                int i1 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","暂无风险"));
-                list1.add(i1);
-                //
-                int i2 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","I级"));
-                list2.add(i2);
-                //
-                int i3 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅱ级"));
-                list3.add(i3);
-                //
-                int i4 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅲ级"));
-                list4.add(i4);
-            }
+            int i1 = RandomUtil.randomInt(1, 100);
+            list1.add(i1);
+            //
+            int i2 = RandomUtil.randomInt(1, 100);
+            list2.add(i2);
+            //
+            int i3 = RandomUtil.randomInt(1, 100);
+            list3.add(i3);
+            //
+            int i4 = RandomUtil.randomInt(1, 100);
+            list4.add(i4);
         }
         map.put("list1", list1);
         map.put("list2", list2);
@@ -332,21 +316,21 @@ public class NationDangerVisualYse {
     @GetMapping("/option5Detail")
     public List<DangerFour> option5Detail() {
         List<DangerFour> list = Lists.newArrayList();
-        List<Enterprise> list1 = enterpriseService.list();
-        for (Enterprise enterprise : list1) {
+        List<BaseOfDic> registerTypeList = DataVisualCacheUtil.getRegisterTypeList();
+        for (BaseOfDic baseOfDic : registerTypeList) {
             DangerFour tmp = new DangerFour();
-            tmp.setName(enterprise.getRegisterBigName());
-            tmp.setVar1(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","暂无风险")));
-            tmp.setVar2(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","I级")));
-            tmp.setVar3(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅱ级")));
-            tmp.setVar4(enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel","Ⅲ级")));
+            tmp.setName(baseOfDic.getBigName());
+            tmp.setVar1(RandomUtil.randomInt(1, 1000));
+            tmp.setVar2(RandomUtil.randomInt(1, 1000));
+            tmp.setVar3(RandomUtil.randomInt(1, 1000));
+            tmp.setVar4(RandomUtil.randomInt(1, 1000));
             list.add(tmp);
         }
         return list;
     }
 
     /*
-来源：表2-46 区域职业病危害风险分布情况 完成
+来源：表2-46 区域职业病危害风险分布情况
 */
     @GetMapping("/option6")
     public StrList option6() {
@@ -357,17 +341,26 @@ public class NationDangerVisualYse {
         List<Integer> data2List = Lists.newArrayList();
         List<Integer> data3List = Lists.newArrayList();
         //模拟数据
-        List<Enterprise> liste = enterpriseService.list();
-        for (Enterprise Enterprise : liste) {
-            flagList.add(Enterprise.getProvinceName());
-            int count = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel", "暂无风险"));
-            data0List.add(count);
-            int count1 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel", "I级"));
-            data1List.add(count1);
-            int count2 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel", "Ⅱ级"));
-            data2List.add(count2);
-            int count3 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel", "Ⅲ级"));
-            data3List.add(count3);
+        List<AreaOfDic> list = DataVisualCacheUtil.getAreaChildren("国家", null, null);
+        for (AreaOfDic tmp : list) {
+            flagList.add(tmp.getName());
+            int i = tmp.getChildNum();
+            if (i > 0) {
+                int j0 = RandomUtil.randomInt(0, i);
+                int j1 = RandomUtil.randomInt(0, i - j0);
+                int j2 = RandomUtil.randomInt(0, i - j0 - j1);
+                int j3 = i - j0 - j1 - j2;
+                data0List.add(j0);
+                data1List.add(j1);
+                data2List.add(j2);
+                data3List.add(j3);
+            } else {
+                data0List.add(0);
+                data1List.add(0);
+                data2List.add(0);
+                data3List.add(0);
+            }
+
         }
         strList.setFlagList(flagList);
         strList.setZero(data0List);
@@ -380,18 +373,26 @@ public class NationDangerVisualYse {
     @GetMapping("/option6Detail")
     public List<DangerFour> option6Detail() {
         List<DangerFour> list = Lists.newArrayList();
-        List<Enterprise> liste = enterpriseService.list();
-        for (Enterprise enterprise : liste) {
+        List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家", null, null);
+        for (AreaOfDic areaOfDic : areaList) {
             DangerFour tmp = new DangerFour();
-            tmp.setName(enterprise.getProvinceName());
-            int count = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel", "暂无风险"));
-            tmp.setVar1(count);
-            int count1 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel", "I级"));
-            tmp.setVar2(count1);
-            int count2 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel", "Ⅱ级"));
-            tmp.setVar3(count2);
-            int count3 = enterpriseService.count(new QueryWrapper<Enterprise>().eq("riskLevel", "Ⅲ级"));
-            tmp.setVar4(count3);
+            tmp.setName(areaOfDic.getName());
+            int i = areaOfDic.getChildNum();
+            if (i > 0) {
+                int j0 = RandomUtil.randomInt(0, i);
+                int j1 = RandomUtil.randomInt(0, i - j0);
+                int j2 = RandomUtil.randomInt(0, i - j0 - j1);
+                int j3 = i - j0 - j1 - j2;
+                tmp.setVar1(j0);
+                tmp.setVar2(j1);
+                tmp.setVar3(j2);
+                tmp.setVar4(j3);
+            } else {
+                tmp.setVar1(0);
+                tmp.setVar2(0);
+                tmp.setVar3(0);
+                tmp.setVar4(0);
+            }
             list.add(tmp);
         }
         return list;

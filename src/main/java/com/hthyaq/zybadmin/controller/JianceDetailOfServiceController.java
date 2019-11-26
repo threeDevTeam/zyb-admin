@@ -37,28 +37,6 @@ import java.util.Map;
  * 检测机构的具体报告
  * <p>
  * 检测机构的具体报告
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
- * <p>
  * 前端控制器
  * </p>
  *
@@ -274,18 +252,8 @@ public class JianceDetailOfServiceController {
     }
     @GetMapping("/cascadeData1")
     public List cascadeData() {
-        List list1 = new ArrayList();
-
-        QueryWrapper<Typesofregistration> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("level", 2);
-        List<Typesofregistration> list = typesofregistrationService.list(queryWrapper);
-        for (Typesofregistration typesofregistration : list) {
-            FuView fuView = new FuView();
-            fuView.setLabel(typesofregistration.getName());
-            fuView.setValue(Integer.parseInt(String.valueOf(typesofregistration.getId())));
-            list1.add(fuView);
-        }
-        return list1;
+        List<Typesofregistration> list = typesofregistrationService.list();
+        return CascadeUtil.get(list);
     }
 
     @GetMapping("/cascadeData2")

@@ -134,6 +134,12 @@ public class JianceDetailOfService implements Serializable {
     private String registerAddress;
 
     /**
+     * 登记注册类型的大类名称
+     */
+    @TableField("registerBigName")
+    private String registerBigName;
+
+    /**
      * 登记注册类型的小类名称
      */
     @TableField("registerSmallName")
