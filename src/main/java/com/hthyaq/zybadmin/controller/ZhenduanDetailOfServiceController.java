@@ -150,8 +150,6 @@ public class ZhenduanDetailOfServiceController {
                     for (IndustryOfDic industryOfDic : list3) {
                         zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
                     }
-                } else {
-                    zhenduanDetailOfService.setIndustrySmallName("无");
                 }
                 //岗位名称
                 QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
@@ -421,8 +419,6 @@ public class ZhenduanDetailOfServiceController {
             for (IndustryOfDic industryOfDic : listI) {
                 zhenduanDetailOfService.setIndustrySmallName(industryOfDic.getName());
             }
-        } else {
-            zhenduanDetailOfService.setIndustrySmallName("无");
         }
 
         //岗位名称

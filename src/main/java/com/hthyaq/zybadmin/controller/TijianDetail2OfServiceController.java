@@ -149,8 +149,6 @@ public class TijianDetail2OfServiceController {
                     for (IndustryOfDic industryOfDic : listT1) {
                         tijianDetail2OfService.setIndustrySmallName(industryOfDic.getName());
                     }
-                } else {
-                    tijianDetail2OfService.setIndustrySmallName("无");
                 }
 
                 //岗位名称
@@ -420,10 +418,7 @@ public class TijianDetail2OfServiceController {
             for (IndustryOfDic industryOfDic : listT1) {
                 tijianDetail2OfService.setIndustrySmallName(industryOfDic.getName());
             }
-        } else {
-            tijianDetail2OfService.setIndustrySmallName("无");
         }
-
         //岗位名称
         QueryWrapper<Gangwei> qw3 = new QueryWrapper<>();
         qw3.eq("id", tijianDetail2OfServiceView.getCascaded3().get(0));

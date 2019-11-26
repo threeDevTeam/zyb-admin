@@ -19,7 +19,7 @@ import java.util.Map;
 
 //默认条件：当前年份
 @RestController
-@RequestMapping("/nationDangerVisual/no")
+@RequestMapping("/nationDangerVisual/yes")
 public class NationDangerVisualYes {
     /*
         来源：表2-40 企业职业病危害风险分级及管控措施

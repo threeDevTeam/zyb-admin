@@ -154,7 +154,7 @@ public class SysMenuController {
                 SysMenuLoginView sysMenuLoginView = new SysMenuLoginView();
                 BeanUtils.copyProperties(sysMenu, sysMenuLoginView);
                 QueryWrapper<SysMenu> qw2 = new QueryWrapper<>();
-                qw2.eq("pid",sysMenu.getId());
+                qw2.eq("pid",sysMenu.getId()).orderByAsc("id");
                 List<SysMenu> list3 = sysMenuService.list(qw2);
                 sysMenuLoginView.setChildren((ArrayList) list3);
                 sysMenuLoginView.setKey(sysMenu.getId());

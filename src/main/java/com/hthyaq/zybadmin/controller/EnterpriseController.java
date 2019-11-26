@@ -104,8 +104,6 @@ public class EnterpriseController {
                 for (IndustryOfDic industryOfDic : listT1) {
                     enterprise.setIndustrySmallName(industryOfDic.getName());
                 }
-            }else{
-                enterprise.setIndustrySmallName("无");
             }
 
             enterprise.setName(enterpriseOfRegister.getName());
@@ -296,8 +294,6 @@ public class EnterpriseController {
             for (IndustryOfDic industryOfDic : listT1) {
                 enterprise.setIndustrySmallName(industryOfDic.getName());
             }
-        }else{
-            enterprise.setIndustrySmallName("无");
         }
 
         return enterpriseService.updateById(enterprise);

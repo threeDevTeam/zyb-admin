@@ -149,8 +149,6 @@ public class TijianDetail1OfServiceController {
                     for (IndustryOfDic industryOfDic : listT1) {
                         tijianDetail1OfService.setIndustrySmallName(industryOfDic.getName());
                     }
-                } else {
-                    tijianDetail1OfService.setIndustrySmallName("无");
                 }
 
 
@@ -355,8 +353,6 @@ public class TijianDetail1OfServiceController {
             for (IndustryOfDic industryOfDic : listT1) {
                 tijianDetail1OfService.setIndustrySmallName(industryOfDic.getName());
             }
-        } else {
-            tijianDetail1OfService.setIndustrySmallName("无");
         }
 
         //岗位名称

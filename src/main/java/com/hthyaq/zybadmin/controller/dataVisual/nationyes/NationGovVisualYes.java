@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/nationGovVisual/no")
+@RequestMapping("/nationGovVisual/yes")
 public class NationGovVisualYes {
     //表2-29 职业健康监管资源统计分析表
     @GetMapping("/option1")

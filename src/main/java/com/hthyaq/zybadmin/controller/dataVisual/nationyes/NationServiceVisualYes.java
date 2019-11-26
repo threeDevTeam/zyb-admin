@@ -625,25 +625,28 @@ public class NationServiceVisualYes {
                 GovEight govEight = new GovEight();
                 govEight.setArea(areaOfDic.getName());
                 //检测机构数
-                int count = jianceBasicOfServiceService.count();
+                int count = jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("provinceName",type));
                 govEight.setVar1(count);
                 //专业技术人员数
-                int technologyCount = jianceBasicOfServiceService.count();
+                int technologyCount = jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("provinceName",type));
                 govEight.setVar2(technologyCount);
                 //经培训合格数
-               int passCount= jianceBasicOfServiceService.count();
+               int passCount= jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("provinceName",type));
                 govEight.setVar3(passCount);
                 //检测仪器台套数
-                int equipmentCount= jianceBasicOfServiceService.count();
+                int equipmentCount= jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("provinceName",type));
                 govEight.setVar4(equipmentCount);
                 //计量认证项目数
-                int projectCount=jianceBasicOfServiceService.count();
+                int projectCount=jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("provinceName",type));
                 govEight.setVar5(projectCount);
-                int count1 = jianceTotalOfServiceService.count();
-                govEight.setVar6(count1);
-                int count2 =jianceTotalOfServiceService.count();
-                govEight.setVar7(count2);
-                int count3 = jianceDetailOfServiceService.count();
+                List<JianceBasicOfService> listj = jianceBasicOfServiceService.list(new QueryWrapper<JianceBasicOfService>().eq("provinceName", type));
+                for (JianceBasicOfService jianceBasicOfService : listj) {
+                    int count1 = jianceTotalOfServiceService.count(new QueryWrapper<JianceTotalOfService>().eq("year",year).eq("tijianBasicId",jianceBasicOfService.getId()));
+                    govEight.setVar6(count1);
+                    int count2 =jianceTotalOfServiceService.count(new QueryWrapper<JianceTotalOfService>().eq("year",year).eq("tijianBasicId",jianceBasicOfService.getId()));
+                    govEight.setVar7(count2);
+                }
+                int count3 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("year",year).eq("provinceName",type));
                 govEight.setVar8(count3);
                 list.add(govEight);
             }
@@ -651,14 +654,30 @@ public class NationServiceVisualYes {
             for (BaseOfDic baseOfDic : registerList) {
                 GovEight govEight = new GovEight();
                 govEight.setArea(baseOfDic.getBigName());
-                govEight.setVar1(RandomUtil.randomInt(1, 10000));
-                govEight.setVar2(RandomUtil.randomInt(1, 10000));
-                govEight.setVar3(RandomUtil.randomInt(1, 10000));
-                govEight.setVar4(RandomUtil.randomInt(1, 10000));
-                govEight.setVar5(RandomUtil.randomInt(1, 10000));
-                govEight.setVar6(RandomUtil.randomInt(1, 10000));
-                govEight.setVar7(RandomUtil.randomInt(1, 10000));
-                govEight.setVar8(RandomUtil.randomInt(1, 10000));
+                //检测机构数
+                int count = jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("registerBigName",type));
+                govEight.setVar1(count);
+                //专业技术人员数
+                int technologyCount = jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("registerBigName",type));
+                govEight.setVar2(technologyCount);
+                //经培训合格数
+                int passCount= jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("registerBigName",type));
+                govEight.setVar3(passCount);
+                //检测仪器台套数
+                int equipmentCount= jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("registerBigName",type));
+                govEight.setVar4(equipmentCount);
+                //计量认证项目数
+                int projectCount=jianceBasicOfServiceService.count(new QueryWrapper<JianceBasicOfService>().eq("year",year).eq("registerBigName",type));
+                govEight.setVar5(projectCount);
+                List<JianceBasicOfService> listj = jianceBasicOfServiceService.list(new QueryWrapper<JianceBasicOfService>().eq("registerBigName", type));
+                for (JianceBasicOfService jianceBasicOfService : listj) {
+                    int count1 = jianceTotalOfServiceService.count(new QueryWrapper<JianceTotalOfService>().eq("year",year).eq("tijianBasicId",jianceBasicOfService.getId()));
+                    govEight.setVar6(count1);
+                    int count2 =jianceTotalOfServiceService.count(new QueryWrapper<JianceTotalOfService>().eq("year",year).eq("tijianBasicId",jianceBasicOfService.getId()));
+                    govEight.setVar7(count2);
+                }
+                int count3 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("year",year).eq("registerBigName",type));
+                govEight.setVar8(count3);
                 list.add(govEight);
             }
         }

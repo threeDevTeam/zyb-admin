@@ -155,8 +155,6 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
                     for (IndustryOfDic industryOfDic : listT1) {
                         jianceDetailOfService.setIndustrySmallName(industryOfDic.getName());
                     }
-                }else{
-                    jianceDetailOfService.setIndustrySmallName("无");
                 }
 
                 //岗位名称
@@ -305,8 +303,6 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
             for (IndustryOfDic industryOfDic : listT1) {
                 jianceDetailOfService.setIndustrySmallName(industryOfDic.getName());
             }
-        }else{
-            jianceDetailOfService.setIndustrySmallName("无");
         }
 
         //岗位名称
