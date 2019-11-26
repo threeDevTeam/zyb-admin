@@ -6,6 +6,7 @@
             修改目录：    d:/zybFile
         ureport.properties
             ureport.debug=false
+            ureport.fileStoreDir=D:/zybFile/ureportfiles
         注释掉application.yml的log-impl
         修改application.yml的数据库的IP
     2.前端整合
