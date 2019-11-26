@@ -22,7 +22,8 @@ import java.util.Map;
 public class NationServiceVisualYes {
     @Autowired
     JianceDetailOfServiceService jianceDetailOfServiceService;
-    //
+    @Autowired
+    JianceBasicOfServiceService jianceBasicOfServiceService;
     @Autowired
     TijianTotalOfServiceService tijianTotalOfServiceService;
     @Autowired
@@ -37,6 +38,8 @@ public class NationServiceVisualYes {
     ZhenduanTotalOfServiceService zhenduanTotalOfServiceService;
     @Autowired
     ZhenduanBasicOfServiceService zhenduanBasicOfServiceService;
+    @Autowired
+    JianceTotalOfServiceService jianceTotalOfServiceService;
 
     //危害因素
     //    表1  作业场所职业病危害因素检测情况统计分析表
@@ -116,20 +119,20 @@ public class NationServiceVisualYes {
         List<Double> list1 = Lists.newArrayList();
         List<Double> list2 = Lists.newArrayList();
         List<Double> list3 = Lists.newArrayList();
-            int count = tijianTotalOfServiceService.count();
-            int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year).eq("result", "职业禁忌证"));
-            double d1 = count1 / count;
-            list1.add(DoubleUtil.get(d1));
-            //
-            int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
-            double d2 = count2 / count;
-            list2.add(DoubleUtil.get(d2));
-            //
-            int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year));
-            int enterpriseCode2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
+        int count = tijianTotalOfServiceService.count();
+        int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year).eq("result", "职业禁忌证"));
+        double d1 = count1 / count;
+        list1.add(DoubleUtil.get(d1));
+        //
+        int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
+        double d2 = count2 / count;
+        list2.add(DoubleUtil.get(d2));
+        //
+        int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year));
+        int enterpriseCode2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
 
-            double d3 = enterpriseCode2 / enterpriseCode;
-            list3.add(DoubleUtil.get(d3));
+        double d3 = enterpriseCode2 / enterpriseCode;
+        list3.add(DoubleUtil.get(d3));
 
         map.put("list1", list1);
         map.put("list2", list2);
@@ -224,8 +227,8 @@ public class NationServiceVisualYes {
         List<Double> list1 = Lists.newArrayList();
         int count = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("year", year));
         int count1 = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("year", year));
-        double d1 = count/count1;
-            list1.add(DoubleUtil.get(d1));
+        double d1 = count / count1;
+        list1.add(DoubleUtil.get(d1));
 
         map.put("list1", list1);
         return map;
@@ -248,19 +251,19 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("scope", s).eq("year", year));
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
-                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId",zhenduanBasicOfService.getId()).eq("year", year));
-                    int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId",zhenduanBasicOfService.getId()).eq("year", year));
-                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId",zhenduanBasicOfService.getId()).eq("year", year));
-                    int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId",zhenduanBasicOfService.getId()).eq("year", year));
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
 
                     tmp.setVar1(count2);
                     tmp.setVar2(enterpriseCode);
                     tmp.setVar3(count1);
                     tmp.setVar4(idNum);
-                    tmp.setVar5(idNum/count1*100 + "%");
+                    tmp.setVar5(idNum / count1 * 100 + "%");
                     list.add(tmp);
                 }
-            }else  if ("行政区划".equals(type)) {
+            } else if ("行政区划".equals(type)) {
                 Twenty tmp = new Twenty();
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("provinceName", s).eq("year", year));
@@ -277,7 +280,7 @@ public class NationServiceVisualYes {
                     tmp.setVar5(idNum / count1 * 100 + "%");
                     list.add(tmp);
                 }
-            }else  if ("登记注册类型".equals(type)) {
+            } else if ("登记注册类型".equals(type)) {
                 Twenty tmp = new Twenty();
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("registerBigName", s).eq("year", year));
@@ -322,19 +325,29 @@ public class NationServiceVisualYes {
 
         for (int i = 0; i < size; i++) {
             //
-            double d1 = RandomUtil.randomDouble(1.0, 100.0);
+            int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("year", year));
+            int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("year", year).eq("decideResult", "合格"));
+            double d1 = count1 / count;
             list1.add(DoubleUtil.get(d1));
             //
-            double d2 = RandomUtil.randomDouble(1.0, d1);
+            int counth = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("year", year));
+            int counth1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("year", year).eq("decideResult", "合格"));
+            double d2 = counth1 / counth;
             list2.add(DoubleUtil.get(d2));
             //
-            double d3 = RandomUtil.randomDouble(1.0, d2);
+            int countw = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("year", year));
+            int countw1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("year", year).eq("decideResult", "合格"));
+            double d3 = countw1 / countw;
             list3.add(DoubleUtil.get(d3));
             //
-            double d4 = RandomUtil.randomDouble(1.0, d2);
+            int countf = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("year", year));
+            int countf1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("year", year).eq("decideResult", "合格"));
+            double d4 = countf1 / countf;
             list4.add(DoubleUtil.get(d4));
             //
-            double d5 = RandomUtil.randomDouble(1.0, d2);
+            int counts = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("year", year));
+            int counts1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("year", year).eq("decideResult", "合格"));
+            double d5 = counts1 / counts;
             list5.add(DoubleUtil.get(d5));
         }
         map.put("list1", list1);
@@ -358,11 +371,31 @@ public class NationServiceVisualYes {
         }
         for (String s : list2) {
             Twenty tmp = new Twenty();
-            tmp.setName(s);
-            tmp.setVar1(RandomUtil.randomInt(1, 10000));
-            tmp.setVar2(RandomUtil.randomInt(1, 10000));
-            tmp.setVar3(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
-            list.add(tmp);
+            if ("危害因素".equals(type)) {
+                tmp.setName(s);
+                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("year", year));
+                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("year", year).eq("decideResult", "合格"));
+                tmp.setVar1(count);
+                tmp.setVar2(count1);
+                tmp.setVar3(count1 / count * 100 + "%");
+                list.add(tmp);
+            } else if ("行政区划".equals(type)) {
+                tmp.setName(s);
+                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("year", year));
+                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("year", year).eq("decideResult", "合格"));
+                tmp.setVar1(count);
+                tmp.setVar2(count1);
+                tmp.setVar3(count1 / count * 100 + "%");
+                list.add(tmp);
+            } else if ("登记注册类型".equals(type)) {
+                tmp.setName(s);
+                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("registerBigName", s).eq("year", year));
+                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("registerBigName", s).eq("year", year).eq("decideResult", "合格"));
+                tmp.setVar1(count);
+                tmp.setVar2(count1);
+                tmp.setVar3(count1 / count * 100 + "%");
+                list.add(tmp);
+            }
         }
         return list;
     }
@@ -386,14 +419,19 @@ public class NationServiceVisualYes {
         List<Double> list3 = Lists.newArrayList();
 
         for (int i = 0; i < size; i++) {
-            //
-            double d1 = RandomUtil.randomDouble(1.0, 100.0);
+            int count = tijianTotalOfServiceService.count();
+            int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year).eq("result", "职业禁忌证"));
+            double d1 = count1 / count;
             list1.add(DoubleUtil.get(d1));
             //
-            double d2 = RandomUtil.randomDouble(1.0, d1);
+            int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
+            double d2 = count2 / count;
             list2.add(DoubleUtil.get(d2));
             //
-            double d3 = RandomUtil.randomDouble(1.0, d2);
+            int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year));
+            int enterpriseCode2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
+
+            double d3 = enterpriseCode2 / enterpriseCode;
             list3.add(DoubleUtil.get(d3));
         }
         map.put("list1", list1);
@@ -414,17 +452,68 @@ public class NationServiceVisualYes {
             list2 = DataVisualCacheUtil.getRegisterTypeStrList();
         }
         for (String s : list2) {
-            Twenty tmp = new Twenty();
-            tmp.setName(s);
-            tmp.setVar1(RandomUtil.randomInt(1, 10000));
-            tmp.setVar2(RandomUtil.randomInt(1, 10000));
-            tmp.setVar3(RandomUtil.randomInt(1, 10000));
-            tmp.setVar4(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
-            tmp.setVar5(RandomUtil.randomInt(1, 10000));
-            tmp.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
-            tmp.setVar7(RandomUtil.randomInt(1, 10000));
-            tmp.setVar8(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
-            list.add(tmp);
+            if ("危害因素".equals(type)) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("scope", s));
+                for (TijianBasicOfService tijianBasicOfService : listt) {
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar1(enterpriseCode);
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar2(count);
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    tmp.setVar3(count1);
+                    tmp.setVar4(count1 / count * 100 + "%");
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar5(count2);
+                    tmp.setVar6(count2 / count * 100 + "%");
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar7(count3);
+                    tmp.setVar8(count3 / count * 100 + "%");
+                }
+                list.add(tmp);
+            } else if ("行政区划".equals(type)) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("provinceName", s));
+                for (TijianBasicOfService tijianBasicOfService : listt) {
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar1(enterpriseCode);
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar2(count);
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    tmp.setVar3(count1);
+                    tmp.setVar4(count1 / count * 100 + "%");
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar5(count2);
+                    tmp.setVar6(count2 / count * 100 + "%");
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar7(count3);
+                    tmp.setVar8(count3 / count * 100 + "%");
+                }
+                list.add(tmp);
+            } else if ("登记注册类型".equals(type)) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("registerBigName", s));
+
+                for (TijianBasicOfService tijianBasicOfService : listt) {
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar1(enterpriseCode);
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar2(count);
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    tmp.setVar3(count1);
+                    tmp.setVar4(count1 / count * 100 + "%");
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar5(count2);
+                    tmp.setVar6(count2 / count * 100 + "%");
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    tmp.setVar7(count3);
+                    tmp.setVar8(count3 / count * 100 + "%");
+                }
+                list.add(tmp);
+            }
         }
         return list;
     }
@@ -447,7 +536,9 @@ public class NationServiceVisualYes {
 
         for (int i = 0; i < size; i++) {
             //
-            double d1 = RandomUtil.randomDouble(1.0, 100.0);
+            int count = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("year", year));
+            int count1 = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("year", year));
+            double d1 = count / count1;
             list1.add(DoubleUtil.get(d1));
         }
         map.put("list1", list1);
@@ -466,14 +557,58 @@ public class NationServiceVisualYes {
             list2 = DataVisualCacheUtil.getRegisterTypeStrList();
         }
         for (String s : list2) {
-            Twenty tmp = new Twenty();
-            tmp.setName(s);
-            tmp.setVar1(RandomUtil.randomInt(1, 10000));
-            tmp.setVar2(RandomUtil.randomInt(1, 10000));
-            tmp.setVar3(RandomUtil.randomInt(1, 10000));
-            tmp.setVar4(RandomUtil.randomInt(1, 10000));
-            tmp.setVar5(DoubleUtil.get(RandomUtil.randomDouble(1.0, 100.0)) + "%");
-            list.add(tmp);
+            if ("危害因素".equals(type)) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("scope", s).eq("year", year));
+                for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+
+                    tmp.setVar1(count2);
+                    tmp.setVar2(enterpriseCode);
+                    tmp.setVar3(count1);
+                    tmp.setVar4(idNum);
+                    tmp.setVar5(idNum / count1 * 100 + "%");
+                    list.add(tmp);
+                }
+            } else if ("行政区划".equals(type)) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("provinceName", s).eq("year", year));
+                for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+
+                    tmp.setVar1(count2);
+                    tmp.setVar2(enterpriseCode);
+                    tmp.setVar3(count1);
+                    tmp.setVar4(idNum);
+                    tmp.setVar5(idNum / count1 * 100 + "%");
+                    list.add(tmp);
+                }
+            } else if ("登记注册类型".equals(type)) {
+                Twenty tmp = new Twenty();
+                tmp.setName(s);
+                List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("registerBigName", s).eq("year", year));
+                for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+
+                    tmp.setVar1(count2);
+                    tmp.setVar2(enterpriseCode);
+                    tmp.setVar3(count1);
+                    tmp.setVar4(idNum);
+                    tmp.setVar5(idNum / count1 * 100 + "%");
+                    list.add(tmp);
+                }
+            }
         }
         return list;
     }
@@ -489,14 +624,27 @@ public class NationServiceVisualYes {
             for (AreaOfDic areaOfDic : areaList) {
                 GovEight govEight = new GovEight();
                 govEight.setArea(areaOfDic.getName());
-                govEight.setVar1(RandomUtil.randomInt(1, 10000));
-                govEight.setVar2(RandomUtil.randomInt(1, 10000));
-                govEight.setVar3(RandomUtil.randomInt(1, 10000));
-                govEight.setVar4(RandomUtil.randomInt(1, 10000));
-                govEight.setVar5(RandomUtil.randomInt(1, 10000));
-                govEight.setVar6((double) RandomUtil.randomInt(1, 10000));
-                govEight.setVar7(RandomUtil.randomInt(1, 10000));
-                govEight.setVar8(RandomUtil.randomInt(1, 10000));
+                //检测机构数
+                int count = jianceBasicOfServiceService.count();
+                govEight.setVar1(count);
+                //专业技术人员数
+                int technologyCount = jianceBasicOfServiceService.count();
+                govEight.setVar2(technologyCount);
+                //经培训合格数
+               int passCount= jianceBasicOfServiceService.count();
+                govEight.setVar3(passCount);
+                //检测仪器台套数
+                int equipmentCount= jianceBasicOfServiceService.count();
+                govEight.setVar4(equipmentCount);
+                //计量认证项目数
+                int projectCount=jianceBasicOfServiceService.count();
+                govEight.setVar5(projectCount);
+                int count1 = jianceTotalOfServiceService.count();
+                govEight.setVar6(count1);
+                int count2 =jianceTotalOfServiceService.count();
+                govEight.setVar7(count2);
+                int count3 = jianceDetailOfServiceService.count();
+                govEight.setVar8(count3);
                 list.add(govEight);
             }
         } else if ("登记注册类型".equals(type)) {
@@ -508,7 +656,7 @@ public class NationServiceVisualYes {
                 govEight.setVar3(RandomUtil.randomInt(1, 10000));
                 govEight.setVar4(RandomUtil.randomInt(1, 10000));
                 govEight.setVar5(RandomUtil.randomInt(1, 10000));
-                govEight.setVar6((double) RandomUtil.randomInt(1, 10000));
+                govEight.setVar6(RandomUtil.randomInt(1, 10000));
                 govEight.setVar7(RandomUtil.randomInt(1, 10000));
                 govEight.setVar8(RandomUtil.randomInt(1, 10000));
                 list.add(govEight);

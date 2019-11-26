@@ -346,9 +346,9 @@ public class OtherServiceVisualNo {
                 govEight.setVar4(RandomUtil.randomInt(1, 10000));
                 govEight.setVar5(RandomUtil.randomInt(1, 10000));
 
-                govEight.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1, 10000)));
+                govEight.setVar6(RandomUtil.randomInt(1, 10000));
 
-                govEight.setVar6((double) RandomUtil.randomInt(1, 10000));
+                govEight.setVar6(RandomUtil.randomInt(1, 10000));
                 govEight.setVar7(RandomUtil.randomInt(1, 10000));
                 govEight.setVar8(RandomUtil.randomInt(1, 10000));
                 list.add(govEight);
@@ -363,9 +363,9 @@ public class OtherServiceVisualNo {
                 govEight.setVar4(RandomUtil.randomInt(1, 10000));
                 govEight.setVar5(RandomUtil.randomInt(1, 10000));
 
-                govEight.setVar6(DoubleUtil.get(RandomUtil.randomDouble(1, 10000)));
+                govEight.setVar6(RandomUtil.randomInt(1, 10000));
 
-                govEight.setVar6((double) RandomUtil.randomInt(1, 10000));
+                govEight.setVar6(RandomUtil.randomInt(1, 10000));
 
                 govEight.setVar7(RandomUtil.randomInt(1, 10000));
                 govEight.setVar8(RandomUtil.randomInt(1, 10000));

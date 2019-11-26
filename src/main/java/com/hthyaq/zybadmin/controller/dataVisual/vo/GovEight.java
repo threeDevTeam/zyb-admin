@@ -10,7 +10,7 @@ public class GovEight {
     private Integer var3;
     private Integer var4;
     private Integer var5;
-    private Double var6;
+    private Integer var6;
     private Integer var7;
     private Integer var8;
 }
