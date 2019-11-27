@@ -61,9 +61,13 @@ public class JianceTotalOfServiceController {
                 List<JianceBasicOfService> list1 = jianceBasicOfServiceService.list(queryWrapper1);
                 for (JianceBasicOfService jianceBasicOfService : list1) {
                     int count = jianceDetailOfServiceService.count();
-                    jianceTotalOfService.setCount5(String.valueOf(count));
+                    if(count != 0) {
+                        jianceTotalOfService.setCount5(String.valueOf(count));
+                    }
                     int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("decideResult", "合格"));
-                    jianceTotalOfService.setCount6(String.valueOf(count1));
+                    if(count1 != 0) {
+                        jianceTotalOfService.setCount6(String.valueOf(count1));
+                    }
                     jianceTotalOfService.setJianceBasicId(jianceBasicOfService.getId());
                 }
                 return flag = jianceTotalOfServiceService.save(jianceTotalOfService);

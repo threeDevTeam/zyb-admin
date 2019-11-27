@@ -134,7 +134,7 @@ public class EnterpriseController {
             }else {
                 enterprise.setSize("无");
             }
-
+            enterprise.setRiskLevel("暂无风险");
                 flag=enterpriseService.save(enterprise);
         }
         return flag;

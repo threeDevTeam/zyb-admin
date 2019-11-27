@@ -60,7 +60,9 @@ public class ZhenduanTotalOfServiceController {
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
                     zhenduanTotalOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
                     int count = zhenduanBasicOfServiceService.count();
-                    zhenduanTotalOfService.setCount3(count);
+                    if(count != 0) {
+                        zhenduanTotalOfService.setCount3(count);
+                    }
                     flag = zhenduanTotalOfServiceService.save(zhenduanTotalOfService);
                 }
             }
