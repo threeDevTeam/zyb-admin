@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,25 @@ public class LawOfSuperviseController {
             List<Supervise> list1 = superviseService.list(queryWrapper1);
             for (Supervise supervise : list1) {
                 lawOfSupervise.setSuperviseId(supervise.getId());
+
+                QueryWrapper<LawOfSupervise> queryWrapper2= new QueryWrapper();
+                queryWrapper2.select("sum(ruleIncrease) ruleIncrease").eq("year",lawOfSupervise.getYear()-1);
+                LawOfSupervise one = lawOfSuperviseService.getOne(queryWrapper2);
+                if(one!=null) {
+                    lawOfSupervise.setRuleSum(one.getRuleIncrease());
+                }
+                QueryWrapper<LawOfSupervise> queryWrapper3 = new QueryWrapper();
+                queryWrapper3.select("sum(fileIncrease) fileIncrease").eq("year",lawOfSupervise.getYear()-1);
+                LawOfSupervise one2 = lawOfSuperviseService.getOne(queryWrapper3);
+                if(one2!=null) {
+                    lawOfSupervise.setFileSum(one2.getFileIncrease());
+                }
+                QueryWrapper<LawOfSupervise> queryWrapper4 = new QueryWrapper();
+                queryWrapper4.select("sum(startdardIncrease) startdardIncrease").eq("year",lawOfSupervise.getYear()-1);
+                LawOfSupervise one3 = lawOfSuperviseService.getOne(queryWrapper4);
+                    if(one3!=null) {
+                        lawOfSupervise.setStartdardSum(one3.getStartdardIncrease());
+                    }
                 flag = lawOfSuperviseService.save(lawOfSupervise);
             }
         }

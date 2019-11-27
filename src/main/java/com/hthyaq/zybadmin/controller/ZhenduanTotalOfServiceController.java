@@ -59,6 +59,8 @@ public class ZhenduanTotalOfServiceController {
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(queryWrapper1);
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
                     zhenduanTotalOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
+                    int count = zhenduanBasicOfServiceService.count();
+                    zhenduanTotalOfService.setCount3(count);
                     flag = zhenduanTotalOfServiceService.save(zhenduanTotalOfService);
                 }
             }

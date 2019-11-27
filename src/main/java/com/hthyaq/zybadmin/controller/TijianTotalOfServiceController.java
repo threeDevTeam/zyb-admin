@@ -13,10 +13,7 @@ import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.TijianBasicOfServiceModel;
 import com.hthyaq.zybadmin.model.excelModel.TijianTotalOfServiceModel;
-import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
-import com.hthyaq.zybadmin.service.SysRoleUserService;
-import com.hthyaq.zybadmin.service.TijianBasicOfServiceService;
-import com.hthyaq.zybadmin.service.TijianTotalOfServiceService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +44,10 @@ public class TijianTotalOfServiceController {
     ServiceOfRegisterService serviceOfRegisterService;
     @Autowired
     SysRoleUserService sysRoleUserService;
-
+    @Autowired
+    TijianDetail1OfServiceService tijianDetail1OfServiceService;
+    @Autowired
+    TijianDetail2OfServiceService tijianDetail2OfServiceService;
     @PostMapping("/add")
     public boolean add(@RequestBody TijianTotalOfService tijianTotalOfService, HttpSession httpSession) {
         boolean flag = false;
@@ -62,6 +62,12 @@ public class TijianTotalOfServiceController {
                 List<TijianBasicOfService> list1 = tijianBasicOfServiceService.list(queryWrapper1);
                 for (TijianBasicOfService tijianBasicOfService : list1) {
                     tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
+                    int count = tijianTotalOfServiceService.count();
+                    tijianTotalOfService.setCount1(count+1);
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("result", "职业禁忌证"));
+                    tijianTotalOfService.setCount3(count1);
+                    int count2 = tijianDetail2OfServiceService.count();
+                    tijianTotalOfService.setCount4(count2);
                     flag = tijianTotalOfServiceService.save(tijianTotalOfService);
                 }
             }

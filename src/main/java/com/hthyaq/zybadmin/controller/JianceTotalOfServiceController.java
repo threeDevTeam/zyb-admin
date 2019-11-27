@@ -13,10 +13,7 @@ import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.JianceBasicOfServiceModel;
 import com.hthyaq.zybadmin.model.excelModel.JianceTotalOfServiceModel;
-import com.hthyaq.zybadmin.service.JianceBasicOfServiceService;
-import com.hthyaq.zybadmin.service.JianceTotalOfServiceService;
-import com.hthyaq.zybadmin.service.ServiceOfRegisterService;
-import com.hthyaq.zybadmin.service.SysRoleUserService;
+import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +44,9 @@ public class JianceTotalOfServiceController {
     JianceBasicOfServiceService jianceBasicOfServiceService;
     @Autowired
     SysRoleUserService sysRoleUserService;
+    @Autowired
+    JianceDetailOfServiceService jianceDetailOfServiceService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody JianceTotalOfService jianceTotalOfService, HttpSession httpSession) {
         boolean flag = false;
@@ -60,6 +60,10 @@ public class JianceTotalOfServiceController {
                 queryWrapper.eq("name", serviceOfRegister.getName());
                 List<JianceBasicOfService> list1 = jianceBasicOfServiceService.list(queryWrapper1);
                 for (JianceBasicOfService jianceBasicOfService : list1) {
+                    int count = jianceDetailOfServiceService.count();
+                    jianceTotalOfService.setCount5(String.valueOf(count));
+                    int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("decideResult", "合格"));
+                    jianceTotalOfService.setCount6(String.valueOf(count1));
                     jianceTotalOfService.setJianceBasicId(jianceBasicOfService.getId());
                 }
                 return flag = jianceTotalOfServiceService.save(jianceTotalOfService);
