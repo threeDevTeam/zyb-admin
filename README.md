@@ -1,5 +1,6 @@
 部署步骤：
     1.后台调整
+        去掉IndexController中的index的@GetMapping的注释
         修改CreateDirectory中的directory
         logback-spring.xml
             修改日志级别：fileErrorApp

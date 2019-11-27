@@ -11,14 +11,9 @@ import com.google.common.base.Strings;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
-import com.hthyaq.zybadmin.common.utils.cascade.CascadeUtil;
-import com.hthyaq.zybadmin.common.utils.cascade.CascadeView;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
-import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
 import com.hthyaq.zybadmin.model.vo.EnterpriseView;
-import com.hthyaq.zybadmin.model.vo.JianceBasicOfView;
-import com.hthyaq.zybadmin.model.vo.SuperviseView;
 import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
@@ -40,7 +35,7 @@ import java.util.Map;
  * @since 2019-08-30
  */
 @RestController
-@RequestMapping("/enterprise")
+@RequestMapping({"/enterprise","/Enterprise"})
 public class EnterpriseController {
     @Autowired
     EnterpriseService enterpriseService;
