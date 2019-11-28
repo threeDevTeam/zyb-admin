@@ -39,9 +39,9 @@ public class TableMapInfozhuceController {
     public void add() {
         ExcelReader reader = ExcelUtil.getReader("D:/zhuce.xlsx");
         List<TableMapInfozhuce> all = reader.readAll(TableMapInfozhuce.class);
-        System.out.println(all);
+
         for(TableMapInfozhuce tableMapInfoJishu: all) {
-            System.out.println(tableMapInfoJishu);
+
             tableMapInfozhuceService.save(tableMapInfoJishu);
         }
     }

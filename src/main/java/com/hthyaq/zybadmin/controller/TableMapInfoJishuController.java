@@ -41,9 +41,9 @@ public class TableMapInfoJishuController {
     public void add() {
         ExcelReader reader = ExcelUtil.getReader("D:/JISHU.xlsx");
         List<TableMapInfoJishu> all = reader.readAll(TableMapInfoJishu.class);
-        System.out.println(all);
+
         for(TableMapInfoJishu tableMapInfoJishu: all) {
-            System.out.println(tableMapInfoJishu);
+
             tableMapInfoJishuService.save(tableMapInfoJishu);
         }
     }

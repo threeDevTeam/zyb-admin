@@ -40,7 +40,7 @@ public class ServiceOfRegisterController {
     SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody ServiceOfUserView serviceOfUserView) {
-        System.out.println(serviceOfUserView);
+
 
         ServiceOfRegister serviceOfRegister=new ServiceOfRegister();
         serviceOfRegister.setName(serviceOfUserView.getCompanyName());

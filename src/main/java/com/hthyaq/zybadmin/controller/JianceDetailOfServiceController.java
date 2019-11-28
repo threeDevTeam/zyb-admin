@@ -259,21 +259,18 @@ public class JianceDetailOfServiceController {
     @GetMapping("/cascadeData2")
     public List<CascadeView> cascadeData2() {
         List<IndustryOfDic> list = industryOfDicService.list();
-        System.out.println(list);
         return CascadeUtil.get(list);
     }
 
     @GetMapping("/cascadeData3")
     public List<CascadeView> cascadeData3() {
         List<Gangwei> list = gangweiService.list();
-        System.out.println(list);
         return CascadeUtil.get(list);
     }
 
     @GetMapping("/cascadeData4")
     public List<CascadeView> cascadeData4() {
         List<Hazardousfactors> list = hazardousfactorsService.list();
-        System.out.println(list);
         return CascadeUtil.get(list);
     }
 

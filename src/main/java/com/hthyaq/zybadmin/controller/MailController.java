@@ -18,7 +18,6 @@ public class MailController {
 
     @RequestMapping("/sendMail")
     public boolean sendMail(@RequestBody MailBean mailBean) {
-       System.out.println(mailBean.getEmail());
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom("18256542305@163.com");
         simpleMailMessage.setTo(mailBean.getEmail());

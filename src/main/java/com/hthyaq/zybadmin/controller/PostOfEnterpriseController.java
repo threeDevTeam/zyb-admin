@@ -91,7 +91,6 @@ public class PostOfEnterpriseController {
 
         postOfEnterprise.setWorkplaceId(Long.parseLong(postOfEnterpriseView.getTreeSelect()));
         //保存
-        System.out.println(postOfEnterprise);
         flag = postOfEnterpriseService.save(postOfEnterprise);
 
         return flag;

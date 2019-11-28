@@ -78,7 +78,7 @@ public class PersonOfEnterpriseController {
         personOfEnterprise.setWorkplaceId(postOfEnterprise.getWorkplaceId());
 
         //保存
-        System.out.println(personOfEnterprise);
+
         flag = personOfEnterpriseService.save(personOfEnterprise);
 
         return flag;
@@ -98,7 +98,7 @@ public class PersonOfEnterpriseController {
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(personOfEnterprise.getWorkplaceId());
         personOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()));
 
-        System.out.println(personOfEnterpriseView);
+
         //将demoCourse的数据设置到demoData
         return personOfEnterpriseView;
     }

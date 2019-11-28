@@ -31,7 +31,7 @@ public class DataVisualSwitchFlagController {
     @PostMapping("/up")
     public boolean up( @RequestBody DataVisualSwitchFlag dataVisualSwitchFlag) {
         boolean flag=false;
-        System.out.println(dataVisualSwitchFlag);
+
         dataVisualSwitchFlag.setId(1);
         flag=dataVisualSwitchFlagService.updateById(dataVisualSwitchFlag);
         return flag;

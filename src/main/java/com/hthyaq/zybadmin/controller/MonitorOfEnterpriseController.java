@@ -60,7 +60,6 @@ public class MonitorOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody MonitorOfEnterpriseView monitorOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(monitorOfEnterpriseView);
         MonitorOfEnterprise monitorOfEnterprise = new MonitorOfEnterprise();
 
         //other
@@ -83,7 +82,6 @@ public class MonitorOfEnterpriseController {
         monitorOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         monitorOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
-        System.out.println(postDangerOfEnterprise);
         flag = monitorOfEnterpriseService.save(monitorOfEnterprise);
 
         return flag;
@@ -104,7 +102,6 @@ public class MonitorOfEnterpriseController {
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(monitorOfEnterprise.getWorkplaceId());
         monitorOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
 
-        System.out.println(monitorOfEnterpriseView);
         //将demoCourse的数据设置到demoData
         return monitorOfEnterpriseView;
     }

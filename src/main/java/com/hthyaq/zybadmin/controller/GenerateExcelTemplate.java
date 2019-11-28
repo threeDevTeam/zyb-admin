@@ -37,7 +37,7 @@ public class GenerateExcelTemplate {
         //截取
         int index = flag.lastIndexOf("/");
         String englishTableName = flag.substring(index + 1);
-        System.out.println(englishTableName);
+
         //准备excel需要的数据
         if(englishTableName.equals("jianceDetailOfService")){
             String chineseName = getChineseName(englishTableName);

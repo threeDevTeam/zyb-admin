@@ -534,7 +534,7 @@ public class ZhenduanDetailOfServiceController {
     @GetMapping("/cascadeData5")
     public List<CascadeView> cascadeData() {
         List<Zybname> list = zybnameService.list();
-        System.out.println(list);
+
         return CascadeUtil.get(list);
 
     }

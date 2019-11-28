@@ -260,7 +260,6 @@ public class JianceBasicOfServiceController {
     @GetMapping("/cascadeData")
     public List<CascadeView> cascadeData() {
         List<Typesofregistration> list = typesofregistrationService.list();
-        System.out.println(list);
         return CascadeUtil.get(list);
 
     }

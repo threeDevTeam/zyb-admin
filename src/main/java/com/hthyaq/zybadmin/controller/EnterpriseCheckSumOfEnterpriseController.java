@@ -60,7 +60,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody EnterpriseCheckSumOfEnterpriseView enterpriseCheckSumOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(enterpriseCheckSumOfEnterpriseView);
+
         EnterpriseCheckSumOfEnterprise enterpriseCheckSumOfEnterprise = new EnterpriseCheckSumOfEnterprise();
 
         //other
@@ -83,7 +83,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
         enterpriseCheckSumOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         enterpriseCheckSumOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
-        System.out.println(postDangerOfEnterprise);
+
         flag = enterpriseCheckSumOfEnterpriseService.save(enterpriseCheckSumOfEnterprise);
 
         return flag;
@@ -104,7 +104,7 @@ public class EnterpriseCheckSumOfEnterpriseController {
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(enterpriseCheckSumOfEnterprise.getWorkplaceId());
         enterpriseCheckSumOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
 
-        System.out.println(enterpriseCheckSumOfEnterprise);
+
         //将demoCourse的数据设置到demoData
         return enterpriseCheckSumOfEnterpriseView;
     }

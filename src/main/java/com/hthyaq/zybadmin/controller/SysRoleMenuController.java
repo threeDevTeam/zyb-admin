@@ -70,7 +70,7 @@ public class SysRoleMenuController {
             data.add(tmp);
         }
         sysRoleMenuService.saveBatch(data);
-        System.out.println(menuIdSet);
+
 /*        //sysRoleMenuService.save(sysRoleMenu);
         SysRoleMenu sysRoleMenu = new SysRoleMenu();
         QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();
@@ -129,7 +129,7 @@ public class SysRoleMenuController {
             }
         }
         if (ObjectUtil.length(list) > 0) {
-            System.out.println(list);
+
             map.put("supervise", list.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toList()));
         }
 

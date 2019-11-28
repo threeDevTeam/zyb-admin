@@ -56,7 +56,7 @@ public class PersonProtectOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody PersonProtectOfEnterpriseView personProtectOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(personProtectOfEnterpriseView);
+
         PersonProtectOfEnterprise personProtectOfEnterprise = new PersonProtectOfEnterprise();
 
         //other
@@ -79,7 +79,6 @@ public class PersonProtectOfEnterpriseController {
         personProtectOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         personProtectOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
-        System.out.println(postDangerOfEnterprise);
         flag = personProtectOfEnterpriseService.save(personProtectOfEnterprise);
 
         return flag;
@@ -100,7 +99,7 @@ public class PersonProtectOfEnterpriseController {
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(personProtectOfEnterprise.getWorkplaceId());
         personProtectOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
 
-        System.out.println(personProtectOfEnterpriseView);
+
         //将demoCourse的数据设置到demoData
         return personProtectOfEnterpriseView;
     }

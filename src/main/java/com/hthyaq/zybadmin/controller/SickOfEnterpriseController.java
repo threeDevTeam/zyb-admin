@@ -62,7 +62,7 @@ public class SickOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody SickOfEnterpriseView sickOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(sickOfEnterpriseView);
+
         SickOfEnterprise sickOfEnterprise = new SickOfEnterprise();
 
         //other
@@ -105,7 +105,7 @@ public class SickOfEnterpriseController {
         sickOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         sickOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
-        System.out.println(postDangerOfEnterprise);
+
         flag = sickOfEnterpriseService.save(sickOfEnterprise);
         return flag;
     }
@@ -131,7 +131,7 @@ public class SickOfEnterpriseController {
         WorkplaceOfEnterprise workplaceOfEnterprise = workplaceOfEnterpriseService.getById(sickOfEnterprise.getWorkplaceId());
         sickOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName() + "--" + postOfEnterprise.getPostSmallName() + "--" + postDangerOfEnterprise.getDangerSmallName()));
 
-        System.out.println(sickOfEnterpriseView);
+
         //将demoCourse的数据设置到demoData
         //职业病名称
         QueryWrapper<Zybname> qwZ = new QueryWrapper<>();

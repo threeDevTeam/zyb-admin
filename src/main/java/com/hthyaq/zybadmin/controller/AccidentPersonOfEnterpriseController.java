@@ -58,7 +58,6 @@ public class AccidentPersonOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody AccidentPersonOfEnterpriseView accidentPersonOfEnterpriseView ,HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(accidentPersonOfEnterpriseView);
         AccidentPersonOfEnterprise accidentPersonOfEnterprise = new AccidentPersonOfEnterprise();
         //other
         BeanUtils.copyProperties(accidentPersonOfEnterpriseView, accidentPersonOfEnterprise);
@@ -81,7 +80,7 @@ public class AccidentPersonOfEnterpriseController {
         accidentPersonOfEnterprise.setWorkplaceId(postOfEnterprise.getWorkplaceId());
 
         //保存
-        System.out.println(accidentPersonOfEnterprise);
+
         flag = accidentPersonOfEnterpriseService.save(accidentPersonOfEnterprise);
 
         return flag;

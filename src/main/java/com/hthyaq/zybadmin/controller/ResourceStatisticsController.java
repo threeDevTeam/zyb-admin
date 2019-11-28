@@ -57,7 +57,7 @@ public class ResourceStatisticsController {
                 queryWrapper.eq("districtCode",districtCode);
             }
         Enterprise enterprise = enterpriseService.getOne(queryWrapper);
-        System.out.println(enterprise.getWorkerNumber());
+
         resourceStatistics.setWorkerNumber(enterprise.getWorkerNumber());
 
 //personOfSupervise

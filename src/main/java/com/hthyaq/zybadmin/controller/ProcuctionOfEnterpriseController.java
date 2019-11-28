@@ -47,7 +47,6 @@ public class ProcuctionOfEnterpriseController {
 
     @PostMapping("/add")
     public boolean add(@RequestBody ProcuctionOfEnterprise procuctionOfEnterprise, HttpSession httpSession) {
-        System.out.println(procuctionOfEnterprise);
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         QueryWrapper<EnterpriseOfRegister> queryWrapper = new QueryWrapper();
         queryWrapper.eq("id", sysUser.getCompanyId());

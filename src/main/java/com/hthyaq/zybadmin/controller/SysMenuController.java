@@ -133,7 +133,7 @@ public class SysMenuController {
     }
     @GetMapping("/sysMenulogin")
     public List<SysMenuLoginView> sysMenulogin(String loginName) {
-        System.out.println(loginName);
+
         List list1 = new ArrayList();
         List<SysMenu> list = new ArrayList<>();
 

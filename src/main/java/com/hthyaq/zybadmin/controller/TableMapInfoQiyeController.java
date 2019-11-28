@@ -39,9 +39,9 @@ public class TableMapInfoQiyeController {
     public void add() {
         ExcelReader reader = ExcelUtil.getReader("D:/Qiye.xlsx");
         List<TableMapInfoQiye> all = reader.readAll(TableMapInfoQiye.class);
-        System.out.println(all);
+
         for(TableMapInfoQiye tableMapInfoQiye: all) {
-            System.out.println(tableMapInfoQiye);
+
             tableMapInfoQiyeService.save(tableMapInfoQiye);
         }
     }

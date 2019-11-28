@@ -37,7 +37,7 @@ public class SysRoleUserController {
     @PostMapping("/add")
     public boolean add(@RequestBody SysRoleUserView sysRoleUserView, Integer id) {
         //sysRoleMenuService.save(sysRoleMenu);
-        System.out.println(id);
+
         SysRoleUser sysRoleUser=new SysRoleUser();
         QueryWrapper<SysRoleUser> queryWrapper=new QueryWrapper<>();
         sysRoleUserService.remove(queryWrapper.eq("roleId",id));

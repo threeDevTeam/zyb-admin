@@ -159,7 +159,6 @@ public class SysUserController {
 
     @PostMapping("/changePassword")
     public boolean out(HttpSession httpSession, @RequestBody SysUserpassword sysUserpassword) {
-        System.out.println(sysUserpassword);
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
         if (DigestUtils.md5Hex(sysUserpassword.getLoginPassword()).equals(sysUser.getLoginPassword())) {
             sysUser.setLoginPassword(DigestUtils.md5Hex(sysUserpassword.getNewPassword()));

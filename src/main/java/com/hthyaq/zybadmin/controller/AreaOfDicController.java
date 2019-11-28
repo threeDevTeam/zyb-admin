@@ -80,7 +80,6 @@ public class AreaOfDicController {
     @GetMapping("/getGeoJsonFromRemoteServer")
     public boolean getGeoJsonFromRemoteServer() throws InterruptedException {
         List<AreaOfDic> list = areaOfDicService.list(new QueryWrapper<AreaOfDic>().gt("child_num", 0));
-        System.out.println(list.size());
         Random random = new Random();
         int count = 0;
         try {
@@ -91,7 +90,6 @@ public class AreaOfDicController {
                     area.setGeoJson(geoJson);
 
                     count++;
-                    System.out.println(area.getName() + "--" + count);
 //                    Thread.sleep(random.nextInt(60000));
                 }
             }

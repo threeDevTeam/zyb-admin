@@ -38,7 +38,6 @@ public class EnterpriseOfRegisterController {
     SysRoleUserService sysRoleUserService;
     @PostMapping("/add")
     public boolean add(@RequestBody EnterpriseUserView enterpriseUserView) {
-        System.out.println(enterpriseUserView);
         EnterpriseOfRegister enterpriseOfRegister = new EnterpriseOfRegister();
 
         QueryWrapper<AreaOfDic> queryWrapper = new QueryWrapper<>();
@@ -76,8 +75,6 @@ public class EnterpriseOfRegisterController {
             }
         }
 
-
-        System.out.println(enterpriseOfRegister);
         enterpriseOfRegister.setName(enterpriseUserView.getCompanyName());
         enterpriseOfRegister.setCode(enterpriseUserView.getCode());
         enterpriseOfRegister.setProductionCapacity(enterpriseUserView.getProductionCapacity());

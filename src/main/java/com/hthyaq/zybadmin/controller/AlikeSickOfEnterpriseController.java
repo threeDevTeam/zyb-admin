@@ -60,7 +60,6 @@ public class AlikeSickOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody AlikeSickOfEnterpriseView alikeSickOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(alikeSickOfEnterpriseView);
         AlikeSickOfEnterprise alikeSickOfEnterprise = new  AlikeSickOfEnterprise();
 
         //other
@@ -83,8 +82,6 @@ public class AlikeSickOfEnterpriseController {
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(alikeSickOfEnterpriseView.getTreeSelect());
         alikeSickOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         alikeSickOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
-
-        System.out.println(postDangerOfEnterprise);
         flag = alikeSickOfEnterpriseService.save(alikeSickOfEnterprise);
         return flag;
     }
@@ -107,7 +104,6 @@ public class AlikeSickOfEnterpriseController {
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(alikeSickOfEnterprise.getWorkplaceId());
         alikeSickOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
 
-        System.out.println(alikeSickOfEnterpriseView);
         //将demoCourse的数据设置到demoData
         return alikeSickOfEnterpriseView;
     }

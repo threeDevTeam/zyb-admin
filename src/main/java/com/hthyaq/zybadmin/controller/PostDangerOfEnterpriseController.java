@@ -61,7 +61,6 @@ public class PostDangerOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody PostDangerOfEnterpriseView postDangerOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(postDangerOfEnterpriseView.getUpDateeStr());
         PostDangerOfEnterprise postDangerOfEnterprise = new PostDangerOfEnterprise();
         //other
         BeanUtils.copyProperties(postDangerOfEnterpriseView, postDangerOfEnterprise);
@@ -118,7 +117,6 @@ public class PostDangerOfEnterpriseController {
         postDangerOfEnterprise.setWorkplaceId(postOfEnterprise.getWorkplaceId());
 
         //保存
-        System.out.println(postDangerOfEnterprise);
         flag = postDangerOfEnterpriseService.save(postDangerOfEnterprise);
 
 

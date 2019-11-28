@@ -60,7 +60,7 @@ public class TestOfEnterpriseController {
     @PostMapping("/add")
     public boolean add(@RequestBody TestOfEnterpriseView testOfEnterpriseView, HttpSession httpSession) {
         boolean flag = false;
-        System.out.println(testOfEnterpriseView);
+
         TestOfEnterprise testOfEnterprise = new TestOfEnterprise();
 
         //other
@@ -83,7 +83,7 @@ public class TestOfEnterpriseController {
         testOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
         testOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
-        System.out.println(postDangerOfEnterprise);
+
         flag = testOfEnterpriseService.save(testOfEnterprise);
         return flag;
     }
@@ -103,7 +103,7 @@ public class TestOfEnterpriseController {
         WorkplaceOfEnterprise workplaceOfEnterprise= workplaceOfEnterpriseService.getById(testOfEnterprise.getWorkplaceId());
         testOfEnterpriseView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName()+"--"+postOfEnterprise.getPostSmallName()+"--"+postDangerOfEnterprise.getDangerSmallName()));
 
-        System.out.println(testOfEnterpriseView);
+
         //将demoCourse的数据设置到demoData
         return testOfEnterpriseView;
     }
