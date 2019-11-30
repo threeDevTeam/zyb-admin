@@ -177,7 +177,7 @@ public class PostOfEnterpriseController {
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<PostOfEnterprise> queryWrapper = new QueryWrapper<>();
             if (!Strings.isNullOrEmpty(postSmallName)) {
-                queryWrapper.like("name", postSmallName);
+                queryWrapper.like("postSmallName", postSmallName);
             }
             queryWrapper.orderByDesc("id");
             IPage<PostOfEnterprise> page = postOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -195,7 +195,7 @@ public class PostOfEnterpriseController {
             QueryWrapper<PostOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
             if (!Strings.isNullOrEmpty(postSmallName)) {
-                queryWrapper.like("name", postSmallName);
+                queryWrapper.like("postSmallName", postSmallName);
             }
             queryWrapper.orderByDesc("id");
             IPage<PostOfEnterprise> page = postOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

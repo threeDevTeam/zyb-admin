@@ -226,14 +226,14 @@ public class PostDangerOfEnterpriseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String upDate = jsonObject.getString("upDate");
+        String upMonth = jsonObject.getString("upMonth");
         QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
         qw.eq("userId", sysUser.getId());
         SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<PostDangerOfEnterprise> queryWrapper = new QueryWrapper<>();
-            if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.like("upDate", upDate);
+            if (!Strings.isNullOrEmpty(upMonth)) {
+                queryWrapper.like("upMonth", upMonth);
             }
             queryWrapper.orderByDesc("id");
             IPage<PostDangerOfEnterprise> page = postDangerOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -250,8 +250,8 @@ public class PostDangerOfEnterpriseController {
             }
             QueryWrapper<PostDangerOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
-            if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.like("upDate", upDate);
+            if (!Strings.isNullOrEmpty(upMonth)) {
+                queryWrapper.like("upMonth", upMonth);
             }
             queryWrapper.orderByDesc("id");
             IPage<PostDangerOfEnterprise> page = postDangerOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

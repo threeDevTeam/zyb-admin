@@ -123,14 +123,18 @@ public class AccidentPersonOfEnterpriseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String org = jsonObject.getString("org");
+        String accidentNum = jsonObject.getString("accidentNum");
+        String name = jsonObject.getString("name");
         QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
         qw.eq("userId", sysUser.getId());
         SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<AccidentPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
-            if (!Strings.isNullOrEmpty(org)) {
-                queryWrapper.like("org", org);
+            if (!Strings.isNullOrEmpty(accidentNum)) {
+                queryWrapper.like("accidentNum", accidentNum);
+            }
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<AccidentPersonOfEnterprise> page = accidentPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -147,8 +151,11 @@ public class AccidentPersonOfEnterpriseController {
             }
             QueryWrapper<AccidentPersonOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
-            if (!Strings.isNullOrEmpty(org)) {
-                queryWrapper.like("org", org);
+            if (!Strings.isNullOrEmpty(accidentNum)) {
+                queryWrapper.like("accidentNum", accidentNum);
+            }
+            if (!Strings.isNullOrEmpty(name)) {
+                queryWrapper.like("name", name);
             }
             queryWrapper.orderByDesc("id");
             IPage<AccidentPersonOfEnterprise> page = accidentPersonOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);

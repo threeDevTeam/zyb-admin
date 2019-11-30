@@ -123,14 +123,14 @@ public class EnterpriseCheckSumOfEnterpriseController {
         //从对象中获取值
         Integer currentPage = jsonObject.getInteger("currentPage");
         Integer pageSize = jsonObject.getInteger("pageSize");
-        String upDate = jsonObject.getString("upDate");
+        String month = jsonObject.getString("month");
         QueryWrapper<SysRoleUser> qw = new QueryWrapper<>();
         qw.eq("userId", sysUser.getId());
         SysRoleUser sysRoleUser = sysRoleUserService.getOne(qw);
         if (sysRoleUser.getRoleId() == 1) {
             QueryWrapper<EnterpriseCheckSumOfEnterprise> queryWrapper = new QueryWrapper<>();
-            if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.like("upDate", upDate);
+            if (!Strings.isNullOrEmpty(month)) {
+                queryWrapper.like("month", month);
             }
             queryWrapper.orderByDesc("id");
             IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
@@ -147,8 +147,8 @@ public class EnterpriseCheckSumOfEnterpriseController {
             }
             QueryWrapper<EnterpriseCheckSumOfEnterprise> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("enterpriseId", list1.get(0));
-            if (!Strings.isNullOrEmpty(upDate)) {
-                queryWrapper.like("upDate", upDate);
+            if (!Strings.isNullOrEmpty(month)) {
+                queryWrapper.like("month", month);
             }
             queryWrapper.orderByDesc("id");
             IPage<EnterpriseCheckSumOfEnterprise> page = enterpriseCheckSumOfEnterpriseService.page(new Page<>(currentPage, pageSize), queryWrapper);
