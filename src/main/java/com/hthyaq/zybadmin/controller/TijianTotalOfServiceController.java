@@ -63,9 +63,9 @@ public class TijianTotalOfServiceController {
                 for (TijianBasicOfService tijianBasicOfService : list1) {
                     tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
                     int count = tijianTotalOfServiceService.count();
-                    if(count != 0){
+
                     tijianTotalOfService.setCount1(count+1);
-                    }
+
                     int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("result", "职业禁忌证"));
                     if(count1 != 0){
                         tijianTotalOfService.setCount3(count1);

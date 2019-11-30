@@ -32,17 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * <p>
- * 监管部门信息
- * <p>
- * <p>
- * 前端控制器
- * </p>
- *
- * @author zhangqiang
- * @since 2019-08-30
- */
+
 @RestController
 @RequestMapping("/supervise")
 

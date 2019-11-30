@@ -45,6 +45,9 @@ public class ZhenduanTotalOfServiceController {
     ZhenduanBasicOfServiceService zhenduanBasicOfServiceService;
     @Autowired
     SysRoleUserService sysRoleUserService;
+    @Autowired
+    ZhenduanDetailOfServiceService zhenduanDetailOfServiceService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody ZhenduanTotalOfService zhenduanTotalOfService, HttpSession httpSession) {
         boolean flag = false;
@@ -59,7 +62,7 @@ public class ZhenduanTotalOfServiceController {
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(queryWrapper1);
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
                     zhenduanTotalOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
-                    int count = zhenduanBasicOfServiceService.count();
+                    int count = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("checkYear",zhenduanTotalOfService.getYear()));
                     if(count != 0) {
                         zhenduanTotalOfService.setCount3(count);
                     }

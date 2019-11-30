@@ -29,14 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * <p>
- * 体检机构的基本信息 前端控制器
- * </p>
- *
- * @author zhangqiang
- * @since 2019-08-30
- */
+
 @RestController
 @RequestMapping("/tijianBasicOfService")
 public class TijianBasicOfServiceController {

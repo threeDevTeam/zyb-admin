@@ -93,6 +93,12 @@ public class JianceDetailOfServiceController {
         jianceDetailOfServiceView.setCheckDateStr( AntdDateUtil.getString(jianceDetailOfService.getCheckDate()));
 
         //登记注册类型
+        QueryWrapper<Typesofregistration> qwt = new QueryWrapper<>();
+        qwt.eq("name", jianceDetailOfService.getRegisterBigName());
+        List<Typesofregistration> listT1 = typesofregistrationService.list(qwt);
+        for (Typesofregistration typesofregistration : listT1) {
+            listc1.add(typesofregistration.getId());
+        }
         QueryWrapper<Typesofregistration> qw2 = new QueryWrapper<>();
         qw2.eq("name", jianceDetailOfService.getRegisterSmallName());
         List<Typesofregistration> listTS = typesofregistrationService.list(qw2);
@@ -100,6 +106,8 @@ public class JianceDetailOfServiceController {
             listc1.add(typesofregistration.getId());
         }
         jianceDetailOfServiceView.setCascaded1((ArrayList) listc1);
+
+
 
 
         //所属行业名称

@@ -695,24 +695,36 @@ public class NationServiceVisualYes {
             for (AreaOfDic areaOfDic : areaList) {
                 GovSix govSix = new GovSix();
                 govSix.setArea(areaOfDic.getName());
-                govSix.setVar1(RandomUtil.randomInt(1, 10000));
-                govSix.setVar2(RandomUtil.randomInt(1, 10000));
-                govSix.setVar3(RandomUtil.randomInt(1, 10000));
-                govSix.setVar4(RandomUtil.randomInt(1, 10000));
-                govSix.setVar5(RandomUtil.randomInt(1, 10000));
-                govSix.setVar6(RandomUtil.randomInt(1, 10000));
+                int count = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                govSix.setVar1(count);
+                int count1 = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                govSix.setVar2(count1);
+                int count2 = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                govSix.setVar3(count2);
+                int projectCount = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                govSix.setVar4(projectCount);
+                int idNum = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                govSix.setVar5(idNum);
+                int count3 = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("year", year));
+                govSix.setVar6(count3);
                 list.add(govSix);
             }
         } else if ("登记注册类型".equals(type)) {
             for (BaseOfDic baseOfDic : registerList) {
                 GovSix govSix = new GovSix();
                 govSix.setArea(baseOfDic.getBigName());
-                govSix.setVar1(RandomUtil.randomInt(1, 10000));
-                govSix.setVar2(RandomUtil.randomInt(1, 10000));
-                govSix.setVar3(RandomUtil.randomInt(1, 10000));
-                govSix.setVar4(RandomUtil.randomInt(1, 10000));
-                govSix.setVar5(RandomUtil.randomInt(1, 10000));
-                govSix.setVar6(RandomUtil.randomInt(1, 10000));
+                int count = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("registerBigName", baseOfDic.getBigName()));
+                govSix.setVar1(count);
+                int count1 = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("registerBigName", baseOfDic.getBigName()));
+                govSix.setVar2(count1);
+                int count2 = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("registerBigName", baseOfDic.getBigName()));
+                govSix.setVar3(count2);
+                int projectCount = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("registerBigName", baseOfDic.getBigName()));
+                govSix.setVar4(projectCount);
+                int idNum = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year).eq("registerBigName",baseOfDic.getBigName()));
+                govSix.setVar5(idNum);
+                int count3 = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("year", year));
+                govSix.setVar6(count3);
                 list.add(govSix);
             }
         }
@@ -730,22 +742,32 @@ public class NationServiceVisualYes {
             for (AreaOfDic areaOfDic : areaList) {
                 ServiceFive serviceFive = new ServiceFive();
                 serviceFive.setArea(areaOfDic.getName());
-                serviceFive.setVar1(RandomUtil.randomInt(1, 10000));
-                serviceFive.setVar2(RandomUtil.randomInt(1, 10000));
-                serviceFive.setVar3(RandomUtil.randomInt(1, 10000));
-                serviceFive.setVar4(RandomUtil.randomInt(1, 10000));
-                serviceFive.setVar5(RandomUtil.randomInt(1, 10000));
+                int count = zhenduanBasicOfServiceService.count(new QueryWrapper<ZhenduanBasicOfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                serviceFive.setVar1(count);
+                int doctorNum = zhenduanBasicOfServiceService.count(new QueryWrapper<ZhenduanBasicOfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                serviceFive.setVar2(doctorNum);
+                int projectCount = zhenduanBasicOfServiceService.count(new QueryWrapper<ZhenduanBasicOfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                serviceFive.setVar3(projectCount);
+                int count1 = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("year", year));
+                serviceFive.setVar4(count1);
+                int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("year", year));
+                serviceFive.setVar5(idNum);
                 list.add(serviceFive);
             }
         } else if ("登记注册类型".equals(type)) {
             for (BaseOfDic baseOfDic : registerList) {
                 ServiceFive serviceFive = new ServiceFive();
                 serviceFive.setArea(baseOfDic.getBigName());
-                serviceFive.setVar1(RandomUtil.randomInt(1, 10000));
-                serviceFive.setVar2(RandomUtil.randomInt(1, 10000));
-                serviceFive.setVar3(RandomUtil.randomInt(1, 10000));
-                serviceFive.setVar4(RandomUtil.randomInt(1, 10000));
-                serviceFive.setVar5(RandomUtil.randomInt(1, 10000));
+                int count = zhenduanBasicOfServiceService.count(new QueryWrapper<ZhenduanBasicOfService>().eq("year", year).eq("registerBigName", baseOfDic.getBigName()));
+                serviceFive.setVar1(count);
+                int doctorNum = zhenduanBasicOfServiceService.count(new QueryWrapper<ZhenduanBasicOfService>().eq("year", year).eq("registerBigName", baseOfDic.getBigName()));
+                serviceFive.setVar2(doctorNum);
+                int projectCount = zhenduanBasicOfServiceService.count(new QueryWrapper<ZhenduanBasicOfService>().eq("year", year).eq("registerBigName", baseOfDic.getBigName()));
+                serviceFive.setVar3(projectCount);
+                int count1 = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("year", year));
+                serviceFive.setVar4(count1);
+                int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("year", year));
+                serviceFive.setVar5(idNum);
                 list.add(serviceFive);
             }
         }

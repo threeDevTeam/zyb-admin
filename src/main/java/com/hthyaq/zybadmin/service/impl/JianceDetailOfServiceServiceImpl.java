@@ -280,8 +280,19 @@ public class JianceDetailOfServiceServiceImpl extends ServiceImpl<JianceDetailOf
         qwt.eq("id",jianceDetailOfServiceView.getCascaded1().get(0));
         List<Typesofregistration> listt= typesofregistrationService.list(qwt);
         for (Typesofregistration typesofregistration : listt) {
-            jianceDetailOfService.setRegisterSmallName(typesofregistration.getName());
+            jianceDetailOfService.setRegisterBigName(typesofregistration.getName());
         }
+        if(jianceDetailOfServiceView.getCascaded1().size()==2){
+            QueryWrapper<Typesofregistration> qwt1= new QueryWrapper<>();
+            qwt1.eq("id",jianceDetailOfServiceView.getCascaded1().get(1));
+            List<Typesofregistration> listt1= typesofregistrationService.list(qwt1);
+            for (Typesofregistration typesofregistration : listt1) {
+                jianceDetailOfService.setRegisterSmallName(typesofregistration.getName());
+            }
+        }else{
+            jianceDetailOfService.setRegisterSmallName("无");
+        }
+
         //所属行业名称
         QueryWrapper<IndustryOfDic> qw2 = new QueryWrapper<>();
         qw2.eq("id", jianceDetailOfServiceView.getCascaded2().get(0));

@@ -25,14 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- * 给角色分配菜单 前端控制器
- * </p>
- *
- * @author zhangqiang
- * @since 2019-10-15
- */
+
 @RestController
 @RequestMapping("/sysRoleMenu")
 public class SysRoleMenuController {

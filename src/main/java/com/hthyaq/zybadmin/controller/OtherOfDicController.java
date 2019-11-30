@@ -24,14 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * <p>
- * 用于企业、监管部门、技术服务机构的表单下拉项 前端控制器
- * </p>
- *
- * @author zhangqiang
- * @since 2019-09-18
- */
+
 @RestController
 @RequestMapping("/otherOfDic")
 public class OtherOfDicController {
