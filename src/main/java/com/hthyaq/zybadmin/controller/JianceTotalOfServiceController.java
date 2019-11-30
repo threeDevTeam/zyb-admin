@@ -60,16 +60,16 @@ public class JianceTotalOfServiceController {
                 queryWrapper.eq("name", serviceOfRegister.getName());
                 List<JianceBasicOfService> list1 = jianceBasicOfServiceService.list(queryWrapper1);
                 for (JianceBasicOfService jianceBasicOfService : list1) {
-                    int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("jianceBasicId",jianceBasicOfService.getId()).eq("year",jianceBasicOfService.getYear()-1));
-                    if(count != 0) {
+                    int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("jianceBasicId", jianceBasicOfService.getId()).eq("checkYear", jianceTotalOfService.getYear() - 1));
+                    if (count != 0) {
                         jianceTotalOfService.setCount5(String.valueOf(count));
                     } else {
                         jianceTotalOfService.setCount5(String.valueOf(0));
                     }
-                    int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("decideResult", "合格").eq("jianceBasicId",jianceBasicOfService.getId()).eq("year",jianceBasicOfService.getYear()-1));
-                    if(count1 != 0) {
+                    int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("decideResult", "合格").eq("jianceBasicId", jianceBasicOfService.getId()).eq("checkYear", jianceTotalOfService.getYear() - 1));
+                    if (count1 != 0) {
                         jianceTotalOfService.setCount6(String.valueOf(count1));
-                    }else {
+                    } else {
                         jianceTotalOfService.setCount6(String.valueOf(0));
                     }
                     jianceTotalOfService.setJianceBasicId(jianceBasicOfService.getId());
@@ -99,7 +99,33 @@ public class JianceTotalOfServiceController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody JianceTotalOfService jianceTotalOfService) {
+    public boolean edit(@RequestBody JianceTotalOfService jianceTotalOfService, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<ServiceOfRegister> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("name", sysUser.getCompanyName());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            if (serviceOfRegister.getType().equals("检测机构")) {
+                QueryWrapper<JianceBasicOfService> queryWrapper1 = new QueryWrapper();
+                queryWrapper.eq("name", serviceOfRegister.getName());
+                List<JianceBasicOfService> list1 = jianceBasicOfServiceService.list(queryWrapper1);
+                for (JianceBasicOfService jianceBasicOfService : list1) {
+                    int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("jianceBasicId", jianceBasicOfService.getId()).eq("checkYear", jianceTotalOfService.getYear() - 1));
+                    if (count != 0) {
+                        jianceTotalOfService.setCount5(String.valueOf(count));
+                    } else {
+                        jianceTotalOfService.setCount5(String.valueOf(0));
+                    }
+                    int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("decideResult", "合格").eq("jianceBasicId", jianceBasicOfService.getId()).eq("checkYear", jianceTotalOfService.getYear() - 1));
+                    if (count1 != 0) {
+                        jianceTotalOfService.setCount6(String.valueOf(count1));
+                    } else {
+                        jianceTotalOfService.setCount6(String.valueOf(0));
+                    }
+                    jianceTotalOfService.setJianceBasicId(jianceBasicOfService.getId());
+                }
+            }
+        }
         return jianceTotalOfServiceService.updateById(jianceTotalOfService);
     }
 
@@ -151,6 +177,7 @@ public class JianceTotalOfServiceController {
             return page;
         }
     }
+
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;

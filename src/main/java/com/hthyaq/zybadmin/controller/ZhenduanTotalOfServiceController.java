@@ -62,10 +62,10 @@ public class ZhenduanTotalOfServiceController {
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(queryWrapper1);
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
                     zhenduanTotalOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
-                    int count = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("checkYear",zhenduanTotalOfService.getYear()-1).eq("zhenduanBasicId",zhenduanBasicOfService.getId()));
-                    if(count != 0) {
+                    int count = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("checkYear", zhenduanTotalOfService.getYear() - 1).eq("zhenduanBasicId", zhenduanBasicOfService.getId()));
+                    if (count != 0) {
                         zhenduanTotalOfService.setCount3(count);
-                    }else {
+                    } else {
                         zhenduanTotalOfService.setCount3(0);
                     }
                     flag = zhenduanTotalOfServiceService.save(zhenduanTotalOfService);
@@ -93,7 +93,27 @@ public class ZhenduanTotalOfServiceController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody ZhenduanTotalOfService zhenduanTotalOfService) {
+    public boolean edit(@RequestBody ZhenduanTotalOfService zhenduanTotalOfService, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<ServiceOfRegister> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", sysUser.getCompanyId());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            if (serviceOfRegister.getType().equals("诊断机构")) {
+                QueryWrapper<ZhenduanBasicOfService> queryWrapper1 = new QueryWrapper();
+                queryWrapper1.eq("name", serviceOfRegister.getName());
+                List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(queryWrapper1);
+                for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
+                    zhenduanTotalOfService.setZhenduanBasicId(zhenduanBasicOfService.getId());
+                    int count = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("checkYear", zhenduanTotalOfService.getYear() - 1).eq("zhenduanBasicId", zhenduanBasicOfService.getId()));
+                    if (count != 0) {
+                        zhenduanTotalOfService.setCount3(count);
+                    } else {
+                        zhenduanTotalOfService.setCount3(0);
+                    }
+                }
+            }
+        }
         return zhenduanTotalOfServiceService.updateById(zhenduanTotalOfService);
     }
 
@@ -146,18 +166,19 @@ public class ZhenduanTotalOfServiceController {
             return page;
         }
     }
+
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;
         //excel->model
         Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
-        modelClassArr[0] =ZhenduanTotalOfServiceModel.class;
+        modelClassArr[0] = ZhenduanTotalOfServiceModel.class;
         Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
         //model->entity
         for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
             String type = entry.getKey();
             List<Object> modelList = entry.getValue();
-            List<ZhenduanTotalOfService> dataList = getDataList(modelList, type,httpSession);
+            List<ZhenduanTotalOfService> dataList = getDataList(modelList, type, httpSession);
             flag = zhenduanTotalOfServiceService.saveBatch(dataList);
         }
         return flag;

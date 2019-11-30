@@ -48,6 +48,7 @@ public class TijianTotalOfServiceController {
     TijianDetail1OfServiceService tijianDetail1OfServiceService;
     @Autowired
     TijianDetail2OfServiceService tijianDetail2OfServiceService;
+
     @PostMapping("/add")
     public boolean add(@RequestBody TijianTotalOfService tijianTotalOfService, HttpSession httpSession) {
         boolean flag = false;
@@ -62,23 +63,23 @@ public class TijianTotalOfServiceController {
                 List<TijianBasicOfService> list1 = tijianBasicOfServiceService.list(queryWrapper1);
                 for (TijianBasicOfService tijianBasicOfService : list1) {
                     tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
-                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId",tijianBasicOfService.getId()).eq("year",tijianTotalOfService.getYear()-1));
-                    if(count != 0) {
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", tijianTotalOfService.getYear() - 1));
+                    if (count != 0) {
                         tijianTotalOfService.setCount1(count);
-                    }else {
+                    } else {
                         tijianTotalOfService.setCount1(0);
                     }
-                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("result", "职业禁忌证").eq("tijianBasicId",tijianBasicOfService.getId()).eq("year",tijianTotalOfService.getYear()-1));
-                    if(count1 != 0){
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("result", "职业禁忌证").eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", tijianTotalOfService.getYear() - 1));
+                    if (count1 != 0) {
                         tijianTotalOfService.setCount3(count1);
-                    }else {
+                    } else {
                         tijianTotalOfService.setCount3(0);
                     }
 
-                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year",tijianTotalOfService.getYear()-1));
-                    if(count2 != 0) {
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("checkYear", tijianTotalOfService.getYear() - 1));
+                    if (count2 != 0) {
                         tijianTotalOfService.setCount4(count2);
-                    }else {
+                    } else {
                         tijianTotalOfService.setCount4(0);
                     }
                     flag = tijianTotalOfServiceService.save(tijianTotalOfService);
@@ -106,7 +107,40 @@ public class TijianTotalOfServiceController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody TijianTotalOfService tijianTotalOfService) {
+    public boolean edit(@RequestBody TijianTotalOfService tijianTotalOfService, HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        QueryWrapper<ServiceOfRegister> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", sysUser.getCompanyId());
+        List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
+        for (ServiceOfRegister serviceOfRegister : list) {
+            if (serviceOfRegister.getType().equals("体检机构")) {
+                QueryWrapper<TijianBasicOfService> queryWrapper1 = new QueryWrapper();
+                queryWrapper1.eq("name", serviceOfRegister.getName());
+                List<TijianBasicOfService> list1 = tijianBasicOfServiceService.list(queryWrapper1);
+                for (TijianBasicOfService tijianBasicOfService : list1) {
+                    tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", tijianTotalOfService.getYear() - 1));
+                    if (count != 0) {
+                        tijianTotalOfService.setCount1(count);
+                    } else {
+                        tijianTotalOfService.setCount1(0);
+                    }
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("result", "职业禁忌证").eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", tijianTotalOfService.getYear() - 1));
+                    if (count1 != 0) {
+                        tijianTotalOfService.setCount3(count1);
+                    } else {
+                        tijianTotalOfService.setCount3(0);
+                    }
+
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("checkYear", tijianTotalOfService.getYear() - 1));
+                    if (count2 != 0) {
+                        tijianTotalOfService.setCount4(count2);
+                    } else {
+                        tijianTotalOfService.setCount4(0);
+                    }
+                }
+            }
+        }
         return tijianTotalOfServiceService.updateById(tijianTotalOfService);
     }
 
@@ -158,6 +192,7 @@ public class TijianTotalOfServiceController {
             return page;
         }
     }
+
     @PostMapping("/exceladd")
     public boolean list(String from, MultipartFile[] files, HttpSession httpSession) {
         boolean flag = true;
@@ -186,16 +221,16 @@ public class TijianTotalOfServiceController {
             queryWrapper.eq("id", sysUser.getCompanyId());
             List<ServiceOfRegister> list = serviceOfRegisterService.list(queryWrapper);
             for (ServiceOfRegister serviceOfRegister : list) {
-                    QueryWrapper<TijianBasicOfService> queryWrapper1 = new QueryWrapper();
-                    queryWrapper1.eq("name", serviceOfRegister.getName());
-                    List<TijianBasicOfService> list1 = tijianBasicOfServiceService.list(queryWrapper1);
-                    for (TijianBasicOfService tijianBasicOfService : list1) {
-                        tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
-                    }
-                    BeanUtils.copyProperties(tijianTotalOfServiceModel, tijianTotalOfService);
-                    dataList.add(tijianTotalOfService);
+                QueryWrapper<TijianBasicOfService> queryWrapper1 = new QueryWrapper();
+                queryWrapper1.eq("name", serviceOfRegister.getName());
+                List<TijianBasicOfService> list1 = tijianBasicOfServiceService.list(queryWrapper1);
+                for (TijianBasicOfService tijianBasicOfService : list1) {
+                    tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
                 }
+                BeanUtils.copyProperties(tijianTotalOfServiceModel, tijianTotalOfService);
+                dataList.add(tijianTotalOfService);
             }
-            return dataList;
         }
+        return dataList;
     }
+}
