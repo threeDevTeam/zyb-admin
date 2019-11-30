@@ -62,18 +62,24 @@ public class TijianTotalOfServiceController {
                 List<TijianBasicOfService> list1 = tijianBasicOfServiceService.list(queryWrapper1);
                 for (TijianBasicOfService tijianBasicOfService : list1) {
                     tijianTotalOfService.setTijianBasicId(tijianBasicOfService.getId());
-                    int count = tijianTotalOfServiceService.count();
-
-                    tijianTotalOfService.setCount1(count+1);
-
-                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("result", "职业禁忌证"));
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId",tijianBasicOfService.getId()).eq("year",tijianTotalOfService.getYear()-1));
+                    if(count != 0) {
+                        tijianTotalOfService.setCount1(count);
+                    }else {
+                        tijianTotalOfService.setCount1(0);
+                    }
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("result", "职业禁忌证").eq("tijianBasicId",tijianBasicOfService.getId()).eq("year",tijianTotalOfService.getYear()-1));
                     if(count1 != 0){
                         tijianTotalOfService.setCount3(count1);
+                    }else {
+                        tijianTotalOfService.setCount3(0);
                     }
 
-                    int count2 = tijianDetail2OfServiceService.count();
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year",tijianTotalOfService.getYear()-1));
                     if(count2 != 0) {
                         tijianTotalOfService.setCount4(count2);
+                    }else {
+                        tijianTotalOfService.setCount4(0);
                     }
                     flag = tijianTotalOfServiceService.save(tijianTotalOfService);
                 }
