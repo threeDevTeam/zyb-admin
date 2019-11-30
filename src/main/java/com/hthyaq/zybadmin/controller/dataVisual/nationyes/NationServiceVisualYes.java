@@ -46,24 +46,24 @@ public class NationServiceVisualYes {
     @GetMapping("/option11")
     public List<NameValueDouble> option11(String year, String type) {
         List<NameValueDouble> list = Lists.newArrayList();
-        int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("year", year));
-        int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("year", year).eq("decideResult", "合格"));
+        int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("checkYear", year));
+        int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("checkYear", year).eq("decideResult", "合格"));
         double d1 = count1 / count;
         list.add(new NameValueDouble("粉尘", DoubleUtil.get(d1)));
-        int counth1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("year", year));
-        int counth2 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("year", year).eq("decideResult", "合格"));
+        int counth1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("checkYear", year));
+        int counth2 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("checkYear", year).eq("decideResult", "合格"));
         double d2 = counth2 / counth1;
         list.add(new NameValueDouble("化学因素", DoubleUtil.get(d2)));
-        int counthw1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("year", year));
-        int counthw2 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("year", year).eq("decideResult", "合格"));
+        int counthw1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("checkYear", year));
+        int counthw2 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("checkYear", year).eq("decideResult", "合格"));
         double d3 = counthw2 / counthw1;
         list.add(new NameValueDouble("物理因素", DoubleUtil.get(d3)));
-        int counthf1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("year", year));
-        int counthf2 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("year", year).eq("decideResult", "合格"));
+        int counthf1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("checkYear", year));
+        int counthf2 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("checkYear", year).eq("decideResult", "合格"));
         double d4 = counthf2 / counthf1;
         list.add(new NameValueDouble("放射性因素", DoubleUtil.get(d4)));
-        int counths1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("year", year));
-        int counths2 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("year", year).eq("decideResult", "合格"));
+        int counths1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("checkYear", year));
+        int counths2 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("checkYear", year).eq("decideResult", "合格"));
         double d5 = counths2 / counths1;
         list.add(new NameValueDouble("生物因素", DoubleUtil.get(d5)));
         return list;
@@ -84,16 +84,16 @@ public class NationServiceVisualYes {
             Twenty tmp = new Twenty();
             if ("危害因素".equals(type)) {
                 tmp.setName(s);
-                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("year", year));
-                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("year", year).eq("decideResult", "合格"));
+                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("checkYear", year));
+                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("checkYear", year).eq("decideResult", "合格"));
                 tmp.setVar1(count);
                 tmp.setVar2(count1);
                 tmp.setVar3(count1 / count * 100 + "%");
                 list.add(tmp);
             } else if ("行政区划".equals(type)) {
                 tmp.setName(s);
-                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("year", year));
-                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("year", year).eq("decideResult", "合格"));
+                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("checkYear", year));
+                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("checkYear", year).eq("decideResult", "合格"));
                 tmp.setVar1(count);
                 tmp.setVar2(count1);
                 tmp.setVar3(count1 / count * 100 + "%");
@@ -120,16 +120,16 @@ public class NationServiceVisualYes {
         List<Double> list2 = Lists.newArrayList();
         List<Double> list3 = Lists.newArrayList();
         int count = tijianTotalOfServiceService.count();
-        int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year).eq("result", "职业禁忌证"));
+        int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("checkYear", year).eq("result", "职业禁忌证"));
         double d1 = count1 / count;
         list1.add(DoubleUtil.get(d1));
         //
-        int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
+        int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("checkYear", year));
         double d2 = count2 / count;
         list2.add(DoubleUtil.get(d2));
         //
-        int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year));
-        int enterpriseCode2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
+        int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("checkYear", year));
+        int enterpriseCode2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("checkYear", year));
 
         double d3 = enterpriseCode2 / enterpriseCode;
         list3.add(DoubleUtil.get(d3));
@@ -157,17 +157,17 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("scope", s));
                 for (TijianBasicOfService tijianBasicOfService : listt) {
-                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar1(enterpriseCode);
-                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar2(count);
-                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("checkYear", year));
                     tmp.setVar3(count1);
                     tmp.setVar4(count1 / count * 100 + "%");
-                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar5(count2);
                     tmp.setVar6(count2 / count * 100 + "%");
-                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar7(count3);
                     tmp.setVar8(count3 / count * 100 + "%");
                 }
@@ -177,17 +177,17 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("provinceName", s));
                 for (TijianBasicOfService tijianBasicOfService : listt) {
-                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar1(enterpriseCode);
-                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar2(count);
-                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("checkYear", year));
                     tmp.setVar3(count1);
                     tmp.setVar4(count1 / count * 100 + "%");
-                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar5(count2);
                     tmp.setVar6(count2 / count * 100 + "%");
-                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar7(count3);
                     tmp.setVar8(count3 / count * 100 + "%");
                 }
@@ -198,17 +198,17 @@ public class NationServiceVisualYes {
                 List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("registerBigName", s));
 
                 for (TijianBasicOfService tijianBasicOfService : listt) {
-                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar1(enterpriseCode);
-                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar2(count);
-                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("checkYear", year));
                     tmp.setVar3(count1);
                     tmp.setVar4(count1 / count * 100 + "%");
-                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar5(count2);
                     tmp.setVar6(count2 / count * 100 + "%");
-                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar7(count3);
                     tmp.setVar8(count3 / count * 100 + "%");
                 }
@@ -251,9 +251,9 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("scope", s).eq("year", year));
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
-                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
-                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
 
                     tmp.setVar1(count2);
@@ -268,9 +268,9 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("provinceName", s).eq("year", year));
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
-                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
-                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
 
                     tmp.setVar1(count2);
@@ -285,9 +285,9 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("registerBigName", s).eq("year", year));
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
-                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
-                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
 
                     tmp.setVar1(count2);
@@ -325,28 +325,28 @@ public class NationServiceVisualYes {
 
         for (int i = 0; i < size; i++) {
             //
-            int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("year", year));
-            int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("year", year).eq("decideResult", "合格"));
+            int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("checkYear", year));
+            int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "粉尘").eq("checkYear", year).eq("decideResult", "合格"));
             double d1 = count1 / count;
             list1.add(DoubleUtil.get(d1));
             //
-            int counth = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("year", year));
-            int counth1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("year", year).eq("decideResult", "合格"));
+            int counth = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("checkYear", year));
+            int counth1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "化学因素").eq("checkYear", year).eq("decideResult", "合格"));
             double d2 = counth1 / counth;
             list2.add(DoubleUtil.get(d2));
             //
-            int countw = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("year", year));
-            int countw1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("year", year).eq("decideResult", "合格"));
+            int countw = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("checkYear", year));
+            int countw1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "物理因素").eq("checkYear", year).eq("decideResult", "合格"));
             double d3 = countw1 / countw;
             list3.add(DoubleUtil.get(d3));
             //
-            int countf = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("year", year));
-            int countf1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("year", year).eq("decideResult", "合格"));
+            int countf = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("checkYear", year));
+            int countf1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "放射性因素").eq("checkYear", year).eq("decideResult", "合格"));
             double d4 = countf1 / countf;
             list4.add(DoubleUtil.get(d4));
             //
-            int counts = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("year", year));
-            int counts1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("year", year).eq("decideResult", "合格"));
+            int counts = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("checkYear", year));
+            int counts1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", "生物因素").eq("checkYear", year).eq("decideResult", "合格"));
             double d5 = counts1 / counts;
             list5.add(DoubleUtil.get(d5));
         }
@@ -373,24 +373,24 @@ public class NationServiceVisualYes {
             Twenty tmp = new Twenty();
             if ("危害因素".equals(type)) {
                 tmp.setName(s);
-                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("year", year));
-                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("year", year).eq("decideResult", "合格"));
+                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("checkYear", year));
+                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("dangerBigName", s).eq("checkYear", year).eq("decideResult", "合格"));
                 tmp.setVar1(count);
                 tmp.setVar2(count1);
                 tmp.setVar3(count1 / count * 100 + "%");
                 list.add(tmp);
             } else if ("行政区划".equals(type)) {
                 tmp.setName(s);
-                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("year", year));
-                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("year", year).eq("decideResult", "合格"));
+                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("checkYear", year));
+                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("provinceName", s).eq("checkYear", year).eq("decideResult", "合格"));
                 tmp.setVar1(count);
                 tmp.setVar2(count1);
                 tmp.setVar3(count1 / count * 100 + "%");
                 list.add(tmp);
             } else if ("登记注册类型".equals(type)) {
                 tmp.setName(s);
-                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("registerBigName", s).eq("year", year));
-                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("registerBigName", s).eq("year", year).eq("decideResult", "合格"));
+                int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("registerBigName", s).eq("checkYear", year));
+                int count1 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("registerBigName", s).eq("checkYear", year).eq("decideResult", "合格"));
                 tmp.setVar1(count);
                 tmp.setVar2(count1);
                 tmp.setVar3(count1 / count * 100 + "%");
@@ -428,8 +428,8 @@ public class NationServiceVisualYes {
             double d2 = count2 / count;
             list2.add(DoubleUtil.get(d2));
             //
-            int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year));
-            int enterpriseCode2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("year", year));
+            int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("checkYear", year));
+            int enterpriseCode2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("checkYear", year));
 
             double d3 = enterpriseCode2 / enterpriseCode;
             list3.add(DoubleUtil.get(d3));
@@ -457,17 +457,17 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("scope", s));
                 for (TijianBasicOfService tijianBasicOfService : listt) {
-                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar1(enterpriseCode);
                     int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
                     tmp.setVar2(count);
-                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("checkYear", year));
                     tmp.setVar3(count1);
                     tmp.setVar4(count1 / count * 100 + "%");
-                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar5(count2);
                     tmp.setVar6(count2 / count * 100 + "%");
-                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar7(count3);
                     tmp.setVar8(count3 / count * 100 + "%");
                 }
@@ -477,17 +477,17 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("provinceName", s));
                 for (TijianBasicOfService tijianBasicOfService : listt) {
-                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar1(enterpriseCode);
                     int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
                     tmp.setVar2(count);
-                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("checkYear", year));
                     tmp.setVar3(count1);
                     tmp.setVar4(count1 / count * 100 + "%");
-                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar5(count2);
                     tmp.setVar6(count2 / count * 100 + "%");
-                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar7(count3);
                     tmp.setVar8(count3 / count * 100 + "%");
                 }
@@ -498,17 +498,17 @@ public class NationServiceVisualYes {
                 List<TijianBasicOfService> listt = tijianBasicOfServiceService.list(new QueryWrapper<TijianBasicOfService>().eq("registerBigName", s));
 
                 for (TijianBasicOfService tijianBasicOfService : listt) {
-                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int enterpriseCode = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar1(enterpriseCode);
                     int count = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
                     tmp.setVar2(count);
-                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("year", year));
+                    int count1 = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("result", "职业禁忌证").eq("checkYear", year));
                     tmp.setVar3(count1);
                     tmp.setVar4(count1 / count * 100 + "%");
-                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count2 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar5(count2);
                     tmp.setVar6(count2 / count * 100 + "%");
-                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("year", year));
+                    int count3 = tijianDetail2OfServiceService.count(new QueryWrapper<TijianDetail2OfService>().eq("tijianBasicId", tijianBasicOfService.getId()).eq("checkYear", year));
                     tmp.setVar7(count3);
                     tmp.setVar8(count3 / count * 100 + "%");
                 }
@@ -536,7 +536,7 @@ public class NationServiceVisualYes {
 
         for (int i = 0; i < size; i++) {
             //
-            int count = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("year", year));
+            int count = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("checkYear", year));
             int count1 = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("year", year));
             double d1 = count / count1;
             list1.add(DoubleUtil.get(d1));
@@ -562,9 +562,9 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("scope", s).eq("year", year));
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
-                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
-                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
 
                     tmp.setVar1(count2);
@@ -579,9 +579,9 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("provinceName", s).eq("year", year));
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
-                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
-                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
 
                     tmp.setVar1(count2);
@@ -596,9 +596,9 @@ public class NationServiceVisualYes {
                 tmp.setName(s);
                 List<ZhenduanBasicOfService> list1 = zhenduanBasicOfServiceService.list(new QueryWrapper<ZhenduanBasicOfService>().eq("registerBigName", s).eq("year", year));
                 for (ZhenduanBasicOfService zhenduanBasicOfService : list1) {
-                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count2 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int enterpriseCode = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
-                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
+                    int count1 = zhenduanDetailOfServiceService.count(new QueryWrapper<ZhenduanDetailOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("checkYear", year));
                     int idNum = zhenduanTotalOfServiceService.count(new QueryWrapper<ZhenduanTotalOfService>().eq("zhenduanBasicId", zhenduanBasicOfService.getId()).eq("year", year));
 
                     tmp.setVar1(count2);
@@ -676,7 +676,7 @@ public class NationServiceVisualYes {
                     int count2 =jianceTotalOfServiceService.count(new QueryWrapper<JianceTotalOfService>().eq("year",year).eq("tijianBasicId",jianceBasicOfService.getId()));
                     govEight.setVar7(count2);
                 }
-                int count3 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("year",year).eq("registerBigName",type));
+                int count3 = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("checkYear",year).eq("registerBigName",type));
                 govEight.setVar8(count3);
                 list.add(govEight);
             }
@@ -703,7 +703,7 @@ public class NationServiceVisualYes {
                 govSix.setVar3(count2);
                 int projectCount = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
                 govSix.setVar4(projectCount);
-                int idNum = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+                int idNum = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("checkYear", year).eq("provinceName", areaOfDic.getName()));
                 govSix.setVar5(idNum);
                 int count3 = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("year", year));
                 govSix.setVar6(count3);
@@ -721,7 +721,7 @@ public class NationServiceVisualYes {
                 govSix.setVar3(count2);
                 int projectCount = tijianBasicOfServiceService.count(new QueryWrapper<TijianBasicOfService>().eq("year", year).eq("registerBigName", baseOfDic.getBigName()));
                 govSix.setVar4(projectCount);
-                int idNum = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("year", year).eq("registerBigName",baseOfDic.getBigName()));
+                int idNum = tijianDetail1OfServiceService.count(new QueryWrapper<TijianDetail1OfService>().eq("checkYear", year).eq("registerBigName",baseOfDic.getBigName()));
                 govSix.setVar5(idNum);
                 int count3 = tijianTotalOfServiceService.count(new QueryWrapper<TijianTotalOfService>().eq("year", year));
                 govSix.setVar6(count3);
