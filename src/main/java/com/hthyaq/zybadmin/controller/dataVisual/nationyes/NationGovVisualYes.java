@@ -1,6 +1,7 @@
 package com.hthyaq.zybadmin.controller.dataVisual.nationyes;
 
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hthyaq.zybadmin.common.utils.cache.DataVisualCacheUtil;
@@ -8,7 +9,9 @@ import com.hthyaq.zybadmin.controller.dataVisual.vo.GovEight;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.GovSeven;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.GovSix;
 import com.hthyaq.zybadmin.controller.dataVisual.vo.Twenty;
-import com.hthyaq.zybadmin.model.entity.AreaOfDic;
+import com.hthyaq.zybadmin.model.entity.*;
+import com.hthyaq.zybadmin.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +22,15 @@ import java.util.Map;
 @RestController
 @RequestMapping("/nationGovVisual/yes")
 public class NationGovVisualYes {
+    @Autowired
+    EnterpriseService enterpriseService;
+    @Autowired
+    PersonOfSuperviseService personOfSuperviseService;
+    @Autowired
+    EquipmentOfSuperviseService equipmentOfSuperviseService;
+    @Autowired
+    SuperviseService superviseService;
+
     //表2-29 职业健康监管资源统计分析表
     @GetMapping("/option1")
     public List<GovSix> option1(String year) {
@@ -29,12 +41,18 @@ public class NationGovVisualYes {
         for (AreaOfDic areaOfDic : areaList) {
             GovSix govSeven = new GovSix();
             govSeven.setArea(areaOfDic.getName());
-            govSeven.setVar1(RandomUtil.randomInt(1, 10000));
-            govSeven.setVar2(RandomUtil.randomInt(1, 10000));
-            govSeven.setVar3(RandomUtil.randomInt(1, 10000));
-            govSeven.setVar4(RandomUtil.randomInt(1, 10000));
-            govSeven.setVar5(RandomUtil.randomInt(1, 10000));
-            govSeven.setVar6(RandomUtil.randomInt(1, 10000));
+            int count = enterpriseService.count(new QueryWrapper<Enterprise>().eq("year", year).eq("provinceName", areaOfDic.getName()));
+            govSeven.setVar1(count);
+            Enterprise enterprise = enterpriseService.getOne(new QueryWrapper<Enterprise>().select("sum(workerNumber) workerNumber").eq("year", year).eq("provinceName", areaOfDic.getName()));
+            govSeven.setVar2(enterprise.getWorkerNumber());
+            int count1 = personOfSuperviseService.count(new QueryWrapper<PersonOfSupervise>().eq("year", year).in("superviseId",new QueryWrapper<Supervise>().eq("provinceName", areaOfDic.getName()).eq("year", year)));
+            govSeven.setVar3(count1);
+            int count2 = personOfSuperviseService.count(new QueryWrapper<PersonOfSupervise>().eq("isGet", "是").in("superviseId",new QueryWrapper<Supervise>().eq("provinceName", areaOfDic.getName()).eq("year", year)));
+            govSeven.setVar4(count2);
+            EquipmentOfSupervise equipmentOfSupervise = equipmentOfSuperviseService.getOne(new QueryWrapper<EquipmentOfSupervise>().select("sum(amount) amount").inSql("superviseId","select id from supervise where provinceName="+areaOfDic.getName()).eq("year", year));
+            govSeven.setVar5(equipmentOfSupervise.getAmount());
+            EquipmentOfSupervise equipmentOfSupervise2 = equipmentOfSuperviseService.getOne(new QueryWrapper<EquipmentOfSupervise>().select("sum(amount) amount").eq("status","在用").in("superviseId", new QueryWrapper<Supervise>().eq("provinceName", areaOfDic.getName()).eq("year", year)));
+            govSeven.setVar6(equipmentOfSupervise2.getAmount());
             list.add(govSeven);
         }
         return list;
