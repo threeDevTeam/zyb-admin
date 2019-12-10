@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,8 @@ public class NationGovVisualYes {
     @Autowired
     SuperviseService superviseService;
 
+    @Autowired
+    LawOfSuperviseService lawOfSuperviseService;
     //表2-29 职业健康监管资源统计分析表
     @GetMapping("/option1")
     public List<GovSix> option1(String year) {
@@ -42,17 +46,47 @@ public class NationGovVisualYes {
             GovSix govSeven = new GovSix();
             govSeven.setArea(areaOfDic.getName());
             int count = enterpriseService.count(new QueryWrapper<Enterprise>().eq("year", year).eq("provinceName", areaOfDic.getName()));
-            govSeven.setVar1(count);
+            if(count==0){
+                govSeven.setVar1(0);
+            }else {
+                govSeven.setVar1(count);
+            }
+
             Enterprise enterprise = enterpriseService.getOne(new QueryWrapper<Enterprise>().select("sum(workerNumber) workerNumber").eq("year", year).eq("provinceName", areaOfDic.getName()));
-            govSeven.setVar2(enterprise.getWorkerNumber());
-            int count1 = personOfSuperviseService.count(new QueryWrapper<PersonOfSupervise>().eq("year", year).in("superviseId",new QueryWrapper<Supervise>().eq("provinceName", areaOfDic.getName()).eq("year", year)));
-            govSeven.setVar3(count1);
-            int count2 = personOfSuperviseService.count(new QueryWrapper<PersonOfSupervise>().eq("isGet", "是").in("superviseId",new QueryWrapper<Supervise>().eq("provinceName", areaOfDic.getName()).eq("year", year)));
-            govSeven.setVar4(count2);
-            EquipmentOfSupervise equipmentOfSupervise = equipmentOfSuperviseService.getOne(new QueryWrapper<EquipmentOfSupervise>().select("sum(amount) amount").inSql("superviseId","select id from supervise where provinceName="+areaOfDic.getName()).eq("year", year));
-            govSeven.setVar5(equipmentOfSupervise.getAmount());
+           if(enterprise==null){
+               govSeven.setVar2(0);
+           }else {
+               govSeven.setVar2(enterprise.getWorkerNumber());
+           }
+
+            int count1 = personOfSuperviseService.count(new QueryWrapper<PersonOfSupervise>().inSql("superviseId","select id from supervise where year="+year+" and provinceName="+"\""+areaOfDic.getName()+"\""));
+           if(count1==0){
+               govSeven.setVar3(0);
+           } else {
+               govSeven.setVar3(count1);
+           }
+
+            int count2 = personOfSuperviseService.count(new QueryWrapper<PersonOfSupervise>().eq("isGet", "是").inSql("superviseId","select id from supervise where year="+year+" and provinceName="+"\""+areaOfDic.getName()+"\""));
+            if(count2==0){
+                govSeven.setVar4(0);
+            }else {
+                govSeven.setVar4(count2);
+            }
+
+            EquipmentOfSupervise equipmentOfSupervise = equipmentOfSuperviseService.getOne(new QueryWrapper<EquipmentOfSupervise>().select("sum(amount) amount").inSql("superviseId","select id from supervise where year="+year+" and provinceName="+"\""+areaOfDic.getName()+"\""));
+            if(equipmentOfSupervise==null){
+                govSeven.setVar5(0);
+            }else {
+                govSeven.setVar5(equipmentOfSupervise.getAmount());
+            }
+
             EquipmentOfSupervise equipmentOfSupervise2 = equipmentOfSuperviseService.getOne(new QueryWrapper<EquipmentOfSupervise>().select("sum(amount) amount").eq("status","在用").in("superviseId", new QueryWrapper<Supervise>().eq("provinceName", areaOfDic.getName()).eq("year", year)));
-            govSeven.setVar6(equipmentOfSupervise2.getAmount());
+            if(equipmentOfSupervise2==null){
+                govSeven.setVar6(0);
+            }else {
+                govSeven.setVar6(equipmentOfSupervise2.getAmount());
+            }
+
             list.add(govSeven);
         }
         return list;
@@ -63,19 +97,43 @@ public class NationGovVisualYes {
     //['香港', '新疆', '宁夏', '青海', '甘肃', '陕西', '西藏', '云南', '贵州', '四川', '重庆', '海南', '广西', '广东', '湖南', '湖北', '河南', '山东', '江西', '福建', '安徽', '浙江', '江苏', '上海', '黑龙江', '吉林', '辽宁', '内蒙古', '山西', '河北', '天津', '北京']
     @GetMapping("/option2")
     public Map<String, List<Integer>> option2(String year) {
+        List list=new ArrayList();
         List<AreaOfDic> areaList = DataVisualCacheUtil.getAreaChildren("国家",null,null);
+        for (AreaOfDic areaOfDic : areaList) {
+            list.add(areaOfDic.getName());
+        }
+        Collections.reverse(list);
 
         Map<String, List<Integer>> map = Maps.newHashMap();
         //印发法律法规累计、印发规范性文件累计、印发标准累计
+
         List<Integer> list1 = Lists.newArrayList();
         List<Integer> list2 = Lists.newArrayList();
         List<Integer> list3 = Lists.newArrayList();
         //模拟数据
         int size = areaList.size();
         for (int i = size - 1; i > -1; i--) {
-            list1.add(RandomUtil.randomInt(1, 1000));
-            list2.add(RandomUtil.randomInt(1, 1000));
-            list3.add(RandomUtil.randomInt(1, 1000));
+            for (Object name: list) {
+                LawOfSupervise lawOfSupervise1 = lawOfSuperviseService.getOne(new QueryWrapper<LawOfSupervise>().inSql("superviseId", "select id from supervise where  provinceName=" + "\"" + name + "\"").eq("year", year).select("sum(ruleSum) ruleSum"));
+                if(lawOfSupervise1==null){
+                    list1.add(0);
+                }else {
+                    list1.add(lawOfSupervise1.getRuleSum());
+                }
+                LawOfSupervise lawOfSupervise2 = lawOfSuperviseService.getOne(new QueryWrapper<LawOfSupervise>().inSql("superviseId", "select id from supervise where  provinceName=" + "\"" + name + "\"").eq("year", year).select("sum(fileSum) fileSum"));
+                if(lawOfSupervise2==null) {
+                    list2.add(0);
+                }else {
+                    list2.add(lawOfSupervise1.getRuleSum());
+                }
+                LawOfSupervise lawOfSupervise3 = lawOfSuperviseService.getOne(new QueryWrapper<LawOfSupervise>().inSql("superviseId", "select id from supervise where  provinceName=" + "\"" + name + "\"").eq("year", year).select("sum(startdardSum) startdardSum"));
+                if(lawOfSupervise3==null) {
+                    list3.add(0);
+                }else {
+                    list3.add(lawOfSupervise3.getStartdardSum());
+                }
+            }
+
         }
         map.put("list1", list1);
         map.put("list2", list2);
