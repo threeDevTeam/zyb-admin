@@ -69,7 +69,7 @@ public class SysUserController {
         LoginVo loginVo = new LoginVo();
         //
         String type = sysUserDb.getType();
-        if ("管理员".equals(type)) {
+        if ("管理员".equals(type) || "普通用户".equals(type)) {
             loginVo.setObj1(sysUserDb);
         } else if ("政府监管部门".equals(type)) {
             SuperviseOfRegister superviseOfRegister = superviseOfRegisterService.getById(sysUserDb.getCompanyId());
