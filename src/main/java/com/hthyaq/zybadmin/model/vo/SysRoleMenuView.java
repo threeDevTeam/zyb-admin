@@ -13,4 +13,5 @@ public class SysRoleMenuView {
     private HashSet<Integer> checkbox2;
     private HashSet<Integer> checkbox3;
     private HashSet<Integer> checkbox4;
+    private HashSet<Integer> checkbox5;
 }

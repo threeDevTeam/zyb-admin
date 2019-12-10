@@ -94,6 +94,20 @@ public class SysRoleController {
         }
         return list1;
     }
+    @GetMapping("/sysRoleTree5")
+    public List<SysRoleTree> cascadeData5() {
+        List list1=new ArrayList();
+        QueryWrapper<SysMenu> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("pid","54");
+        List<SysMenu> list = sysMenuService.list(queryWrapper);
+        for (SysMenu sysMenu : list) {
+            SysRoleTree sysRoleTree=new SysRoleTree();
+            sysRoleTree.setLabel(sysMenu.getName());
+            sysRoleTree.setValue(sysMenu.getId());
+            list1.add(sysRoleTree);
+        }
+        return list1;
+    }
     @GetMapping("/bindUser")
     public List<SysUser> cascadeData1() {
         List list1=new ArrayList();

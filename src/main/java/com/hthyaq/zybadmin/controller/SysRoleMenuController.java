@@ -55,6 +55,9 @@ public class SysRoleMenuController {
         if (ObjectUtil.length(sysRoleMenuView.getCheckbox4()) > 0) {
             menuIdSet.addAll(sysRoleMenuView.getCheckbox4());
         }
+        if (ObjectUtil.length(sysRoleMenuView.getCheckbox5()) > 0) {
+            menuIdSet.addAll(sysRoleMenuView.getCheckbox5());
+        }
 
         List<SysRoleMenu> data = Lists.newArrayList();
         for (Integer menuId : menuIdSet) {
@@ -107,6 +110,7 @@ public class SysRoleMenuController {
         List<SysRoleMenu> list3 = new ArrayList<>();
         List<SysRoleMenu> list5 = new ArrayList<>();
         List<SysRoleMenu> list7 = new ArrayList<>();
+        List<SysRoleMenu> list8 = new ArrayList<>();
         //supervise
         QueryWrapper<SysMenu> qw = new QueryWrapper<>();
         qw.eq("pid", "1");
@@ -180,6 +184,23 @@ public class SysRoleMenuController {
         }
         if (ObjectUtil.length(list7) > 0) {
             map.put("Management", list7.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toList()));
+        }
+
+        QueryWrapper<SysMenu> qw4 = new QueryWrapper<>();
+        qw4.eq("pid", "54");
+        List<SysMenu> list9 = sysMenuService.list(qw4);
+
+        for (SysMenu sysMenu : list9) {
+            QueryWrapper<SysRoleMenu> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("roleId", id);
+            queryWrapper2.in("menuId", sysMenu.getId());
+            SysRoleMenu menuId = sysRoleMenuService.getOne(queryWrapper2);
+            if(menuId!=null) {
+                list8.add(menuId);
+            }
+        }
+        if (ObjectUtil.length(list8) > 0) {
+            map.put("opinion", list8.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toList()));
         }
 
         return map;

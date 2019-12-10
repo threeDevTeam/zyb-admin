@@ -10,10 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.hthyaq.zybadmin.common.constants.GlobalConstants;
 import com.hthyaq.zybadmin.model.bean.GlobalResult;
-import com.hthyaq.zybadmin.model.entity.EnterpriseOfRegister;
-import com.hthyaq.zybadmin.model.entity.ServiceOfRegister;
-import com.hthyaq.zybadmin.model.entity.SuperviseOfRegister;
-import com.hthyaq.zybadmin.model.entity.SysUser;
+import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.vo.LoginVo;
 import com.hthyaq.zybadmin.model.vo.SysUserpassword;
 import com.hthyaq.zybadmin.service.*;
@@ -49,7 +46,12 @@ public class SysUserController {
     @PostMapping("/add")
     public boolean add(@RequestBody SysUser sysUser) {
         sysUser.setLoginPassword(DigestUtils.md5Hex(sysUser.getLoginPassword()));
+
         sysUserService.save(sysUser);
+        SysRoleUser sysRoleUser=new SysRoleUser();
+        sysRoleUser.setUserId(Integer.parseInt(String.valueOf(sysUser.getId())));
+        sysRoleUser.setRoleId(7);
+        sysRoleUserService.save(sysRoleUser);
         return true;
     }
 
