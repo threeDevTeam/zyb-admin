@@ -1,3 +1,4 @@
+/*
 package com.hthyaq.zybadmin.common.config;
 
 import com.bstek.ureport.definition.datasource.BuildinDatasource;
@@ -32,3 +33,4 @@ public class Ureport2DataSource implements BuildinDatasource {
         return null;
     }
 }
+*/

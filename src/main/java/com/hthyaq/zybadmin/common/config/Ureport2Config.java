@@ -1,3 +1,4 @@
+/*
 package com.hthyaq.zybadmin.common.config;
 
 import com.bstek.ureport.console.UReportServlet;
@@ -16,4 +17,4 @@ public class Ureport2Config {
         return new ServletRegistrationBean<>(new UReportServlet(), "/ureport/*");
     }
 
-}
+}*/
