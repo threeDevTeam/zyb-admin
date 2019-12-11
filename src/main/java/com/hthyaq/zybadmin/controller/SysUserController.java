@@ -42,7 +42,8 @@ public class SysUserController {
     EnterpriseOfRegisterService enterpriseOfRegisterService;
     @Autowired
     ServiceOfRegisterService serviceOfRegisterService;
-
+    @Autowired
+    PublicOpinionService publicOpinionService;
     @PostMapping("/add")
     public boolean add(@RequestBody SysUser sysUser) {
         sysUser.setLoginPassword(DigestUtils.md5Hex(sysUser.getLoginPassword()));
@@ -52,6 +53,9 @@ public class SysUserController {
         sysRoleUser.setUserId(Integer.parseInt(String.valueOf(sysUser.getId())));
         sysRoleUser.setRoleId(7);
         sysRoleUserService.save(sysRoleUser);
+        PublicOpinion publicOpinion=new PublicOpinion();
+        publicOpinion.setUserid(sysUser.getId().intValue());
+        publicOpinionService.save(publicOpinion);
         return true;
     }
 

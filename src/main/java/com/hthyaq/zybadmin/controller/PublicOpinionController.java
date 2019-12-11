@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,22 +38,44 @@ public class PublicOpinionController {
     OpinionNameService opinionNameService;
 
     @PostMapping("/add")
-    public boolean add(@RequestBody PublicOpinionView publicOpinionView) {
+    public boolean add(@RequestBody PublicOpinionView publicOpinionView,HttpSession httpSession) {
         boolean flag = false;
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+        List<PublicOpinion> userid = publicOpinionService.list(new QueryWrapper<PublicOpinion>().eq("userid", sysUser.getId()));
+        if(userid==null){
+            //后插入
+            Set<Integer> menuIdSet = Sets.newHashSet();
+            if (ObjectUtil.length(publicOpinionView.getTypename()) > 0) {
+                menuIdSet.addAll(publicOpinionView.getTypename());
+            }
 
+            List<PublicOpinion> data = Lists.newArrayList();
+            for (Integer menuId : menuIdSet) {
+                PublicOpinion tmp = new PublicOpinion();
+                tmp.setText(publicOpinionView.getText());
+                tmp.setType(menuId);
+                tmp.setUserid(sysUser.getId().intValue());
+                data.add(tmp);
+            }
+
+            flag = publicOpinionService.saveBatch(data);
+            ;
+            return flag;
+        }
         //先删除
-        publicOpinionService.remove(new QueryWrapper<PublicOpinion>().eq("userid", "-1"));
+        publicOpinionService.remove(new QueryWrapper<PublicOpinion>().eq("userid", sysUser.getId()));
         //后插入
         Set<Integer> menuIdSet = Sets.newHashSet();
         if (ObjectUtil.length(publicOpinionView.getTypename()) > 0) {
             menuIdSet.addAll(publicOpinionView.getTypename());
         }
-        PublicOpinion publicOpinion = new PublicOpinion();
-        BeanUtils.copyProperties(publicOpinionView, publicOpinion);
+
         List<PublicOpinion> data = Lists.newArrayList();
         for (Integer menuId : menuIdSet) {
             PublicOpinion tmp = new PublicOpinion();
+            tmp.setText(publicOpinionView.getText());
             tmp.setType(menuId);
+            tmp.setUserid(sysUser.getId().intValue());
             data.add(tmp);
         }
 
@@ -66,20 +85,23 @@ public class PublicOpinionController {
     }
 
     @GetMapping("/list")
-    public Map<String, List<Integer>> getById() {
-        Map<String, List<Integer>> map = Maps.newHashMap();
+    public Map<String, Object> getById(HttpSession httpSession) {
+        SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
+
+        Map<String, Object> map = Maps.newHashMap();
         List<PublicOpinion> list = new ArrayList<>();
         List<OpinionName> list1 = opinionNameService.list();
         for (OpinionName opinionName : list1) {
             QueryWrapper<PublicOpinion> queryWrapper = new QueryWrapper<>();
-            queryWrapper.in("type", opinionName.getId());
+            queryWrapper.in("type", opinionName.getId()).eq("userid",sysUser.getId());
             PublicOpinion menuId = publicOpinionService.getOne(queryWrapper);
             if (menuId != null) {
                 list.add(menuId);
             }
         }
         if (ObjectUtil.length(list) > 0) {
-
+            String text = list.get(0).getText();
+            map.put("text", text);
             map.put("typename", list.stream().map(PublicOpinion::getType).collect(Collectors.toList()));
         }
         return map;

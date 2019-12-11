@@ -15,4 +15,5 @@ import java.util.HashSet;
 public class PublicOpinionView extends PublicOpinion {
 
     private HashSet<Integer> typename;
+    private String text;
 }
