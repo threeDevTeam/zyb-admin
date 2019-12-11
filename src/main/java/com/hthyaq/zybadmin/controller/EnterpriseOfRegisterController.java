@@ -65,12 +65,11 @@ public class EnterpriseOfRegisterController {
                 enterpriseOfRegister.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         } else {
-            enterpriseOfRegister.setDistrictName((String) enterpriseUserView.getCascader().get(2));
-            QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("id", (String) enterpriseUserView.getCascader().get(2));
+           QueryWrapper<AreaOfDic> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("id",enterpriseUserView.getCascader().get(2));
             List<AreaOfDic> list2 = areaOfDicService.list(queryWrapper2);
             for (AreaOfDic areaOfDic : list2) {
-                enterpriseOfRegister.setProvinceName(String.valueOf(areaOfDic.getName()));
+                enterpriseOfRegister.setDistrictName(String.valueOf(areaOfDic.getName()));
                 enterpriseOfRegister.setDistrictCode(String.valueOf(areaOfDic.getCode()));
             }
         }
