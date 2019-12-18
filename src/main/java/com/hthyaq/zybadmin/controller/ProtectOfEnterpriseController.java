@@ -104,8 +104,31 @@ public class ProtectOfEnterpriseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody ProtectOfEnterprise protectOfEnterprise) {
-        return protectOfEnterpriseService.updateById(protectOfEnterprise);
+    public boolean edit(@RequestBody ProtectOfEnterpriseView protectOfEnterpriseView) {
+        if(protectOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            protectOfEnterpriseService.removeById(protectOfEnterpriseView.getId());
+
+            ProtectOfEnterprise protectOfEnterprise = new  ProtectOfEnterprise();
+            //other
+            BeanUtils.copyProperties(protectOfEnterpriseView, protectOfEnterprise);
+            //postDangerId
+            protectOfEnterprise.setPostDangerId(Long.parseLong(protectOfEnterpriseView.getTreeSelect()));
+
+            //通过postDangerId查询出workplaceId,postId
+            PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(protectOfEnterpriseView.getTreeSelect());
+            protectOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+            protectOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
+
+            return  protectOfEnterpriseService.save(protectOfEnterprise);
+        }else {
+            ProtectOfEnterprise protectOfEnterprise = new  ProtectOfEnterprise();
+
+            //other
+            BeanUtils.copyProperties(protectOfEnterpriseView, protectOfEnterprise);
+
+            return protectOfEnterpriseService.updateById(protectOfEnterprise);
+        }
+
     }
 
     @GetMapping("/list")

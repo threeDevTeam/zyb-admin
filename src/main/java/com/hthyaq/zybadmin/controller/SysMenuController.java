@@ -102,6 +102,10 @@ public class SysMenuController {
         sysMenu.setPid((Integer) sysMenuView.getCascader().get(0));
         return sysMenuService.updateById(sysMenu);
     }
+    @GetMapping("/delete")
+    public boolean delete(String id) {
+        return  sysMenuService.removeById(id);
+    }
 
     @GetMapping("/getById")
     public SysMenu getById(Integer id) {

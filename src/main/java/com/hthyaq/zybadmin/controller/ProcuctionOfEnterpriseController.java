@@ -146,7 +146,11 @@ public class ProcuctionOfEnterpriseController {
             String type = entry.getKey();
             List<Object> modelList = entry.getValue();
             List<ProcuctionOfEnterprise> dataList = getDataList(modelList, type,httpSession);
-            flag = procuctionOfEnterpriseService.saveBatch(dataList);
+            try {
+                flag = procuctionOfEnterpriseService.saveBatch(dataList);
+            } catch (Exception e) {
+                throw new RuntimeException("表格内容格式错误，请检查！");
+            }
         }
         return flag;
     }

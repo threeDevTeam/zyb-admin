@@ -57,7 +57,7 @@ public class JianceTotalOfServiceController {
         for (ServiceOfRegister serviceOfRegister : list) {
             if (serviceOfRegister.getType().equals("检测机构")) {
                 QueryWrapper<JianceBasicOfService> queryWrapper1 = new QueryWrapper();
-                queryWrapper.eq("name", serviceOfRegister.getName());
+                queryWrapper1.eq("name", serviceOfRegister.getName());
                 List<JianceBasicOfService> list1 = jianceBasicOfServiceService.list(queryWrapper1);
                 for (JianceBasicOfService jianceBasicOfService : list1) {
                     int count = jianceDetailOfServiceService.count(new QueryWrapper<JianceDetailOfService>().eq("jianceBasicId", jianceBasicOfService.getId()).eq("checkYear", jianceTotalOfService.getYear() - 1));

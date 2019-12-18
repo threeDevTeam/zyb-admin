@@ -174,48 +174,98 @@ public class PostDangerOfEnterpriseController {
 
     @PostMapping("/edit")
     public boolean edit(@RequestBody PostDangerOfEnterpriseView postDangerOfEnterpriseView) {
-        PostDangerOfEnterprise postDangerOfEnterprise = new PostDangerOfEnterprise();
+        if(postDangerOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            postDangerOfEnterpriseService.removeById(postDangerOfEnterpriseView.getId());
 
-        BeanUtils.copyProperties(postDangerOfEnterpriseView, postDangerOfEnterprise);
-        postDangerOfEnterprise.setUpDatee(AntdDateUtil.getInteger(postDangerOfEnterpriseView.getUpDateeStr()));
+            PostDangerOfEnterprise postDangerOfEnterprise = new PostDangerOfEnterprise();
 
-        //职业病危害因素名称
-        QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();
-        qw4.eq("id", postDangerOfEnterpriseView.getCascaded1().get(0));
-        List<Hazardousfactors> list5 = hazardousfactorsService.list(qw4);
-        for (Hazardousfactors hazardousfactors : list5) {
-            postDangerOfEnterprise.setDangerBigName(hazardousfactors.getName());
-        }
-        if(postDangerOfEnterpriseView.getCascaded1().size()==2){
-            QueryWrapper<Hazardousfactors> qw1= new QueryWrapper<>();
-            qw1.eq("id",postDangerOfEnterpriseView.getCascaded1().get(1));
-            List<Hazardousfactors> list6=hazardousfactorsService.list(qw1);
-            for (Hazardousfactors hazardousfactors : list6) {
-                postDangerOfEnterprise.setDangerSmallName(hazardousfactors.getName());
+            BeanUtils.copyProperties(postDangerOfEnterpriseView, postDangerOfEnterprise);
+            postDangerOfEnterprise.setUpDatee(AntdDateUtil.getInteger(postDangerOfEnterpriseView.getUpDateeStr()));
+
+            //职业病危害因素名称
+            QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();
+            qw4.eq("id", postDangerOfEnterpriseView.getCascaded1().get(0));
+            List<Hazardousfactors> list5 = hazardousfactorsService.list(qw4);
+            for (Hazardousfactors hazardousfactors : list5) {
+                postDangerOfEnterprise.setDangerBigName(hazardousfactors.getName());
             }
-        }else{
-            postDangerOfEnterprise.setDangerSmallName("无");
-        }
-        //职业病名称
-        QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
-        qwZ.eq("id", postDangerOfEnterpriseView.getCascaded2().get(0));
-        List<Zybname> listZ = zybnameService.list(qwZ);
-        for (Zybname zybname : listZ) {
-            postDangerOfEnterprise.setSickBigName(zybname.getName());
-        }
-        if (postDangerOfEnterpriseView.getCascaded2().size() == 2) {
-            QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
-            qw1.eq("id", postDangerOfEnterpriseView.getCascaded2().get(1));
-            List<Zybname> list6 = zybnameService.list(qw1);
-            for (Zybname zybname : list6) {
-                postDangerOfEnterprise.setSickSmallName(zybname.getName());
+            if(postDangerOfEnterpriseView.getCascaded1().size()==2){
+                QueryWrapper<Hazardousfactors> qw1= new QueryWrapper<>();
+                qw1.eq("id",postDangerOfEnterpriseView.getCascaded1().get(1));
+                List<Hazardousfactors> list6=hazardousfactorsService.list(qw1);
+                for (Hazardousfactors hazardousfactors : list6) {
+                    postDangerOfEnterprise.setDangerSmallName(hazardousfactors.getName());
+                }
+            }else{
+                postDangerOfEnterprise.setDangerSmallName("无");
             }
-        } else {
-            postDangerOfEnterprise.setSickSmallName("无");
-        }
+            //职业病名称
+            QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
+            qwZ.eq("id", postDangerOfEnterpriseView.getCascaded2().get(0));
+            List<Zybname> listZ = zybnameService.list(qwZ);
+            for (Zybname zybname : listZ) {
+                postDangerOfEnterprise.setSickBigName(zybname.getName());
+            }
+            if (postDangerOfEnterpriseView.getCascaded2().size() == 2) {
+                QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
+                qw1.eq("id", postDangerOfEnterpriseView.getCascaded2().get(1));
+                List<Zybname> list6 = zybnameService.list(qw1);
+                for (Zybname zybname : list6) {
+                    postDangerOfEnterprise.setSickSmallName(zybname.getName());
+                }
+            } else {
+                postDangerOfEnterprise.setSickSmallName("无");
+            }
+            //postId
+            postDangerOfEnterprise.setPostId(Long.parseLong(postDangerOfEnterpriseView.getTreeSelect()));
 
-        return postDangerOfEnterpriseService.updateById(postDangerOfEnterprise);
-    }
+            //通过postId查询出workplaceId
+            PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(postDangerOfEnterpriseView.getTreeSelect());
+            postDangerOfEnterprise.setWorkplaceId(postOfEnterprise.getWorkplaceId());
+            return postDangerOfEnterpriseService.save(postDangerOfEnterprise);
+        }else {
+            PostDangerOfEnterprise postDangerOfEnterprise = new PostDangerOfEnterprise();
+            //other
+            BeanUtils.copyProperties(postDangerOfEnterpriseView, postDangerOfEnterprise);
+            postDangerOfEnterprise.setUpDatee(AntdDateUtil.getInteger(postDangerOfEnterpriseView.getUpDateeStr()));
+
+            //职业病危害因素名称
+            QueryWrapper<Hazardousfactors> qw4 = new QueryWrapper<>();
+            qw4.eq("id", postDangerOfEnterpriseView.getCascaded1().get(0));
+            List<Hazardousfactors> list5 = hazardousfactorsService.list(qw4);
+            for (Hazardousfactors hazardousfactors : list5) {
+                postDangerOfEnterprise.setDangerBigName(hazardousfactors.getName());
+            }
+            if(postDangerOfEnterpriseView.getCascaded1().size()==2){
+                QueryWrapper<Hazardousfactors> qw1= new QueryWrapper<>();
+                qw1.eq("id",postDangerOfEnterpriseView.getCascaded1().get(1));
+                List<Hazardousfactors> list6=hazardousfactorsService.list(qw1);
+                for (Hazardousfactors hazardousfactors : list6) {
+                    postDangerOfEnterprise.setDangerSmallName(hazardousfactors.getName());
+                }
+            }else{
+                postDangerOfEnterprise.setDangerSmallName("无");
+            }
+            //职业病名称
+            QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
+            qwZ.eq("id", postDangerOfEnterpriseView.getCascaded2().get(0));
+            List<Zybname> listZ = zybnameService.list(qwZ);
+            for (Zybname zybname : listZ) {
+                postDangerOfEnterprise.setSickBigName(zybname.getName());
+            }
+            if (postDangerOfEnterpriseView.getCascaded2().size() == 2) {
+                QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
+                qw1.eq("id", postDangerOfEnterpriseView.getCascaded2().get(1));
+                List<Zybname> list6 = zybnameService.list(qw1);
+                for (Zybname zybname : list6) {
+                    postDangerOfEnterprise.setSickSmallName(zybname.getName());
+                }
+            } else {
+                postDangerOfEnterprise.setDangerSmallName("无");
+            }
+            return postDangerOfEnterpriseService.updateById(postDangerOfEnterprise);
+        }
+  }
 
     @GetMapping("/list")
     public IPage<PostDangerOfEnterprise> list(String json, HttpSession httpSession) {

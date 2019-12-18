@@ -110,8 +110,27 @@ public class EnterpriseCheckSumOfEnterpriseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody EnterpriseCheckSumOfEnterprise enterpriseCheckSumOfEnterprise) {
-        return enterpriseCheckSumOfEnterpriseService.updateById(enterpriseCheckSumOfEnterprise);
+    public boolean edit(@RequestBody EnterpriseCheckSumOfEnterpriseView enterpriseCheckSumOfEnterpriseView) {
+        if(enterpriseCheckSumOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            enterpriseCheckSumOfEnterpriseService.removeById(enterpriseCheckSumOfEnterpriseView.getId());
+            EnterpriseCheckSumOfEnterprise enterpriseCheckSumOfEnterprise = new EnterpriseCheckSumOfEnterprise();
+
+            //other
+            BeanUtils.copyProperties(enterpriseCheckSumOfEnterpriseView, enterpriseCheckSumOfEnterprise);
+            //postDangerId
+            enterpriseCheckSumOfEnterprise.setPostDangerId(Long.parseLong(enterpriseCheckSumOfEnterpriseView.getTreeSelect()));
+
+            //通过postDangerId查询出workplaceId,postId
+            PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(enterpriseCheckSumOfEnterpriseView.getTreeSelect());
+            enterpriseCheckSumOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+            enterpriseCheckSumOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
+
+
+            return enterpriseCheckSumOfEnterpriseService.save(enterpriseCheckSumOfEnterprise);
+        }else {
+            return enterpriseCheckSumOfEnterpriseService.updateById(enterpriseCheckSumOfEnterpriseView);
+        }
+
     }
 
     @GetMapping("/list")

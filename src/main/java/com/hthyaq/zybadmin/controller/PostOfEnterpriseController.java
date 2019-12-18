@@ -119,12 +119,14 @@ public class PostOfEnterpriseController {
         //岗位名称
         QueryWrapper<Gangwei> gw1 = new QueryWrapper<>();
         gw1.eq("name", postOfEnterprise.getPostBigName());
+        gw1.eq("level", 1);
         List<Gangwei> gw = gangweiService.list(gw1);
         for (Gangwei gangwei : gw) {
             listc1.add(gangwei.getId());
         }
         QueryWrapper<Gangwei> gw5 = new QueryWrapper<>();
         gw5.eq("name", postOfEnterprise.getPostSmallName());
+        gw5.eq("pid", listc1.get(0));
         List<Gangwei> gw3 = gangweiService.list(gw5);
         for (Gangwei gangwei : gw3) {
             listc1.add(gangwei.getId());
@@ -136,6 +138,8 @@ public class PostOfEnterpriseController {
 
     @PostMapping("/edit")
     public boolean edit(@RequestBody PostOfEnterpriseView postOfEnterpriseView) {
+        boolean flag=false;
+        postOfEnterpriseService.removeById(postOfEnterpriseView.getId());
         //demo
         PostOfEnterprise postOfEnterprise = new PostOfEnterprise();
 
@@ -158,7 +162,9 @@ public class PostOfEnterpriseController {
         }else{
             postOfEnterprise.setPostSmallName("无");
         }
-        return postOfEnterpriseService.updateById(postOfEnterprise);
+        flag=postOfEnterpriseService.save(postOfEnterprise);
+
+        return flag;
     }
 
     @GetMapping("/list")
@@ -260,7 +266,11 @@ public class PostOfEnterpriseController {
             QueryWrapper<WorkplaceOfEnterprise> queryWrapper=new QueryWrapper<>();
             queryWrapper.eq("name", postOfEnterpriseModel.getName());
             WorkplaceOfEnterprise one = workplaceOfEnterpriseService.getOne(queryWrapper);
-            postOfEnterprise.setWorkplaceId(one.getId());
+            try {
+                postOfEnterprise.setWorkplaceId(one.getId());
+            } catch (Exception e) {
+                throw new RuntimeException("表格内容不正确");
+            }
             //大类名岗位
             QueryWrapper<Gangwei> qwg1=new QueryWrapper<>();
             qwg1.eq("name",postOfEnterpriseModel.getPostSmallName());

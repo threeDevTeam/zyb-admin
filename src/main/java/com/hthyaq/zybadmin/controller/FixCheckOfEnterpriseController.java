@@ -83,7 +83,7 @@ public class FixCheckOfEnterpriseController {
         PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(fixCheckOfEnterprise.getPostDangerId());
         PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(fixCheckOfEnterprise.getPostId());
         WorkplaceOfEnterprise workplaceOfEnterprise = workplaceOfEnterpriseService.getById(fixCheckOfEnterprise.getWorkplaceId());
-        fixCheckOfView.setTreeSelect(String.valueOf(workplaceOfEnterprise.getName() + "--" + postOfEnterprise.getPostSmallName() + "--" + postDangerOfEnterprise.getDangerSmallName()));
+        fixCheckOfView.setTreeSelect(workplaceOfEnterprise.getName() + "--" + postOfEnterprise.getPostSmallName() + "--" + postDangerOfEnterprise.getDangerSmallName());
 
         //demoCourse
         QueryWrapper<FixCheckResultOfEnterprise> queryWrapper = new QueryWrapper<>();

@@ -116,17 +116,32 @@ public class TouchPersonOfEnterpriseController {
 
     @PostMapping("/edit")
     public boolean edit(@RequestBody TouchPersonOfEnterpriseView touchPersonOfEnterpriseView) {
-        TouchPersonOfEnterprise touchPersonOfEnterprise=new TouchPersonOfEnterpriseView();
-        BeanUtils.copyProperties(touchPersonOfEnterpriseView, touchPersonOfEnterprise);
-        touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirthStr()));
-        touchPersonOfEnterprise.setStartDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getStartDateStr()));
-        touchPersonOfEnterprise.setLeaveDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getLeaveDateStr()));
 
-        touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirthStr()));
-        touchPersonOfEnterprise.setStartDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getStartDateStr()));
-        touchPersonOfEnterprise.setLeaveDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getLeaveDateStr()));
+        if(touchPersonOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            touchPersonOfEnterpriseService.removeById(touchPersonOfEnterpriseView.getId());
+            TouchPersonOfEnterprise touchPersonOfEnterprise=new TouchPersonOfEnterpriseView();
+            BeanUtils.copyProperties(touchPersonOfEnterpriseView, touchPersonOfEnterprise);
+            //postDangerId
+            touchPersonOfEnterprise.setPostDangerId(Long.parseLong(touchPersonOfEnterpriseView.getTreeSelect()));
 
-        return touchPersonOfEnterpriseService.updateById(touchPersonOfEnterprise);
+            //通过postDangerId查询出workplaceId,postId
+            PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(touchPersonOfEnterpriseView.getTreeSelect());
+            touchPersonOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+            touchPersonOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
+
+            touchPersonOfEnterprise.setBirth(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getBirthStr()));
+            touchPersonOfEnterprise.setStartDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getStartDateStr()));
+            touchPersonOfEnterprise.setLeaveDate(AntdDateUtil.getInteger(touchPersonOfEnterpriseView.getLeaveDateStr()));
+
+            return touchPersonOfEnterpriseService.save(touchPersonOfEnterprise);
+        }else {
+
+            return touchPersonOfEnterpriseService.updateById(touchPersonOfEnterpriseView);
+        }
+
+
+
+
     }
 
     @GetMapping("/list")

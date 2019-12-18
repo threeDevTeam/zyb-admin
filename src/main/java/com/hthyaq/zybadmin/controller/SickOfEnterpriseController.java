@@ -152,30 +152,68 @@ public class SickOfEnterpriseController {
 
     @PostMapping("/edit")
     public boolean edit(@RequestBody SickOfEnterpriseView sickOfEnterpriseView) {
-        SickOfEnterprise sickOfEnterprise = new SickOfEnterprise();
+        if(sickOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            sickOfEnterpriseService.removeById(sickOfEnterpriseView.getId());
+            SickOfEnterprise sickOfEnterprise = new SickOfEnterprise();
 
-        BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
-        sickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getCheckDateStr()));
-        sickOfEnterprise.setDieDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getDieDateStr()));
+            BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
+            sickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getCheckDateStr()));
+            sickOfEnterprise.setDieDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getDieDateStr()));
 
-        //职业病名称
-        QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
-        qwZ.eq("id", sickOfEnterpriseView.getCascaded1().get(0));
-        List<Zybname> listZ = zybnameService.list(qwZ);
-        for (Zybname zybname : listZ) {
-            sickOfEnterprise.setSickBigName(zybname.getName());
-        }
-        if (sickOfEnterpriseView.getCascaded1().size() == 2) {
-            QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
-            qw1.eq("id", sickOfEnterpriseView.getCascaded1().get(1));
-            List<Zybname> list6 = zybnameService.list(qw1);
-            for (Zybname zybname : list6) {
-                sickOfEnterprise.setSickSmallName(zybname.getName());
+            //职业病名称
+            QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
+            qwZ.eq("id", sickOfEnterpriseView.getCascaded1().get(0));
+            List<Zybname> listZ = zybnameService.list(qwZ);
+            for (Zybname zybname : listZ) {
+                sickOfEnterprise.setSickBigName(zybname.getName());
             }
-        } else {
-            sickOfEnterprise.setSickSmallName("无");
+            if (sickOfEnterpriseView.getCascaded1().size() == 2) {
+                QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
+                qw1.eq("id", sickOfEnterpriseView.getCascaded1().get(1));
+                List<Zybname> list6 = zybnameService.list(qw1);
+                for (Zybname zybname : list6) {
+                    sickOfEnterprise.setSickSmallName(zybname.getName());
+                }
+            } else {
+                sickOfEnterprise.setSickSmallName("无");
+            }
+            //postDangerId
+            sickOfEnterprise.setPostDangerId(Long.parseLong(sickOfEnterpriseView.getTreeSelect()));
+
+            //通过postDangerId查询出workplaceId,postId
+            PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(sickOfEnterpriseView.getTreeSelect());
+            sickOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+            sickOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
+
+
+            return sickOfEnterpriseService.save(sickOfEnterprise);
+        }else {
+            SickOfEnterprise sickOfEnterprise = new SickOfEnterprise();
+
+            BeanUtils.copyProperties(sickOfEnterpriseView, sickOfEnterprise);
+            sickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getCheckDateStr()));
+            sickOfEnterprise.setDieDate(AntdDateUtil.getInteger(sickOfEnterpriseView.getDieDateStr()));
+
+            //职业病名称
+            QueryWrapper<Zybname> qwZ = new QueryWrapper<>();
+            qwZ.eq("id", sickOfEnterpriseView.getCascaded1().get(0));
+            List<Zybname> listZ = zybnameService.list(qwZ);
+            for (Zybname zybname : listZ) {
+                sickOfEnterprise.setSickBigName(zybname.getName());
+            }
+            if (sickOfEnterpriseView.getCascaded1().size() == 2) {
+                QueryWrapper<Zybname> qw1 = new QueryWrapper<>();
+                qw1.eq("id", sickOfEnterpriseView.getCascaded1().get(1));
+                List<Zybname> list6 = zybnameService.list(qw1);
+                for (Zybname zybname : list6) {
+                    sickOfEnterprise.setSickSmallName(zybname.getName());
+                }
+            } else {
+                sickOfEnterprise.setSickSmallName("无");
+            }
+            return sickOfEnterpriseService.updateById(sickOfEnterprise);
         }
-        return sickOfEnterpriseService.updateById(sickOfEnterprise);
+
     }
 
     @GetMapping("/list")

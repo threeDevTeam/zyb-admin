@@ -107,7 +107,12 @@ public class ServiceOfRegisterController {
         sysUser.setType(serviceOfUserView.getType()+"-"+serviceOfUserView.getType2());
         sysUser.setCompanyId(serviceOfRegister.getId());
         sysUser.setCompanyName(serviceOfUserView.getCompanyName());
-        sysUserService.save(sysUser);
+
+        try {
+            sysUserService.save(sysUser);
+        } catch (Exception e) {
+            throw new RuntimeException("公司名称已存在");
+        }
         if(serviceOfUserView.getType2().equals("检测机构")){
             SysRoleUser sysRoleUser=new SysRoleUser();
             sysRoleUser.setRoleId(4);

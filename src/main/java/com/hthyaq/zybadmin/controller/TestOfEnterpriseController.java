@@ -109,8 +109,30 @@ public class TestOfEnterpriseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody TestOfEnterprise testOfEnterprise) {
-        return testOfEnterpriseService.updateById(testOfEnterprise);
+    public boolean edit(@RequestBody TestOfEnterpriseView testOfEnterpriseView) {
+        if(testOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            testOfEnterpriseService.removeById(testOfEnterpriseView.getId());
+            TestOfEnterprise testOfEnterprise = new TestOfEnterprise();
+
+            //other
+            BeanUtils.copyProperties(testOfEnterpriseView, testOfEnterprise);
+            //postDangerId
+            testOfEnterprise.setPostDangerId(Long.parseLong(testOfEnterpriseView.getTreeSelect()));
+
+            //通过postDangerId查询出workplaceId,postId
+            PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(testOfEnterpriseView.getTreeSelect());
+            testOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+            testOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
+
+
+            return testOfEnterpriseService.save(testOfEnterprise);
+        }else {
+            TestOfEnterprise testOfEnterprise = new TestOfEnterprise();
+
+            //other
+            BeanUtils.copyProperties(testOfEnterpriseView, testOfEnterprise);
+            return testOfEnterpriseService.updateById(testOfEnterprise);
+        }
     }
 
     @GetMapping("/list")

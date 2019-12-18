@@ -35,19 +35,20 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
     PostDangerOfEnterpriseService postDangerOfEnterpriseService;
     @Autowired
     EnterpriseService enterpriseService;
+
     @Override
     public boolean saveData(FixCheckOfView fixCheckOfView, HttpSession httpSession) {
         boolean flag1, flag2 = true;
 
-        FixCheckOfEnterprise fixCheckOfEnterprise=new FixCheckOfEnterprise();
+        FixCheckOfEnterprise fixCheckOfEnterprise = new FixCheckOfEnterprise();
 
         BeanUtils.copyProperties(fixCheckOfView, fixCheckOfEnterprise);
         fixCheckOfEnterprise.setCheckDate(AntdDateUtil.getInteger(fixCheckOfView.getCheckDateStr()));
 
         //enterpriseId
         SysUser sysUser = (SysUser) httpSession.getAttribute(GlobalConstants.LOGIN_NAME);
-        QueryWrapper<Enterprise> queryWrapper1=new QueryWrapper();
-        queryWrapper1.eq("name",sysUser.getCompanyName());
+        QueryWrapper<Enterprise> queryWrapper1 = new QueryWrapper();
+        queryWrapper1.eq("name", sysUser.getCompanyName());
         List<Enterprise> list1 = enterpriseService.list(queryWrapper1);
         for (Enterprise enterprise : list1) {
             fixCheckOfEnterprise.setEnterpriseId(enterprise.getId());
@@ -96,37 +97,75 @@ public class FixCheckOfEnterpriseServiceImpl extends ServiceImpl<FixCheckOfEnter
 
     @Override
     public boolean editData(FixCheckOfView fixCheckOfView) {
-        boolean flag1, flag2 = true;
+        boolean flag1 = true, flag2 = true;
 
-        //demo
-        FixCheckOfEnterprise fixCheckOfEnterprise=new FixCheckOfEnterprise();
-        BeanUtils.copyProperties(fixCheckOfView, fixCheckOfEnterprise);
-        fixCheckOfEnterprise.setCheckDate(AntdDateUtil.getInteger(fixCheckOfView.getCheckDateStr()));
+        if (fixCheckOfView.getTreeSelect().indexOf('-') == -1) {
 
-        flag1 = this.updateById(fixCheckOfEnterprise);
+            this.removeById(fixCheckOfView.getId());
+            //demo
+            FixCheckOfEnterprise fixCheckOfEnterprise = new FixCheckOfEnterprise();
+            BeanUtils.copyProperties(fixCheckOfView, fixCheckOfEnterprise);
+            fixCheckOfEnterprise.setCheckDate(AntdDateUtil.getInteger(fixCheckOfView.getCheckDateStr()));
+            //postDangerId
+            fixCheckOfEnterprise.setPostDangerId(Long.parseLong(fixCheckOfView.getTreeSelect()));
 
-        //demoCourse，先删除，后插入
-        QueryWrapper<FixCheckResultOfEnterprise> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("fixCheckId", fixCheckOfView.getId());
-        flag2 = fixCheckResultOfEnterpriseService.remove(queryWrapper);
+            PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(fixCheckOfView.getTreeSelect());
+            fixCheckOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+            fixCheckOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
 
-        List<FixCheckResultOfEnterprise> dataSource = fixCheckOfView.getCourse().getDataSource();
-        if (ObjectUtil.length(dataSource) > 0) {
-            //设置demoCourse的demo_id
-            long enterpriseId = fixCheckOfEnterprise.getId();
-            long fixCheckId = fixCheckOfEnterprise.getId();
-            long postDangerId = fixCheckOfEnterprise.getId();
-            long postId = fixCheckOfEnterprise.getId();
-            long workplaceId = fixCheckOfEnterprise.getId();
-            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(enterpriseId));
-            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(fixCheckId));
-            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(postDangerId));
-            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(postId));
-            dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(workplaceId));
-            //保存
-            flag2 = fixCheckResultOfEnterpriseService.saveBatch(dataSource);
+            flag1 = this.save(fixCheckOfEnterprise);
+
+            //demoCourse，先删除，后插入
+            QueryWrapper<FixCheckResultOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("fixCheckId", fixCheckOfView.getId());
+            flag2 = fixCheckResultOfEnterpriseService.remove(queryWrapper);
+
+            List<FixCheckResultOfEnterprise> dataSource = fixCheckOfView.getCourse().getDataSource();
+            if (ObjectUtil.length(dataSource) > 0) {
+                //设置demoCourse的demo_id
+                long enterpriseId = fixCheckOfEnterprise.getId();
+                long fixCheckId = fixCheckOfEnterprise.getId();
+                long postDangerId = fixCheckOfEnterprise.getId();
+                long postId = fixCheckOfEnterprise.getId();
+                long workplaceId = fixCheckOfEnterprise.getId();
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(enterpriseId));
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(fixCheckId));
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(postDangerId));
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(postId));
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(workplaceId));
+                //保存
+                flag2 = fixCheckResultOfEnterpriseService.saveBatch(dataSource);
+            }
+
+        } else {
+            //demo
+            FixCheckOfEnterprise fixCheckOfEnterprise = new FixCheckOfEnterprise();
+            BeanUtils.copyProperties(fixCheckOfView, fixCheckOfEnterprise);
+            flag1 = this.updateById(fixCheckOfEnterprise);
+
+            //demoCourse，先删除，后插入
+            QueryWrapper<FixCheckResultOfEnterprise> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("fixCheckId", fixCheckOfView.getId());
+            flag2 = fixCheckResultOfEnterpriseService.remove(queryWrapper);
+
+            List<FixCheckResultOfEnterprise> dataSource = fixCheckOfView.getCourse().getDataSource();
+            if (ObjectUtil.length(dataSource) > 0) {
+                //设置demoCourse的demo_id
+                long enterpriseId = fixCheckOfEnterprise.getId();
+                long fixCheckId = fixCheckOfEnterprise.getId();
+                long postDangerId = fixCheckOfEnterprise.getId();
+                long postId = fixCheckOfEnterprise.getId();
+                long workplaceId = fixCheckOfEnterprise.getId();
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(enterpriseId));
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(fixCheckId));
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(postDangerId));
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(postId));
+                dataSource.forEach(demoCourse -> demoCourse.setFixCheckId(workplaceId));
+                //保存
+                flag2 = fixCheckResultOfEnterpriseService.saveBatch(dataSource);
+            }
+
         }
-
-        return flag1 && flag2;
+        return flag1 || flag2;
     }
 }

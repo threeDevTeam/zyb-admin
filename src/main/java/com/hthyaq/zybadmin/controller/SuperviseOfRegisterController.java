@@ -108,7 +108,11 @@ public class SuperviseOfRegisterController {
         sysUser.setType(superviseOfUserView.getType());
         sysUser.setCompanyId(superviseOfRegister.getId());
         sysUser.setCompanyName(superviseOfUserView.getCompanyName());
-        sysUserService.save(sysUser);
+        try {
+            sysUserService.save(sysUser);
+        } catch (Exception e) {
+            throw new RuntimeException("公司名称已存在");
+        }
         SysRoleUser sysRoleUser=new SysRoleUser();
         sysRoleUser.setRoleId(3);
         sysRoleUser.setUserId(Integer.parseInt(String.valueOf(sysUser.getId())));

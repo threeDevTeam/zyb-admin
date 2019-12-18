@@ -107,11 +107,28 @@ public class AccidentPersonOfEnterpriseController {
 
     @PostMapping("/edit")
     public boolean edit(@RequestBody AccidentPersonOfEnterpriseView accidentPersonOfEnterpriseView) {
-        AccidentPersonOfEnterprise accidentPersonOfEnterprise=new AccidentPersonOfEnterprise();
-        BeanUtils.copyProperties(accidentPersonOfEnterpriseView, accidentPersonOfEnterprise);
-        accidentPersonOfEnterprise.setDieDate(AntdDateUtil.getInteger(accidentPersonOfEnterpriseView.getDieDateStr()));
+        if(accidentPersonOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            accidentPersonOfEnterpriseService.removeById(accidentPersonOfEnterpriseView.getId());
+            AccidentPersonOfEnterprise accidentPersonOfEnterprise=new AccidentPersonOfEnterprise();
+            BeanUtils.copyProperties(accidentPersonOfEnterpriseView, accidentPersonOfEnterprise);
+            accidentPersonOfEnterprise.setDieDate(AntdDateUtil.getInteger(accidentPersonOfEnterpriseView.getDieDateStr()));
+            //postId
+            accidentPersonOfEnterprise.setPostId(Long.parseLong(accidentPersonOfEnterpriseView.getTreeSelect()));
 
-        return accidentPersonOfEnterpriseService.updateById(accidentPersonOfEnterprise);
+            //通过postId查询出workplaceId
+            PostOfEnterprise postOfEnterprise = postOfEnterpriseService.getById(accidentPersonOfEnterpriseView.getTreeSelect());
+            accidentPersonOfEnterprise.setWorkplaceId(postOfEnterprise.getWorkplaceId());
+
+            //保存
+
+            return accidentPersonOfEnterpriseService.save(accidentPersonOfEnterprise);
+        }else {
+            AccidentPersonOfEnterprise accidentPersonOfEnterprise=new AccidentPersonOfEnterprise();
+            BeanUtils.copyProperties(accidentPersonOfEnterpriseView, accidentPersonOfEnterprise);
+            accidentPersonOfEnterprise.setDieDate(AntdDateUtil.getInteger(accidentPersonOfEnterpriseView.getDieDateStr()));
+
+            return accidentPersonOfEnterpriseService.updateById(accidentPersonOfEnterprise);
+        }
     }
 
     @GetMapping("/list")

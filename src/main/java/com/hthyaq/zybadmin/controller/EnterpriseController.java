@@ -13,6 +13,7 @@ import com.hthyaq.zybadmin.common.excle.MyExcelUtil;
 import com.hthyaq.zybadmin.common.utils.AntdDateUtil;
 import com.hthyaq.zybadmin.model.entity.*;
 import com.hthyaq.zybadmin.model.excelModel.EnterpriseModel;
+import com.hthyaq.zybadmin.model.excelModel.SuperviseModel;
 import com.hthyaq.zybadmin.model.vo.EnterpriseView;
 import com.hthyaq.zybadmin.service.*;
 import org.apache.commons.compress.utils.Lists;
@@ -325,14 +326,18 @@ public class EnterpriseController {
         boolean flag = true;
         //excel->model
         Class<? extends BaseRowModel>[] modelClassArr = new Class[1];
-        modelClassArr[0]= EnterpriseModel.class;
-        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files,modelClassArr);
+        modelClassArr[0] = EnterpriseModel.class;
+        Map<String, List<Object>> modelMap = MyExcelUtil.readMoreSheetExcel(files, modelClassArr);
         //model->entity
         for (Map.Entry<String, List<Object>> entry : modelMap.entrySet()) {
             String type = entry.getKey();
             List<Object> modelList = entry.getValue();
             List<Enterprise> dataList = getDataList(modelList, type);
-            flag = enterpriseService.saveBatch(dataList);
+            try {
+                flag = enterpriseService.saveBatch(dataList);
+            } catch (Exception e) {
+                throw new RuntimeException("表格内容格式错误，请检查！");
+            }
         }
         return flag;
     }

@@ -111,7 +111,11 @@ public class EnterpriseOfRegisterController {
         sysUser.setMobile(enterpriseUserView.getMobile());
         sysUser.setType(enterpriseUserView.getType());
         sysUser.setCompanyId(enterpriseOfRegister.getId());
-        sysUser.setCompanyName(enterpriseUserView.getCompanyName());
+        try {
+            sysUser.setCompanyName(enterpriseUserView.getCompanyName());
+        } catch (Exception e) {
+            throw new RuntimeException("公司名称已存在");
+        }
         sysUserService.save(sysUser);
         SysRoleUser sysRoleUser=new SysRoleUser();
         sysRoleUser.setRoleId(2);

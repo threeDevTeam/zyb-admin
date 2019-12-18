@@ -107,8 +107,29 @@ public class MonitorOfEnterpriseController {
     }
 
     @PostMapping("/edit")
-    public boolean edit(@RequestBody MonitorOfEnterprise monitorOfEnterprise) {
-        return monitorOfEnterpriseService.updateById(monitorOfEnterprise);
+    public boolean edit(@RequestBody MonitorOfEnterpriseView monitorOfEnterpriseView) {
+        if(monitorOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            MonitorOfEnterprise monitorOfEnterprise = new MonitorOfEnterprise();
+            //other
+            BeanUtils.copyProperties(monitorOfEnterpriseView, monitorOfEnterprise);
+            monitorOfEnterpriseService.removeById(monitorOfEnterpriseView.getId());
+            //postDangerId
+            monitorOfEnterprise.setPostDangerId(Long.parseLong(monitorOfEnterpriseView.getTreeSelect()));
+
+            //通过postDangerId查询出workplaceId,postId
+            PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(monitorOfEnterpriseView.getTreeSelect());
+            monitorOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+            monitorOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
+
+            return  monitorOfEnterpriseService.save(monitorOfEnterprise);
+        }else {
+            MonitorOfEnterprise monitorOfEnterprise = new MonitorOfEnterprise();
+            //other
+            BeanUtils.copyProperties(monitorOfEnterpriseView, monitorOfEnterprise);
+
+            return monitorOfEnterpriseService.updateById(monitorOfEnterprise);
+        }
+
     }
 
     @GetMapping("/list")

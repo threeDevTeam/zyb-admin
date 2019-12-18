@@ -110,11 +110,27 @@ public class AlikeSickOfEnterpriseController {
 
     @PostMapping("/edit")
     public boolean edit(@RequestBody AlikeSickOfEnterpriseView alikeSickOfEnterpriseView) {
-        AlikeSickOfEnterprise alikeSickOfEnterprise=new AlikeSickOfEnterprise();
-        BeanUtils.copyProperties(alikeSickOfEnterpriseView,alikeSickOfEnterprise);
-        alikeSickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(alikeSickOfEnterpriseView.getCheckDateStr()));
+        if(alikeSickOfEnterpriseView.getTreeSelect().indexOf('-') == -1){
+            alikeSickOfEnterpriseService.removeById(alikeSickOfEnterpriseView.getId());
+            AlikeSickOfEnterprise alikeSickOfEnterprise=new AlikeSickOfEnterprise();
+            BeanUtils.copyProperties(alikeSickOfEnterpriseView,alikeSickOfEnterprise);
+            alikeSickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(alikeSickOfEnterpriseView.getCheckDateStr()));
+            //postDangerId
+            alikeSickOfEnterprise.setPostDangerId(Long.parseLong(alikeSickOfEnterpriseView.getTreeSelect()));
 
-        return alikeSickOfEnterpriseService.updateById(alikeSickOfEnterprise);
+            //通过postDangerId查询出workplaceId,postId
+            PostDangerOfEnterprise postDangerOfEnterprise = postDangerOfEnterpriseService.getById(alikeSickOfEnterpriseView.getTreeSelect());
+            alikeSickOfEnterprise.setWorkplaceId(postDangerOfEnterprise.getWorkplaceId());
+            alikeSickOfEnterprise.setPostId(postDangerOfEnterprise.getPostId());
+           return  alikeSickOfEnterpriseService.save(alikeSickOfEnterprise);
+        }else {
+            AlikeSickOfEnterprise alikeSickOfEnterprise=new AlikeSickOfEnterprise();
+            BeanUtils.copyProperties(alikeSickOfEnterpriseView,alikeSickOfEnterprise);
+            alikeSickOfEnterprise.setCheckDate(AntdDateUtil.getInteger(alikeSickOfEnterpriseView.getCheckDateStr()));
+
+            return alikeSickOfEnterpriseService.updateById(alikeSickOfEnterprise);
+        }
+
     }
 
     @GetMapping("/list")

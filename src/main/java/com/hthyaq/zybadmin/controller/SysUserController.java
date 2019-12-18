@@ -47,7 +47,7 @@ public class SysUserController {
     @PostMapping("/add")
     public boolean add(@RequestBody SysUser sysUser) {
         sysUser.setLoginPassword(DigestUtils.md5Hex(sysUser.getLoginPassword()));
-
+        sysUser.setCompanyName(String.valueOf((int)((Math.random()*9+1)*100000)));
         sysUserService.save(sysUser);
         SysRoleUser sysRoleUser=new SysRoleUser();
         sysRoleUser.setUserId(Integer.parseInt(String.valueOf(sysUser.getId())));
