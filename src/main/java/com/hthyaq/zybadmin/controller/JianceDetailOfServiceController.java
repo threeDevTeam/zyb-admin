@@ -75,7 +75,9 @@ public class JianceDetailOfServiceController {
 
     @GetMapping("/delete")
     public boolean delete(String id) {
-        return jianceDetailOfServiceService.deleteData(id);
+        boolean flag=true;
+        flag =  jianceDetailOfServiceService.removeById(id);
+        return flag;
     }
 
     @GetMapping("/getById")
