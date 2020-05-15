@@ -18,7 +18,7 @@ import java.util.List;
  * 代码生成器
  */
 public class CodeGenerator {
-    private static String[] include = {"PublicOpinion"};
+    private static String[] include = {"herun"};
 
     public static void main(String[] args) throws IOException {
         AutoGenerator mpg = new AutoGenerator();
@@ -43,7 +43,7 @@ public class CodeGenerator {
         DataSourceConfig dsConfig = new DataSourceConfig();
         dsConfig.setDbType(DbType.MYSQL)
                 .setDriverName("com.mysql.cj.jdbc.Driver")
-                .setUrl("jdbc:mysql://192.168.99.233:3306/zyb2?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=true&autoReconnect=true")
+                .setUrl("jdbc:mysql://127.0.0.1:3306/zyb?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=true&autoReconnect=true")
                 .setUsername("root")
                 .setPassword("root");
         mpg.setDataSource(dsConfig);
